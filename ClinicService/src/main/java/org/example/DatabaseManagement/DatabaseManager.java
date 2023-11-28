@@ -24,11 +24,17 @@ public class DatabaseManager {
     public static MongoClient client;
     public static MongoDatabase clinicDatabase;    
     public static MongoCollection<Document> clinicsCollection;
-
+    public static MongoCollection<Document> utilsCollection;
 
     public static void initializeDatabaseConnection() {
         client = MongoClients.create("mongodb+srv://DentistUser:1234@dentistsystemdb.7rnyky8.mongodb.net/?retryWrites=true&w=majority");
         clinicDatabase = client.getDatabase("ClinicService");
         clinicsCollection = clinicDatabase.getCollection("Clinics");
+        utilsCollection = clinicDatabase.getCollection("Utils");
+    }
+
+    // A temporary method for the developers to delete everything to save time in development process
+    public static void deleteClinicCollectionInstances() {
+        clinicsCollection.deleteMany(new Document());
     }
 }

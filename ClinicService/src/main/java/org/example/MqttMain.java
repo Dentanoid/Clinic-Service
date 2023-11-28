@@ -18,18 +18,13 @@ public class MqttMain {
 
     // string1 --> Define client
     // string2 --> Define action
-    private static final String[] subscriptions = { // Add a subscription by adding a string element here
-        // TODO: Define new topics for clinics
-        // TODO: Define new keywords for topics
-        "sub/dentist/clinic/register"
 
-        /*
-        // Appointment Service Topics:
-        "sub/patient/appointments/create",
-        "sub/dentist/availabletimes/create",
-        "sub/dentist/delete",
-        "sub/patient/appointments/delete"
-        */
+    // Topic keywords: 'dental', {register, add, remove}
+
+    private static final String[] subscriptions = {
+        "sub/dental/clinic/register",
+        "sub/dental/clinic/dentist/add",
+        "sub/dental/clinic/dentist/remove"
     };
 
     int qos = 0;

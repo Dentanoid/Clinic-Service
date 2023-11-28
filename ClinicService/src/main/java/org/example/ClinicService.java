@@ -4,10 +4,13 @@ import java.util.Map;
 
 import org.bson.Document;
 import org.example.DatabaseManagement.DatabaseManager;
+import org.example.TopicManagement.TopicManager;
 
 public class ClinicService {
     public static void main(String[] args) {
         DatabaseManager.initializeDatabaseConnection();
+        // DatabaseManager.deleteClinicCollectionInstances(); // <!-- Temporary for developers
+
         MqttMain.initializeMqttConnection();
     }
 
@@ -19,10 +22,7 @@ public class ClinicService {
         System.out.println(payload);
         System.out.println("**********************************************");
 
-        /*
-        // TopicManager topicManager = new TopicManager(topic, payload);
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);
-        */
     }
 }
