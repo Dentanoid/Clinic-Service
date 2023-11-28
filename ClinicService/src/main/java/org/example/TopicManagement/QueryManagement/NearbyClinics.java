@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.PriorityQueue;
 
 import org.bson.Document;
+import org.example.Utils;
+import org.example.DatabaseManagement.DatabaseManager;
 import org.example.DatabaseManagement.PayloadParser;
 import org.example.DatabaseManagement.Schemas.EmploymentSchema;
 import org.example.DatabaseManagement.Schemas.NearbyQuerySchema;
@@ -22,13 +24,25 @@ public class NearbyClinics implements Query {
         System.out.println("Length of priority que: " + n.toString());
 
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "user_position", new NearbyQuerySchema());
-        String[] userCoordinates = user_position.toString().split(",");
+        String[] userCoordinatesString = user_position.toString().split(",");
+        
+        double[] userCoordinates = Utils.convertStringToDoubleArray(userCoordinatesString);
         System.out.println("User position: " + Arrays.toString(userCoordinates));
+
+        // Formula Accuracy Test:
+        double[] clinicTempPosition = new double[2];
+        clinicTempPosition[0] = 57.78392080;
+        clinicTempPosition[1] = 12.09125720;
+
+        double distanceInKm = Utils.getDistanceFromLatLonInKm(userCoordinates[0], userCoordinates[1], clinicTempPosition[0], clinicTempPosition[1]);
+        System.out.println("Distance in km: " + distanceInKm);
 
         // pq = new Query with length N
 
-        // TODO:
         // Linear search through every DB-Instance reading 'location' values
+        DatabaseManager.printAllAttributesOfCollection(DatabaseManager.clinicsCollection, "position");
+
+        // TODO:
         // Perform a mathematical formula on each location-value to convert them into 'distance_value'
         // Add each distance-value in priorityque 'pq' that has a constrained length of N
     }

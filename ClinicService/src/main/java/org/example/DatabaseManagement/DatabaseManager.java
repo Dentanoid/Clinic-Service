@@ -37,4 +37,14 @@ public class DatabaseManager {
     public static void deleteClinicCollectionInstances() {
         clinicsCollection.deleteMany(new Document());
     }
+
+    public static void printAllAttributesOfCollection(MongoCollection<Document> collection, String attributeName) {
+        FindIterable<Document> documents = collection.find();
+        Iterator<Document> it = documents.iterator();
+        while (it.hasNext()) {
+            Document doc = it.next();
+            System.out.println(doc.get(attributeName));
+            System.out.println(doc.toJson());
+        }
+    }
 }

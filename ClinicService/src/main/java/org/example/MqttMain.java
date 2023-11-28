@@ -23,11 +23,11 @@ public class MqttMain {
 
     private static final String[] subscriptions = {
         // Clinics
-        /*
         "sub/dental/clinic/register",
         "sub/dental/clinic/dentist/add",
         "sub/dental/clinic/dentist/remove",
-        */
+
+        // Queries
         "sub/query/map/nearby"
     };
 
