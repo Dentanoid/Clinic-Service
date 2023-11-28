@@ -10,6 +10,7 @@ import org.example.MqttMain;
 import org.example.DatabaseManagement.DatabaseManager;
 import org.example.DatabaseManagement.PayloadParser;
 import org.example.DatabaseManagement.Schemas.ClinicSchema;
+import org.example.DatabaseManagement.Schemas.EmploymentSchema;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -58,17 +59,23 @@ public class DentalClinic implements Clinic {
     }
 
     public void addEmployee(String payload) {
-        Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new ClinicSchema()); // TODO: Replace with 'ModifySchema' that covers payload structure for ad/delete employee
+        Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
+        Object newEmployeeName = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
 
         Document myDoc = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
         Document myDoc2 = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
 
-        List<String> employeesNew = (List<String>)myDoc2.get("employees");
-        employeesNew.add("myNewEmp"); // TODO: Read value of new attribute from payload
-        myDoc2.replace("employees", employeesNew);
+        // DB-Instance was found
+        if (myDoc != null) {
+            List<String> employeesNew = (List<String>)myDoc2.get("employees");
+            employeesNew.add((String)newEmployeeName);
+            myDoc2.replace("employees", employeesNew);
 
-        DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc2);
-        System.out.println("Employee successfully added to clinic");
+            DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc2);
+            System.out.println("Employee successfully added to clinic");
+        } else {
+            System.out.println("The employee in the clinic wasn't found");
+        }
     }
 
     public void removeEmployee(String payload) {
