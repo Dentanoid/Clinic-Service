@@ -58,7 +58,7 @@ public class DentalClinic implements Clinic {
         // 2) Add clinic to the list
     }
 
-    public void addEmployee(String payload) {
+    public void addEmployee(String payload) { // NOTE: Refactor addEmploye() and removeEmployee() later
         Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
         Object newEmployeeName = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
 
@@ -78,7 +78,23 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    public void removeEmployee(String payload) {
+    public void removeEmployee(String payload) { // NOTE: Refactor addEmploye() and removeEmployee() later
+        Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
+        Object employeeToDelete = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
 
+        Document myDoc = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
+        Document myDoc2 = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
+
+        // DB-Instance was found
+        if (myDoc != null) {
+            List<String> employees = (List<String>)myDoc2.get("employees");
+            employees.remove(employeeToDelete);
+            myDoc2.replace("employees", employees);
+
+            DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc2);
+            System.out.println("Employee successfully removed from clinic");
+        } else {
+            System.out.println("The employee in the clinic wasn't found");
+        }
     }
 }
