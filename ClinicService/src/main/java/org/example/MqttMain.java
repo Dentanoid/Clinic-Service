@@ -22,9 +22,13 @@ public class MqttMain {
     // Topic keywords: 'dental', {register, add, remove}
 
     private static final String[] subscriptions = {
+        // Clinics
         "sub/dental/clinic/register",
         "sub/dental/clinic/dentist/add",
-        "sub/dental/clinic/dentist/remove"
+        "sub/dental/clinic/dentist/remove",
+
+        // Queries
+        "sub/query/map/nearby" // Keywords: 'query', 'nearby'
     };
 
     int qos = 0;
