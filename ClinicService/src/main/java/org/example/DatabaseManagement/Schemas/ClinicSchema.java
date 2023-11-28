@@ -7,14 +7,14 @@ import org.bson.Document;
 public class ClinicSchema implements CollectionSchema {
     String clinic_name;
     String clinic_id;
-    String position; // Can change to int[] (lat, long)
+    String position;
     ArrayList<String> employees;
 
     public ClinicSchema() {
         this.clinic_name = " ";
         this.clinic_id = " ";
         this.position = " ";
-        this.employees = new ArrayList<>();
+        this.employees = new ArrayList<>(); 
     }
 
     @Override

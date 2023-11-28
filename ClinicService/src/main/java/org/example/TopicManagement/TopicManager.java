@@ -7,6 +7,7 @@ public class TopicManager {
     // Idea: Create interface of 'Clinic' and 'Query' called 'TopicOperator' so that I can create that object in ClinicService.java
     public Clinic clinic;
     public Query query;
+    public TopicOperator topicOperator;
 
     public TopicOperator getTopicOperator(String topic, String payload) {
         if (topic.contains("clinic")) {
@@ -34,6 +35,7 @@ public class TopicManager {
     }
 
     public void manageTopic(String topic, String payload) {
-        clinic = getClinic(topic, payload);
+        // clinic = getClinic(topic, payload);
+        topicOperator = getTopicOperator(topic, payload);
     }
 }
