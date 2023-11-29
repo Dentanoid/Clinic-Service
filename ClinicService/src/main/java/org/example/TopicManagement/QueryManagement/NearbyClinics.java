@@ -27,31 +27,15 @@ public class NearbyClinics implements Query {
     @Override
     public void queryDatabase(String payload) {
         n = Integer.parseInt(PayloadParser.getAttributeFromPayload(payload, "nearby_clinics_number", new NearbyQuerySchema()).toString());
-        System.out.println("Length of priority que: " + n.toString());
-
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "user_position", new NearbyQuerySchema());
-        String[] userCoordinatesString = user_position.toString().split(",");
         
+        // TODO: Refactor the two lines below into a general method
+        String[] userCoordinatesString = user_position.toString().split(","); 
         double[] userCoordinates = Utils.convertStringToDoubleArray(userCoordinatesString);
-        System.out.println("User position: " + Arrays.toString(userCoordinates));
 
-        // Formula Accuracy Test:
-        double[] clinicTempPosition = new double[2];
-        clinicTempPosition[0] = 57.78392080;
-        clinicTempPosition[1] = 12.09125720;
 
-        double distanceInKm = Utils.haversineFormula(userCoordinates, clinicTempPosition);
-        System.out.println("Distance in km: " + distanceInKm);
-
-        // Haversine Formula on priority queue test:
-        Document myDocTest = new Document().append("attr1", 10);
+        System.out.println("In NearbyClinics.java");
         pq = new PriorityQueue<Entry>(Collections.reverseOrder());
-        pq.add(new Entry(distanceInKm, myDocTest));
-
-        System.out.println("PQ0: " + pq);
-        System.out.println("PQ1: " + pq.toString());
-        System.out.println("PQ2: " + Arrays.toString(pq.toArray()));
-
 
         // Linear search through every DB-Instance reading 'location' values
         FindIterable<Document> clinics = DatabaseManager.clinicsCollection.find();
@@ -59,26 +43,36 @@ public class NearbyClinics implements Query {
         while (it.hasNext()) {
             Document currentClinic = it.next();
             System.out.println(currentClinic.get("position"));
-            System.out.println(currentClinic.toJson());
+
+            String[] currentClinicCoordinatesString = currentClinic.get("position").toString().split(",");
+            double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinicCoordinatesString);
+
+            double distanceInKm = Utils.haversineFormula(userCoordinates, currentClinicCoordinates);
+            addPQElement(new Entry(distanceInKm, currentClinic));
         }
 
-        // TODO:
-        // 1) Decide on priority queue datatype format (Integer, <String, Document>, ...)
-        // 2) Perform a mathematical formula on each location-value to convert them into 'distance_value'
-        // 3) Add each distance-value in priorityque 'pq' that has a constrained length of N
-        // 4) Connect with other components in System
-        // 5) Practice for tomorrow's presentation
+        System.out.println("PQ0: " + pq);
+        // System.out.println("PQ1: " + pq.toString());
+        // System.out.println("PQ2: " + Arrays.toString(pq.toArray()));
+
+        /*
+        // TEMPORARY CHECK FOR DEVELOPERS:
+        Iterator<Entry> iterator = pq.iterator();
+        Integer counter = 0;
+        while (iterator.hasNext()) { // Expected behaviour: Print in descending order from max to min
+            counter++;
+            System.out.println("Iteration " + counter + ": " + pq.poll());
+        }
+        */
     }
 
-    /*
-    public void addPQElement(double element) {
+    public void addPQElement(Entry element) {
         pq.add(element);
 
         if (pq.size() > n) { // Delete element with maximum distance
             pq.poll(); // TODO: Research poll()
         }
     }
-    */
 
     @Override
     public void executeRequestedOperation(String topic, String payload) {
