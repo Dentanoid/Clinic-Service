@@ -1,8 +1,9 @@
-package org.example.DatabaseManagement.Schemas;
+package org.example.DatabaseManagement.Schemas.Clinic;
 
 import java.util.ArrayList;
 
 import org.bson.Document;
+import org.example.DatabaseManagement.Schemas.CollectionSchema;
 
 // This schema covers the payload-cases where an employee is to be added or removed from the clinic
 public class EmploymentSchema implements CollectionSchema {

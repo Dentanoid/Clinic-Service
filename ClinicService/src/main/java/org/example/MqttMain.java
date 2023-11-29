@@ -26,6 +26,7 @@ public class MqttMain {
         "sub/dental/clinic/register",
         "sub/dental/clinic/dentist/add",
         "sub/dental/clinic/dentist/remove",
+        "sub/dental/clinic/delete",
 
         // Queries
         "sub/query/map/nearby"

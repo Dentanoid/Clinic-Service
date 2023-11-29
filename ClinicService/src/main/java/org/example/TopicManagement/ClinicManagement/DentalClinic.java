@@ -9,8 +9,9 @@ import org.bson.types.ObjectId;
 import org.example.MqttMain;
 import org.example.DatabaseManagement.DatabaseManager;
 import org.example.DatabaseManagement.PayloadParser;
-import org.example.DatabaseManagement.Schemas.ClinicSchema;
-import org.example.DatabaseManagement.Schemas.EmploymentSchema;
+import org.example.DatabaseManagement.Schemas.Clinic.ClinicDeleteSchema;
+import org.example.DatabaseManagement.Schemas.Clinic.ClinicCreateSchema;
+import org.example.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -41,6 +42,10 @@ public class DentalClinic implements Clinic {
             removeEmployee(payload);
             publishTopic = "pub/dental/clinic/dentist/remove";
         }
+        else if (topic.contains("delete")) {
+            deleteClinic(payload);
+            publishTopic = "pub/dental/clinic/delete";   
+        }
 
         if (payloadDoc != null) {
             MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, payloadDoc.toJson());
@@ -51,11 +56,19 @@ public class DentalClinic implements Clinic {
 
     public void registerClinic(String payload) {
         System.out.println("Store new registered clinic!");
-        payloadDoc = PayloadParser.savePayloadDocument(payload, new ClinicSchema(), DatabaseManager.clinicsCollection);
+        payloadDoc = PayloadParser.savePayloadDocument(payload, new ClinicCreateSchema(), DatabaseManager.clinicsCollection);
+    }
 
-        // TODO add clinic to global arraylist in Utils Collection
-        // 1) Find DB-Instance with corresponding objectId
-        // 2) Add clinic to the list
+    public void deleteClinic(String payload) {
+        System.out.println("Delete clinic!");
+        String objectId =  PayloadParser.getObjectId(payload, new ClinicDeleteSchema(), DatabaseManager.clinicsCollection);
+
+        if (objectId != "-1") {
+            payloadDoc = PayloadParser.findDocumentById(objectId, DatabaseManager.clinicsCollection);
+            DatabaseManager.clinicsCollection.findOneAndDelete(payloadDoc);
+        } else {
+            System.out.println("Requested item does not exist in DB");
+        }
     }
 
     public void addEmployee(String payload) { // NOTE: Refactor addEmploye() and removeEmployee() later

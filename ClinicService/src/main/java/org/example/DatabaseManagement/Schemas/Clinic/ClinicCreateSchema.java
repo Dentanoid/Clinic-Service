@@ -1,16 +1,17 @@
-package org.example.DatabaseManagement.Schemas;
+package org.example.DatabaseManagement.Schemas.Clinic;
 
 import java.util.ArrayList;
 
 import org.bson.Document;
+import org.example.DatabaseManagement.Schemas.CollectionSchema;
 
-public class ClinicSchema implements CollectionSchema {
+public class ClinicCreateSchema implements CollectionSchema {
     String clinic_name;
     String clinic_id;
     String position;
     ArrayList<String> employees;
 
-    public ClinicSchema() {
+    public ClinicCreateSchema() {
         this.clinic_name = " ";
         this.clinic_id = " ";
         this.position = " ";

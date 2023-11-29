@@ -12,8 +12,8 @@ import org.bson.Document;
 import org.example.MqttMain;
 import org.example.DatabaseManagement.DatabaseManager;
 import org.example.DatabaseManagement.PayloadParser;
-import org.example.DatabaseManagement.Schemas.EmploymentSchema;
-import org.example.DatabaseManagement.Schemas.NearbyQuerySchema;
+import org.example.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
+import org.example.DatabaseManagement.Schemas.Query.NearbyQuerySchema;
 import org.example.Utils.Entry;
 import org.example.Utils.Utils;
 

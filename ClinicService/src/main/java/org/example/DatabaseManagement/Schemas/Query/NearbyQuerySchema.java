@@ -1,8 +1,9 @@
-package org.example.DatabaseManagement.Schemas;
+package org.example.DatabaseManagement.Schemas.Query;
 
 import java.util.ArrayList;
 
 import org.bson.Document;
+import org.example.DatabaseManagement.Schemas.CollectionSchema;
 
 public class NearbyQuerySchema implements CollectionSchema {
     String nearby_clinics_number;
