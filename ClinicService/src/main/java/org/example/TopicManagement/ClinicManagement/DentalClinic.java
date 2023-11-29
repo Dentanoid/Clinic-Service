@@ -1,4 +1,4 @@
-package org.example.TopicManagement;
+package org.example.TopicManagement.ClinicManagement;
 
 import java.util.ArrayList;
 import java.util.List;

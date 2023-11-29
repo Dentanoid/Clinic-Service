@@ -1,4 +1,6 @@
 package org.example.TopicManagement;
+import org.example.TopicManagement.ClinicManagement.Clinic;
+import org.example.TopicManagement.ClinicManagement.DentalClinic;
 import org.example.TopicManagement.QueryManagement.NearbyClinics;
 import org.example.TopicManagement.QueryManagement.Query;
 

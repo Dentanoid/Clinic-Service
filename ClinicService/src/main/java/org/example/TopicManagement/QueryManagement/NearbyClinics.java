@@ -1,11 +1,15 @@
 package org.example.TopicManagement.QueryManagement;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 
+import javax.print.Doc;
+
 import org.bson.Document;
+import org.example.MqttMain;
 import org.example.DatabaseManagement.DatabaseManager;
 import org.example.DatabaseManagement.PayloadParser;
 import org.example.DatabaseManagement.Schemas.EmploymentSchema;
@@ -17,8 +21,7 @@ import com.mongodb.client.FindIterable;
 
 public class NearbyClinics implements Query {
     private static Integer n;
-    // private static PriorityQueue<Double, Document> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
-    private static PriorityQueue<Entry> pq;
+    private static PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
 
     public NearbyClinics(String topic, String payload) {
         executeRequestedOperation(topic, payload);
@@ -28,58 +31,55 @@ public class NearbyClinics implements Query {
     public void queryDatabase(String payload) {
         n = Integer.parseInt(PayloadParser.getAttributeFromPayload(payload, "nearby_clinics_number", new NearbyQuerySchema()).toString());
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "user_position", new NearbyQuerySchema());
-        
-        // TODO: Refactor the two lines below into a general method
-        String[] userCoordinatesString = user_position.toString().split(","); 
-        double[] userCoordinates = Utils.convertStringToDoubleArray(userCoordinatesString);
+    
+        double[] userCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
 
-
-        System.out.println("In NearbyClinics.java");
         pq = new PriorityQueue<Entry>(Collections.reverseOrder());
+        iterateThroughClinics(userCoordinates);
+    }
 
-        // Linear search through every DB-Instance reading 'location' values
+    // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
+    private void iterateThroughClinics(double[] userCoordinates) {
         FindIterable<Document> clinics = DatabaseManager.clinicsCollection.find();
         Iterator<Document> it = clinics.iterator();
         while (it.hasNext()) {
             Document currentClinic = it.next();
-            System.out.println(currentClinic.get("position"));
-
-            String[] currentClinicCoordinatesString = currentClinic.get("position").toString().split(",");
-            double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinicCoordinatesString);
+            double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
 
             double distanceInKm = Utils.haversineFormula(userCoordinates, currentClinicCoordinates);
             addPQElement(new Entry(distanceInKm, currentClinic));
         }
-
-        System.out.println("PQ0: " + pq);
-        // System.out.println("PQ1: " + pq.toString());
-        // System.out.println("PQ2: " + Arrays.toString(pq.toArray()));
-
-        /*
-        // TEMPORARY CHECK FOR DEVELOPERS:
-        Iterator<Entry> iterator = pq.iterator();
-        Integer counter = 0;
-        while (iterator.hasNext()) { // Expected behaviour: Print in descending order from max to min
-            counter++;
-            System.out.println("Iteration " + counter + ": " + pq.poll());
-        }
-        */
     }
 
-    public void addPQElement(Entry element) {
+    private void addPQElement(Entry element) {
         pq.add(element);
 
-        if (pq.size() > n) { // Delete element with maximum distance
-            pq.poll(); // TODO: Research poll()
+        if (pq.size() > n) { // Delete element with maximum distance to conform to given quantity-constraint of clinics to return
+            pq.poll();
         }
+    }
+
+    private Document[] retrieveClosestClinics() {
+        Document[] closestClinics = new Document[n];
+        Iterator<Entry> iterator = pq.iterator();
+
+        Integer i = 0;
+        while (iterator.hasNext()) {
+            closestClinics[n - i - 1] = pq.poll().getValue();
+            i++;
+        }
+
+        return closestClinics;
     }
 
     @Override
     public void executeRequestedOperation(String topic, String payload) {
-        String publishTopic = "";
+        String publishTopic = "pub/query/map/nearby";
 
         if (topic.contains("map")) {
             queryDatabase(payload);
         }
+
+        MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, Arrays.toString(retrieveClosestClinics()));
     }
 }
