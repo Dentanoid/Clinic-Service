@@ -22,6 +22,7 @@ import com.mongodb.client.FindIterable;
 public class NearbyClinics implements Query {
     private static Integer n;
     private static PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
+    private static double[] userCoordinates;
 
     public NearbyClinics(String topic, String payload) {
         executeRequestedOperation(topic, payload);
@@ -29,10 +30,7 @@ public class NearbyClinics implements Query {
 
     @Override
     public void queryDatabase(String payload) {
-        n = Integer.parseInt(PayloadParser.getAttributeFromPayload(payload, "nearby_clinics_number", new NearbyQuerySchema()).toString());
-        Object user_position = PayloadParser.getAttributeFromPayload(payload, "user_position", new NearbyQuerySchema());
-    
-        double[] userCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
+        readPayloadAttributes(payload);
 
         pq = new PriorityQueue<Entry>(Collections.reverseOrder());
         iterateThroughClinics(userCoordinates);
@@ -42,6 +40,7 @@ public class NearbyClinics implements Query {
     private void iterateThroughClinics(double[] userCoordinates) {
         FindIterable<Document> clinics = DatabaseManager.clinicsCollection.find();
         Iterator<Document> it = clinics.iterator();
+        
         while (it.hasNext()) {
             Document currentClinic = it.next();
             double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
@@ -57,6 +56,23 @@ public class NearbyClinics implements Query {
         if (pq.size() > n) { // Delete element with maximum distance to conform to given quantity-constraint of clinics to return
             pq.poll();
         }
+    }
+
+    private void readPayloadAttributes(String payload) {
+        getNumberOfClinicsToQuery(payload);
+        getUserPosition(payload);
+    }
+
+    private void getNumberOfClinicsToQuery(String payload) {
+       int requestedPayloadNumber = Integer.parseInt(PayloadParser.getAttributeFromPayload(payload, "nearby_clinics_number", new NearbyQuerySchema()).toString());
+       int numberOfExistingClinics = (int)DatabaseManager.clinicsCollection.countDocuments();
+
+       n = Math.min(requestedPayloadNumber, numberOfExistingClinics);
+    }
+
+    private void getUserPosition(String payload) {
+        Object user_position = PayloadParser.getAttributeFromPayload(payload, "user_position", new NearbyQuerySchema());
+        userCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 
     private Document[] retrieveClosestClinics() {
