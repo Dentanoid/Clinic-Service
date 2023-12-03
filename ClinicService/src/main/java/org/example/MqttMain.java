@@ -27,9 +27,11 @@ public class MqttMain {
         "sub/dental/clinic/dentist/add",
         "sub/dental/clinic/dentist/remove",
         "sub/dental/clinic/delete",
+        
 
         // Queries
-        "sub/query/map/nearby"
+        "sub/query/map/nearby/fixed",
+        "sub/query/map/nearby/radius"
     };
 
     int qos = 0;
