@@ -5,11 +5,7 @@ import org.example.TopicManagement.QueryManagement.Query;
 import org.example.TopicManagement.QueryManagement.NearbyMapQueries.NearbyClinics;
 
 public class TopicManager {
-
-    // Idea: Create interface of 'Clinic' and 'Query' called 'TopicOperator' so that I can create that object in ClinicService.java
-    public Clinic clinic;
-    public Query query;
-    public TopicOperator topicOperator;
+    private TopicOperator topicOperator;
 
     public TopicOperator getTopicOperator(String topic, String payload) {
         if (topic.contains("clinic")) {
@@ -30,9 +26,9 @@ public class TopicManager {
     }
 
     public Query getQuery(String topic, String payload) {
-        if (topic.contains("nearby")) {
-            Query testQuery = new NearbyClinics(topic, payload);
-            testQuery.executeRequestedOperation(topic, payload);
+        if (topic.contains("nearby")) { // NOTE: Refactor later
+            Query nearbyQuery = new NearbyClinics(topic, payload);
+            nearbyQuery.executeRequestedOperation(topic, payload);
             return new NearbyClinics(topic, payload);
         }
         return null; // This is where we extend the code for more types of query operations
@@ -41,4 +37,10 @@ public class TopicManager {
     public void manageTopic(String topic, String payload) {
         topicOperator = getTopicOperator(topic, payload);
     }
+
+    /*
+    public void initiateQuery(String topic, String payload) {
+        topicOperator.executeRequestedOperation(topic, payload);
+    }
+    */
 }

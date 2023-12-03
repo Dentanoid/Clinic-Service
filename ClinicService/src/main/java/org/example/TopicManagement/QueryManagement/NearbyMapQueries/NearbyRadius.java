@@ -33,19 +33,13 @@ public class NearbyRadius extends NearbyClinics {
 
     @Override
     public void readPayloadAttributes(String payload) { // May be redundan to ovveride, since we can put 'getRadius()' in 'getUserPosition()'
-        getNumberOfClinicsToQuery(payload);
-
+        // getNumberOfClinicsToQuery(payload);
         getUserPosition(payload);
-
-        System.out.println("A");
         getRadius(payload);
-        System.out.println("B");
     }
 
     @Override
     public void addPQElement(Entry element) {
-        System.out.println("compare " + element.getKey() + " AND " + radius);
-
         if (element.getKey() <= radius) { // Display clinic if it is within the requested radius
             pq.add(element);
             incrementFoundClinics();
@@ -62,14 +56,14 @@ public class NearbyRadius extends NearbyClinics {
         }
     }
 
+    /*
     @Override
-    public void getNumberOfClinicsToQuery(String payload) {   
-        /*
+    public void getNumberOfClinicsToQuery(String payload) {     
        int numberOfExistingClinics = (int)DatabaseManager.clinicsCollection.countDocuments();
        n = Math.min(maximumClinicsInQuery, numberOfExistingClinics);
-       System.out.println("n = " + n);
-       */
+       System.out.println("n = " + n); 
     }
+    */
 
     @Override
     public void getUserPosition(String payload) {

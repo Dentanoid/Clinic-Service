@@ -21,16 +21,11 @@ import org.example.Utils.Utils;
 
 import com.mongodb.client.FindIterable;
 
-public class NearbyClinics implements Query {
-    // public Integer n;
+public class NearbyClinics extends NearbyQuery { // Previous: implements Query
     public PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
     public double[] userCoordinates; // Change to 'referenceCoordinates'
 
-    // private static ArrayList<NearbyClinics> nearbyQueries; // Concurrent nearby queries that are being executed at the same time
-
     public NearbyClinics(String topic, String payload) {
-        // numberOfFoundClinics = 0;
-        // executeRequestedOperation(topic, payload);
     }
 
     @Override
@@ -41,7 +36,6 @@ public class NearbyClinics implements Query {
 
     // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
     public void iterateThroughClinics(double[] userCoordinates) {
-        System.out.println("ITERATION START");
         pq = new PriorityQueue<Entry>(Collections.reverseOrder());
 
         FindIterable<Document> clinics = DatabaseManager.clinicsCollection.find();
@@ -54,21 +48,6 @@ public class NearbyClinics implements Query {
             double distanceInKm = Utils.haversineFormula(userCoordinates, currentClinicCoordinates);
             addPQElement(new Entry(distanceInKm, currentClinic));
         }
-
-        System.out.println("ITERATION DONE");
-    }
-
-    public void addPQElement(Entry element) { // TODO: Create interface: 'NearbyQuery.java' with addPQElement(), getN(), getNumberOfClinics(), getUserPosition()
-    }
-
-    public int getN() {
-        return -1;
-    }
-
-    public void getNumberOfClinicsToQuery(String payload) {
-    }
-
-    public void getUserPosition(String payload) {
     }
 
     public void readPayloadAttributes(String payload) {
@@ -76,18 +55,13 @@ public class NearbyClinics implements Query {
         getUserPosition(payload);
     }
 
-    private Document[] retrieveClosestClinics(int n, NearbyClinics objTest) {
-        System.out.println("YO");
-        System.out.println(objTest.pq);
-        System.out.println(pq);
-        System.out.println("YO2");
-
+    private Document[] retrieveClosestClinics(int n, NearbyClinics queryKey) {
         Document[] closestClinics = new Document[n];
-        Iterator<Entry> iterator = objTest.pq.iterator();
+        Iterator<Entry> iterator = queryKey.pq.iterator();
 
         Integer i = 0;
         while (iterator.hasNext()) {
-            closestClinics[n - i - 1] = objTest.pq.poll().getValue();
+            closestClinics[n - i - 1] = queryKey.pq.poll().getValue();
             i++;
         }
 
@@ -97,19 +71,17 @@ public class NearbyClinics implements Query {
     @Override
     public void executeRequestedOperation(String topic, String payload) {
         String publishTopic = "pub/query/map/nearby";
-        NearbyClinics queryKey; // Current query is used as a key to access desired its corresponding priority queue
+        NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
         // TODO: Make public static attribute of topic, split it and compare it in O(1) rather than O(n) checks with '.contains()'
         if (topic.contains("fixed")) {
-            queryKey = new NearbyFixed(publishTopic, payload);
-            queryKey.queryDatabase(payload);     
+            queryKey = new NearbyFixed(publishTopic, payload);   
         }
-        else { // if (topic.contains("radius")
+        else {
             queryKey = new NearbyRadius(publishTopic, payload);
-            queryKey.queryDatabase(payload);
         }
 
-        System.out.println("QUERY DONE!");
+        queryKey.queryDatabase(payload);
         MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, Arrays.toString(retrieveClosestClinics(queryKey.getN(), queryKey)));
     }
 }

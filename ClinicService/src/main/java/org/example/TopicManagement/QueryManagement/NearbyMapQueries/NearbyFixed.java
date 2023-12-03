@@ -37,7 +37,7 @@ public class NearbyFixed extends NearbyClinics {
     }
 
     @Override
-    public void getNumberOfClinicsToQuery(String payload) {
+    public void getNumberOfClinicsToQuery(String payload) { // private void
         int requestedPayloadNumber = Integer.parseInt(PayloadParser.getAttributeFromPayload(payload, "nearby_clinics_number", new NearbyFixedQuerySchema()).toString());
         int numberOfExistingClinics = (int)DatabaseManager.clinicsCollection.countDocuments();
         // n = Math.min(requestedPayloadNumber, numberOfExistingClinics);
