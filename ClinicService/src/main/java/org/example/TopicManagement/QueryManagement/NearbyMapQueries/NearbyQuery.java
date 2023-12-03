@@ -11,9 +11,7 @@ import org.example.Utils.Entry;
 */
 public abstract class NearbyQuery implements Query {
     public void addPQElement(Entry element) {}
-
     public int getN() { return -1; }
-
-    public void getNumberOfClinicsToQuery(String payload) {} // TODO: Delete from this class
-    public void getUserPosition(String payload) {} // Change name: 'referencePosition'
+    public void getReferencePosition(String payload) {}
+    public void readPayloadAttributes(String payload) {}
 }

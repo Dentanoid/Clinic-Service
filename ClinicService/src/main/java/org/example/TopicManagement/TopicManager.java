@@ -25,8 +25,12 @@ public class TopicManager {
         return null; // This is where we extend the code to account for different types of clinics beyond the industry of teeth
     }
 
+    /*
+     Note for developers: We must initiate the query from this place to avoid an infitine
+     loop, since NearbyClinics.java invokes its own constructor with its polymorhpic subclasses
+    */
     public Query getQuery(String topic, String payload) {
-        if (topic.contains("nearby")) { // NOTE: Refactor later
+        if (topic.contains("nearby")) {
             Query nearbyQuery = new NearbyClinics(topic, payload);
             nearbyQuery.executeRequestedOperation(topic, payload);
             return new NearbyClinics(topic, payload);
@@ -37,10 +41,4 @@ public class TopicManager {
     public void manageTopic(String topic, String payload) {
         topicOperator = getTopicOperator(topic, payload);
     }
-
-    /*
-    public void initiateQuery(String topic, String payload) {
-        topicOperator.executeRequestedOperation(topic, payload);
-    }
-    */
 }

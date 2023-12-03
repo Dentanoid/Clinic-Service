@@ -11,17 +11,12 @@ import javax.print.Doc;
 import org.bson.Document;
 import org.example.MqttMain;
 import org.example.DatabaseManagement.DatabaseManager;
-import org.example.DatabaseManagement.PayloadParser;
-import org.example.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
-import org.example.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
-import org.example.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
-import org.example.TopicManagement.QueryManagement.Query;
 import org.example.Utils.Entry;
 import org.example.Utils.Utils;
 
 import com.mongodb.client.FindIterable;
 
-public class NearbyClinics extends NearbyQuery { // Previous: implements Query
+public class NearbyClinics extends NearbyQuery {
     public PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
     public double[] userCoordinates; // Change to 'referenceCoordinates'
 
@@ -31,7 +26,7 @@ public class NearbyClinics extends NearbyQuery { // Previous: implements Query
     @Override
     public void queryDatabase(String payload) {
         readPayloadAttributes(payload);
-        iterateThroughClinics(userCoordinates);
+        iterateThroughClinics(userCoordinates); 
     }
 
     // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
@@ -48,11 +43,6 @@ public class NearbyClinics extends NearbyQuery { // Previous: implements Query
             double distanceInKm = Utils.haversineFormula(userCoordinates, currentClinicCoordinates);
             addPQElement(new Entry(distanceInKm, currentClinic));
         }
-    }
-
-    public void readPayloadAttributes(String payload) {
-        getNumberOfClinicsToQuery(payload);
-        getUserPosition(payload);
     }
 
     private Document[] retrieveClosestClinics(int n, NearbyClinics queryKey) {
