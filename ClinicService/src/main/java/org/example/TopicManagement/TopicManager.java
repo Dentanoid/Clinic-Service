@@ -1,8 +1,8 @@
 package org.example.TopicManagement;
 import org.example.TopicManagement.ClinicManagement.Clinic;
 import org.example.TopicManagement.ClinicManagement.DentalClinic;
-import org.example.TopicManagement.QueryManagement.NearbyClinics;
 import org.example.TopicManagement.QueryManagement.Query;
+import org.example.TopicManagement.QueryManagement.NearbyMapQueries.NearbyClinics;
 
 public class TopicManager {
 
@@ -31,13 +31,14 @@ public class TopicManager {
 
     public Query getQuery(String topic, String payload) {
         if (topic.contains("nearby")) {
+            Query testQuery = new NearbyClinics(topic, payload);
+            testQuery.executeRequestedOperation(topic, payload);
             return new NearbyClinics(topic, payload);
         }
         return null; // This is where we extend the code for more types of query operations
     }
 
     public void manageTopic(String topic, String payload) {
-        // clinic = getClinic(topic, payload);
         topicOperator = getTopicOperator(topic, payload);
     }
 }
