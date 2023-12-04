@@ -14,7 +14,9 @@ import org.example.DatabaseManagement.DatabaseManager;
 import org.example.Utils.Entry;
 import org.example.Utils.Utils;
 
+import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
+import com.mongodb.client.model.Facet;
 
 public class NearbyClinics extends NearbyQuery {
     public PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
@@ -58,12 +60,17 @@ public class NearbyClinics extends NearbyQuery {
         return closestClinics;
     }
 
+    // Format the document-data of the clinics to display into a JSON-String
+    private String formatRetrievedClinics(Document[] clinics) {
+        Gson gson = new Gson();
+        return gson.toJson(clinics);
+    }
+
     @Override
     public void executeRequestedOperation(String topic, String payload) {
         String publishTopic = "pub/query/map/nearby";
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        // TODO: Make public static attribute of topic, split it and compare it in O(1) rather than O(n) checks with '.contains()'
         if (topic.contains("fixed")) {
             queryKey = new NearbyFixed(publishTopic, payload);   
         }
@@ -72,6 +79,10 @@ public class NearbyClinics extends NearbyQuery {
         }
 
         queryKey.queryDatabase(payload);
-        MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, Arrays.toString(retrieveClosestClinics(queryKey.getN(), queryKey)));
+
+        Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey);
+        String publishMessage = formatRetrievedClinics(clinicsToDisplay);
+
+        MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishMessage); // Previous: publishMessage
     }
 }

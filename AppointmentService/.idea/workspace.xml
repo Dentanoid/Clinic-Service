@@ -5,8 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7be18f46-ba12-482e-b565-19c1619ff432" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../ClinicService/src/main/java/org/example/DatabaseManagement/Schemas/Query/NearbyFixedQuerySchema.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ClinicService/src/main/java/org/example/DatabaseManagement/Schemas/Query/NearbyFixedQuerySchema.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ClinicService/target/classes/org/example/DatabaseManagement/Schemas/Query/NearbyFixedQuerySchema.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClinicService/target/classes/org/example/DatabaseManagement/Schemas/Query/NearbyFixedQuerySchema.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClinicService/src/main/java/org/example/TopicManagement/QueryManagement/NearbyMapQueries/NearbyClinics.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ClinicService/src/main/java/org/example/TopicManagement/QueryManagement/NearbyMapQueries/NearbyClinics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ClinicService/target/classes/org/example/TopicManagement/QueryManagement/NearbyMapQueries/NearbyClinics.class" beforeDir="false" afterPath="$PROJECT_DIR$/../ClinicService/target/classes/org/example/TopicManagement/QueryManagement/NearbyMapQueries/NearbyClinics.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
