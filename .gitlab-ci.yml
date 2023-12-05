@@ -39,6 +39,12 @@ test_job:
         - echo "Maven test started"
         - cd "$SERVICE_PATH"
         - "mvn test"
+    
+    artifacts:
+        when: always
+        reports:
+            junit:
+                - $SERVICE_PATH/target/surefire-reports/TEST-*.xml
 
 package_job:
     stage: package
