@@ -23,10 +23,10 @@ public class MqttMain {
 
     private static final String[] subscriptions = {
         // Clinics
-        "sub/dental/clinic/register",
-        "sub/dental/clinic/dentist/add",
-        "sub/dental/clinic/dentist/remove",
-        "sub/dental/clinic/delete",
+        "sub/dental/clinic/register", // grp20/dental/clinic/register
+        "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
+        "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove
+        "sub/dental/clinic/delete", // grp20/dental/clinic/delete
 
         // Queries
         "sub/query/map/nearby/fixed",
@@ -95,7 +95,7 @@ public class MqttMain {
 
                public void connectionLost(Throwable cause) {
                    System.out.println("connectionLost: " + cause.getMessage());
-              }
+                }
 
                public void messageArrived(String topic, MqttMessage message) throws MqttException {
                 System.out.println("topic: " + topic);
@@ -111,7 +111,7 @@ public class MqttMain {
 
           });
            client.connect(options);
-           client.subscribe(topic, qos);           
+           client.subscribe(topic, qos);
       } catch (Exception e) {
            e.printStackTrace();
       }
