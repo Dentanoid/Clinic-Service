@@ -6,7 +6,7 @@ import generalPackage.Utils.Entry;
 import generalPackage.Utils.Utils;
 
 public class NearbyRadius extends NearbyClinics {
-    private static Integer maximumClinicsInQuery = 20;
+    private static Integer maximumClinicsInQuery = 1000;
     private Double radius;
     private Integer numberOfFoundClinics;
 
