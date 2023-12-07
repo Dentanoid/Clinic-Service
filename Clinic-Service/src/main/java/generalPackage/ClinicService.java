@@ -6,7 +6,9 @@ import generalPackage.TopicManagement.TopicManager;
 public class ClinicService {
     public static void main(String[] args) {
         DatabaseManager.initializeDatabaseConnection();
-        // DatabaseManager.deleteClinicCollectionInstances(); // <!-- Temporary for developers
+
+        // DatabaseManager.deleteClinicCollectionInstances(); // <-- For developers when testing
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "Ds334535sgg"); // <-- For developers when testing
 
         MqttMain.initializeMqttConnection();
     }
