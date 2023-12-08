@@ -4,6 +4,12 @@ import java.util.List;
 import org.bson.Document;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import org.json.simple.JSONObject;
+
+import generalPackage.GoogleAPI.ValidatedClinic;
+import generalPackage.Main.ClinicService;
 import generalPackage.Main.MqttMain;
 import generalPackage.Main.DatabaseManagement.DatabaseManager;
 import generalPackage.Main.DatabaseManagement.PayloadParser;
@@ -51,6 +57,56 @@ public class DentalClinic implements Clinic {
     public void registerClinic(String payload) {
         System.out.println("Store new registered clinic!");
         payloadDoc = PayloadParser.savePayloadDocument(payload, new ClinicCreateSchema(), DatabaseManager.clinicsCollection);
+
+        JSONObject jsonObject = new JSONObject();
+        ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
+
+        // TOOD: Refactor this
+        jsonObject.put("clinic_name", clinicRequestObj.getClinicName());
+        jsonObject.put("clinic_id", clinicRequestObj.getClinicId());
+        jsonObject.put("position", clinicRequestObj.getPosition());
+        jsonObject.put("employees", clinicRequestObj.getEmployees());
+        jsonObject.put("ratings", "-1");
+        jsonObject.put("total_user_ratings", "-1");
+        jsonObject.put("photoURL", "-1");
+
+        try {
+            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\generalPackage\\GoogleAPI\\validatedClinic.json");
+            file.write(jsonObject.toJSONString());
+            file.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("JSON file created: "+jsonObject);
+        
+        // ------------------------------------------------------------
+        try {
+            // Write to validatedClinic.json - Change attributes 'clinic_name' and 'position'
+
+
+            // TODO: Account for bin and mac os - cmd.exe = windows
+            Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash bash-api.sh");
+
+            // TODO: Refactor further
+            new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        try {
+                            ClinicService.readValidatedClinic();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                1000 
+            );
+        }
+        catch (Exception e){
+           System.out.println("Error: " + e);
+        }
+        // ------------------------------------------------------------
     }
 
     public void deleteClinic(String payload) {

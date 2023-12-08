@@ -23,38 +23,9 @@ public class ClinicService {
         DatabaseManager.initializeDatabaseConnection();
 
         // DatabaseManager.deleteClinicCollectionInstances(); // <-- For developers when testing
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "Ds334535sgg"); // <-- For developers when testing
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "MyInsaneClinic"); // <-- For developers when testing
 
-        // MqttMain.initializeMqttConnection();
-
-
-        // --------------------------------------------------------------------
-
-        Process myChildProcess;
-
-        System.out.println("Opening cmd window");
-        try {
-            // TODO: Account for bin and mac os - cmd.exe = windows
-            myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash bash-api.sh");
-
-            // TODO: Refactor further
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            readValidatedClinic();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                1000 
-            );
-        }
-        catch (Exception e){
-           System.out.println("Error: " + e);
-        }
+        MqttMain.initializeMqttConnection();
     }
 
     // Once this service has recieved the payload, it has to be managed
@@ -68,6 +39,9 @@ public class ClinicService {
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);
     }
+
+
+    // ------------------------ WILL BE REFACTORED SOON ----------------------------
 
     public static void readValidatedClinic() throws Exception {
         System.out.println("readValidatedClinic()");
