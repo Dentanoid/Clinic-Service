@@ -1,5 +1,6 @@
 var fs = require('fs');
 var validatedClinic = require('./validatedClinic.json')
+var apiQuery = require('./apiQuery.js')
 
 function clinicQuery() {
     console.log('C - In clinic method // mr jex')
@@ -7,7 +8,7 @@ function clinicQuery() {
 
 console.log('A - In clinic.js launch')
 
-function executeGoogleAPIValidationQuery() { // Validate existence of clinic
+function executeGoogleAPIValidationQuery() {
     console.log('API Performs query here')
 
     // READ payload clinic values
@@ -16,21 +17,19 @@ function executeGoogleAPIValidationQuery() { // Validate existence of clinic
     console.log(validatedClinic.clinic_name)
     console.log('---------------------------------')
 
-    // Use Google API to query according to 'validatedClinic' object's attributes
-
-    console.log('IF: Clinic was found:')
-    // 1) Write to valdiatedClinic.json --> Fetched data (ratings, total_user_ratings, photoURL)
-
-    console.log('ELSE IF: No clinic found')
-    // 1) Write to validatedClinic.json: {-1, -1, "-1"}
+    // IN PROGRES:
+    // console.log(document.getElementById('myTest')) // 'document' not defined
+    // apiQuery.initMap()
 
 
-    // console.log('Hardcoded TEMP:')
-    /*
-        TODO:
-        Access 'ratings', 'total_user_ratings' and 'photoURL' attributes from 'data' object
-    */
+    // CASES IN DEVELOPMENT:
+    // console.log('IF: Clinic was found:') // --> Write to valdiatedClinic.json --> Fetched data (ratings, total_user_ratings, photoURL)
+    // console.log('ELSE IF: No clinic found') // --> Write to validatedClinic.json: {-1, -1, "-1"}
+    
 
+    // TODO: Access 'ratings', 'total_user_ratings' and 'photoURL' attributes from 'data' object
+
+    // Current hardcoded solution ()
     // If clinic was found, return all attributes (currently hardcoded)
     var json = JSON.stringify(
     {
@@ -38,9 +37,9 @@ function executeGoogleAPIValidationQuery() { // Validate existence of clinic
         "clinic_id": "my_clinic_id",
         "position": "50.34,13.56",
         "employees": [],
-        "ratings": 4.89,
-        "total_user_ratings": 1569,
-        "photoURL": "photo url here"
+        "ratings": 4.89, //                <---    API: Validated clinic
+        "total_user_ratings": 1569, //     <---    API: Validated clinic
+        "photoURL": "photo url here" //    <---    API: Validated clinic
     })
 
    fs.writeFile("GoogleAPI\\validatedClinic.json", json, function(err) {
