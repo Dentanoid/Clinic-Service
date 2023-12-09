@@ -1,4 +1,4 @@
-var apiQuery = require('./public/apiQuery.js')
+// var apiQuery = require('./public/apiQuery.js')
 
 // import { initMap } from './public/apiQuery.js';
 // console.warn(apiQuery.myTestVariable)
@@ -19,7 +19,7 @@ function executeGoogleAPIValidationQuery() {
     console.log(validatedClinic.clinic_name)
     console.log('---------------------------------')
 
-    apiQuery.initMap()
+    // apiQuery.initMap()
 
     // IN PROGRES:
     // console.log(document.getElementById('myTest')) // 'document' not defined
