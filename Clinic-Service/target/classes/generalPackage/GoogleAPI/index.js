@@ -1,6 +1,15 @@
-const clinics = require('./clinics.js')
+const express = require('express')
+const app = express(); // TODO: Rename to 'childProcess
 
-console.log('B - In index.js launch')
+const path = require('path')
 
-clinics.clinicQuery()
+// SERVER: http://localhost:3000/childprocess
+app.use('/childprocess', express.static(path.join(__dirname, 'public')))
+
+app.listen(3000, () => {
+    console.log("App listening on port 3000")
+})
+
+// PREVIOUS:
+const clinics = require("./clinics.js")
 clinics.executeGoogleAPIValidationQuery()

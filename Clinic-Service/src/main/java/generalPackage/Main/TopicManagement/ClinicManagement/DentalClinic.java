@@ -78,7 +78,7 @@ public class DentalClinic implements Clinic {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("JSON file created: "+jsonObject);
+        System.out.println("JSON file created: "+ jsonObject);
         
         // ------------------------------------------------------------
         try {

@@ -1,10 +1,12 @@
+var apiQuery = require('./public/apiQuery.js')
+
+// import { initMap } from './public/apiQuery.js';
+// console.warn(apiQuery.myTestVariable)
+
+// POTENTIAL SOLUTION: Use React.js to build application
+
 var fs = require('fs');
 var validatedClinic = require('./validatedClinic.json')
-var apiQuery = require('./apiQuery.js')
-
-function clinicQuery() {
-    console.log('C - In clinic method // mr jex')
-}
 
 console.log('A - In clinic.js launch')
 
@@ -16,6 +18,8 @@ function executeGoogleAPIValidationQuery() {
     console.log(validatedClinic)
     console.log(validatedClinic.clinic_name)
     console.log('---------------------------------')
+
+    apiQuery.initMap()
 
     // IN PROGRES:
     // console.log(document.getElementById('myTest')) // 'document' not defined
@@ -50,5 +54,4 @@ function executeGoogleAPIValidationQuery() {
    });
 }
 
-exports.clinicQuery = clinicQuery
 exports.executeGoogleAPIValidationQuery = executeGoogleAPIValidationQuery
