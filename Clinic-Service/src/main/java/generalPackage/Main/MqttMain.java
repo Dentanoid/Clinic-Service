@@ -29,8 +29,8 @@ public class MqttMain {
         "sub/dental/clinic/delete", // grp20/dental/clinic/delete
 
         // Queries
-        "sub/query/map/nearby/fixed",
-        "sub/query/map/nearby/radius"
+        "grp20/req/map/query/nearby/radius/get",
+        "grp20/req/map/query/nearby/fixed/get"
     };
 
     int qos = 0;

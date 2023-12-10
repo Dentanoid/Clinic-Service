@@ -1,13 +1,20 @@
 package generalPackage.Main.TopicManagement.QueryManagement.NearbyMapQueries;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 import org.bson.Document;
 
 import generalPackage.Main.MqttMain;
 import generalPackage.Main.DatabaseManagement.DatabaseManager;
+import generalPackage.Main.DatabaseManagement.PayloadParser;
+import generalPackage.Main.DatabaseManagement.Schemas.CollectionSchema;
+import generalPackage.Main.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
+import generalPackage.Main.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
 import generalPackage.Utils.Entry;
 import generalPackage.Utils.Utils;
 
@@ -57,28 +64,41 @@ public class NearbyClinics extends NearbyQuery {
     }
 
     // Format the document-data of the clinics to display into a JSON-String
-    private String formatRetrievedClinics(Document[] clinics) {
+    private String formatRetrievedClinics(Document[] clinics, String payload, CollectionSchema querySchema) {
         Gson gson = new Gson();
-        return gson.toJson(clinics);
+        String clinicsJson = gson.toJson(clinics);
+
+        String requestId = PayloadParser.getAttributeFromPayload(payload, "requestId", querySchema).toString();
+
+        Map<String, String> map = new HashMap<>();
+        map.put("clinics", clinicsJson);
+        map.put("requestID", requestId);
+        String jsonPublish = gson.toJson(map);
+
+        return jsonPublish;
     }
 
     @Override
     public void executeRequestedOperation(String topic, String payload) {
-        String publishTopic = "pub/query/map/nearby";
+        // String publishTopic = "pub/query/map/nearby";
+        String publishTopic = "grp20/req/map/nearby";
+        CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
         if (topic.contains("fixed")) {
-            queryKey = new NearbyFixed(publishTopic, payload);   
+            queryKey = new NearbyFixed(publishTopic, payload);  
+            publishSchema = new NearbyFixedQuerySchema(); 
         }
         else {
             queryKey = new NearbyRadius(publishTopic, payload);
+            publishSchema = new NearbyRadiusQuerySchema();
         }
 
         queryKey.queryDatabase(payload);
 
         Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey);
-        String publishMessage = formatRetrievedClinics(clinicsToDisplay);
+        String publishMessage = formatRetrievedClinics(clinicsToDisplay, payload, publishSchema);
 
-        MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishMessage); // Previous: publishMessage
+        MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishMessage);
     }
 }

@@ -23,7 +23,7 @@ public class ClinicService {
         DatabaseManager.initializeDatabaseConnection();
 
         // DatabaseManager.deleteClinicCollectionInstances(); // <-- For developers when testing
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "MyInsaneClinic"); // <-- For developers when testing
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "Dentoragggfd88"); // <-- For developers when testing
 
         MqttMain.initializeMqttConnection();
     }

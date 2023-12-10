@@ -58,6 +58,9 @@ public class DentalClinic implements Clinic {
         System.out.println("Store new registered clinic!");
         payloadDoc = PayloadParser.savePayloadDocument(payload, new ClinicCreateSchema(), DatabaseManager.clinicsCollection);
 
+        /*
+        // Note for developers: This code is in development
+
         JSONObject jsonObject = new JSONObject();
         ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
 
@@ -107,6 +110,7 @@ public class DentalClinic implements Clinic {
            System.out.println("Error: " + e);
         }
         // ------------------------------------------------------------
+        */
     }
 
     public void deleteClinic(String payload) {
