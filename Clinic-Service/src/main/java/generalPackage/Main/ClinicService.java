@@ -22,8 +22,12 @@ public class ClinicService {
     public static void main(String[] args) throws IOException, InterruptedException {
         DatabaseManager.initializeDatabaseConnection();
 
-        // DatabaseManager.deleteClinicCollectionInstances(); // <-- For developers when testing
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "Dentoragggfd88"); // <-- For developers when testing
+        /*
+            The two methods below are temporarily used in this script and
+            helps speed up the testing process for the developers.
+         */
+        // DatabaseManager.deleteClinicCollectionInstances();
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "clinic_name_here");
 
         MqttMain.initializeMqttConnection();
     }

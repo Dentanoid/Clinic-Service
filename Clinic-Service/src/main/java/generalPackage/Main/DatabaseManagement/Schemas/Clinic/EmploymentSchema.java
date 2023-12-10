@@ -5,9 +5,9 @@ import org.bson.Document;
 
 // This schema covers the payload-cases where an employee is to be added or removed from the clinic
 public class EmploymentSchema implements CollectionSchema {
-    String clinic_name;
-    String clinic_id;
-    String employee_name;
+    private String clinic_name;
+    private String clinic_id;
+    private String employee_name;
 
     public EmploymentSchema() {
         this.clinic_name = " ";

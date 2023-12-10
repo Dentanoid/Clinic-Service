@@ -23,7 +23,12 @@ import com.mongodb.client.FindIterable;
 
 public class NearbyClinics extends NearbyQuery {
     public PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
-    public double[] userCoordinates; // Change to 'referenceCoordinates'
+    
+    /*
+     Represents user's current position if the selected map mode in Patient Client is 'Nearby'
+     Represents the searched position if the selected map mode is 'Search'
+     */
+    public double[] referenceCoordinates;
 
     public NearbyClinics(String topic, String payload) {
     }
@@ -31,11 +36,11 @@ public class NearbyClinics extends NearbyQuery {
     @Override
     public void queryDatabase(String payload) {
         readPayloadAttributes(payload);
-        iterateThroughClinics(userCoordinates); 
+        iterateThroughClinics(referenceCoordinates); 
     }
 
     // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
-    public void iterateThroughClinics(double[] userCoordinates) {
+    public void iterateThroughClinics(double[] referenceCoordinates) {
         pq = new PriorityQueue<Entry>(Collections.reverseOrder());
 
         FindIterable<Document> clinics = DatabaseManager.clinicsCollection.find();
@@ -45,11 +50,15 @@ public class NearbyClinics extends NearbyQuery {
             Document currentClinic = it.next();
             double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
 
-            double distanceInKm = Utils.haversineFormula(userCoordinates, currentClinicCoordinates);
+            double distanceInKm = Utils.haversineFormula(referenceCoordinates, currentClinicCoordinates);
             addPQElement(new Entry(distanceInKm, currentClinic));
         }
     }
 
+    /*
+    Iterate through the max-heap priority que with N elements and turn it
+    into a Document array from descending to ascending order
+    */
     private Document[] retrieveClosestClinics(int n, NearbyClinics queryKey) {
         Document[] closestClinics = new Document[n];
         Iterator<Entry> iterator = queryKey.pq.iterator();
@@ -80,12 +89,11 @@ public class NearbyClinics extends NearbyQuery {
 
     @Override
     public void executeRequestedOperation(String topic, String payload) {
-        // String publishTopic = "pub/query/map/nearby";
         String publishTopic = "grp20/req/map/nearby";
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        if (topic.contains("fixed")) {
+        if (topic.contains(MqttMain.queryTopicKeywords[2])) { // PREVIOUS: "fixed"
             queryKey = new NearbyFixed(publishTopic, payload);  
             publishSchema = new NearbyFixedQuerySchema(); 
         }

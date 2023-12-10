@@ -1,5 +1,6 @@
 package generalPackage.Main.TopicManagement;
 
+import generalPackage.Main.MqttMain;
 import generalPackage.Main.TopicManagement.ClinicManagement.Clinic;
 import generalPackage.Main.TopicManagement.ClinicManagement.DentalClinic;
 import generalPackage.Main.TopicManagement.QueryManagement.Query;
@@ -9,10 +10,10 @@ public class TopicManager {
     private TopicOperator topicOperator;
 
     public TopicOperator getTopicOperator(String topic, String payload) {
-        if (topic.contains("clinic")) {
+        if (topic.contains(MqttMain.topicArtifacts[0])) { // PREVIOUS: "clinic"
             return getClinic(topic, payload);
         }
-        else if (topic.contains("query")) {
+        else if (topic.contains(MqttMain.topicArtifacts[1])) { // PREVIOUS: "query"
             return getQuery(topic, payload);
         }
 
@@ -20,7 +21,7 @@ public class TopicManager {
     }
 
     public Clinic getClinic(String topic, String payload) {
-        if (topic.contains("dental")) {
+        if (topic.contains(MqttMain.clinicTopicKeywords[0])) { // PREVIOUS: "dental"
             return new DentalClinic(topic, payload);
         }
         return null; // This is where we extend the code to account for different types of clinics beyond the industry of teeth
@@ -31,7 +32,7 @@ public class TopicManager {
      loop, since NearbyClinics.java invokes its own constructor with its polymorhpic subclasses
     */
     public Query getQuery(String topic, String payload) {
-        if (topic.contains("nearby")) {
+        if (topic.contains(MqttMain.queryTopicKeywords[0])) { // PREVIOUS: "nearby"
             Query nearbyQuery = new NearbyClinics(topic, payload);
             nearbyQuery.executeRequestedOperation(topic, payload);
             return new NearbyClinics(topic, payload);

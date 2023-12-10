@@ -5,10 +5,9 @@ import generalPackage.Main.DatabaseManagement.Schemas.CollectionSchema;
 
 // The payload structure that contains a fixed number of nearby clinics to return
 public class NearbyFixedQuerySchema implements CollectionSchema {
-    String nearby_clinics_number;
-    String reference_position;
-    String requestID;
-
+    private String nearby_clinics_number;
+    private String reference_position;
+    private String requestID;
 
     public NearbyFixedQuerySchema() {
         this.nearby_clinics_number = " ";

@@ -7,10 +7,10 @@ import org.bson.Document;
 import generalPackage.Main.DatabaseManagement.Schemas.CollectionSchema;
 
 public class ClinicCreateSchema implements CollectionSchema {
-    String clinic_name;
-    String clinic_id;
-    String position;
-    ArrayList<String> employees;
+    private String clinic_name;
+    private String clinic_id;
+    private String position;
+    private ArrayList<String> employees;
 
     public ClinicCreateSchema() {
         this.clinic_name = " ";

@@ -57,7 +57,7 @@ public class NearbyRadius extends NearbyClinics {
     @Override
     public void getReferencePosition(String payload) {
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyRadiusQuerySchema());
-        userCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
+       referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 
     private void getRadius(String payload) {

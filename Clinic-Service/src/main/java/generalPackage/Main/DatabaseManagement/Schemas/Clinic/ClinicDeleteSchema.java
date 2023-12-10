@@ -5,8 +5,8 @@ import org.bson.Document;
 import generalPackage.Main.DatabaseManagement.Schemas.CollectionSchema;
 
 public class ClinicDeleteSchema implements CollectionSchema {
-    String clinic_name;
-    String clinic_id;
+    private String clinic_name;
+    private String clinic_id;
 
     public ClinicDeleteSchema() {
         this.clinic_name = " ";

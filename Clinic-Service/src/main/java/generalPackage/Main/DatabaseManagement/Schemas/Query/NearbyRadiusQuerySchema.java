@@ -4,9 +4,9 @@ import generalPackage.Main.DatabaseManagement.Schemas.CollectionSchema;
 import org.bson.Document;
 
 public class NearbyRadiusQuerySchema implements CollectionSchema {
-    String radius;
-    String reference_position;
-    String requestID;
+    private String radius;
+    private String reference_position;
+    private String requestID;
 
     public NearbyRadiusQuerySchema() {
         this.radius = " ";

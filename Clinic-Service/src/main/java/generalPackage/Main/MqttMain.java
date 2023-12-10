@@ -10,19 +10,72 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MqttMain {
-    public static HashMap<String, MqttMain> subscriptionManagers; // Format: // <"subTopic", new MqttMain Object>
-    private static final String broker = "tcp://broker.hivemq.com:1883";    
+    /*
+     The hashmap below has the subscription-topic (String) as a key,
+     and a MqttMain object as a value. In other words, each object can
+     have multiple subscription-topics. Since Java supports OOP-principles,
+     this approach yields scalability: We can create countless of MqttMain
+     objects and have them listening to their assigned mqtt-topics simultaneously.
+     */
+    public static HashMap<String, MqttMain> subscriptionManagers;
+    private static final String broker = "tcp://broker.hivemq.com:1883";
 
-    // Topic requirement:
-    // {string1}/{string2}
+    /*
+    Represents all the general types that the codeflow deals with by inspecting
+    the topic. These can be found as subfolders (ClinicManagement, QueryManagement)
+    inside 'TopicManagement' folder.
+    */
+    public static String[] topicArtifacts = {
+        "clinic",
+        "query"
+    };
 
-    // string1 --> Define client
-    // string2 --> Define action
+    /*
+     The String-arrays below consists of words that define the intended codeflow of the
+     service. The codeflow depends on the subscription topic, therefore the each string-element
+     below is a substring of the subscription-topics that is used to execute the  desired method.
+     
+     Example: "register" --> registerClinic() in DentalClinic.java
+     */
 
-    // Topic keywords: 'dental', {register, add, remove}
+    // The defining words in the topic that forwards the codeflow to the desired method of operation
+    public static String[] clinicTopicKeywords = {
+
+        /*
+        TYPE OF CLINIC: (Used in 'TopicManagement' folder)
+         If we want to extend the code to apply to more types of clinics
+         such as hospital clinics, then we add the corresponding string here
+        */
+        "dental",
+
+        /*
+         CLINIC OPERATIONS: (Used in 'ClinicManagement' folder)
+         */
+        "register",
+        "create",
+        "add",
+        "remove",
+        "delete"
+    };
+
+    public static String[] queryTopicKeywords = {
+        /*
+        TYPE OF QUERY: (Used in 'TopicManagement' folder)
+         If we want to extend the code to apply to more types of queries (beyond the theme of nearby elements
+         in relative to a specified position) such as Depth First Search
+        */
+        "nearby",
+
+        /*
+         QUERY OPERATIONS: (Used in 'QueryManagement' folder)
+        */
+        "radius",
+        "fixed"
+    };
 
     private static final String[] subscriptions = {
         // Clinics
+        // TODO 11th December: Change topics to group's conform to agreed mqtt topics:
         "sub/dental/clinic/register", // grp20/dental/clinic/register
         "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
         "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove
