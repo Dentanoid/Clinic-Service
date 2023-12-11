@@ -148,50 +148,11 @@ public class DentalClinic implements Clinic {
     }
 
     public void addEmployee(String payload) {
-        /*
-        Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
-        Object newEmployeeName = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
-
-        Document myDoc = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
-        Document myDoc2 = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
-
-        // DB-Instance was found
-        if (myDoc != null) {
-            List<String> employeesNew = (List<String>)myDoc2.get("employees");
-            employeesNew.add((String)newEmployeeName);
-            myDoc2.replace("employees", employeesNew);
-
-            DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc2);
-            System.out.println("Employee successfully added to clinic");
-        } else {
-            System.out.println("The employee in the clinic wasn't found");
-        }
-        */
-
-        // updateClinicEmployees(payload, true);
+        updateClinicEmployees(payload, true);
     }
 
     public void removeEmployee(String payload) {
-        /*
-        Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
-        Object employeeToDelete = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
-
-        Document myDoc = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
-        Document myDoc2 = DatabaseManager.clinicsCollection.find(eq("clinic_name", clinicName)).first();
-
-        // DB-Instance was found
-        if (myDoc != null) {
-            List<String> employees = (List<String>)myDoc2.get("employees");
-            employees.remove(employeeToDelete);
-            myDoc2.replace("employees", employees);
-
-            DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc2);
-            System.out.println("Employee successfully removed from clinic");
-        } else {
-            System.out.println("The employee in the clinic wasn't found");
-        }
-        */
-        // updateClinicEmployees(payload, false);
+        updateClinicEmployees(payload, false);
     }
 
     private Object[] getEmployeeIdentifiers(String payload) {
@@ -203,32 +164,18 @@ public class DentalClinic implements Clinic {
     }
 
      // Accounts for addition and removal of dentists
-    public void updateClinicEmployees(String payload, boolean addEmployee) {
-        // ---------------------
-        /*
-        System.out.println("A");
+    public void updateClinicEmployees(String payload, boolean addEmployee) { // TODO: Refactor further according to single responsibility principle
         EmploymentSchema employmentObject = new EmploymentSchema();
-        employmentObject.assignAttributesFromPayload(payload);
+        employmentObject.assignAttributesFromPayload(payload, addEmployee);
         payloadDoc = employmentObject.getDocument();
 
-        System.out.println("B");
-
         if (payloadDoc != null) {
-            // If addEmployee --> Only send 'clinic_id' in payload
-            // If deleteEmployee --> Send 'clinic_id' and 'dentist_id' in payload
-            // For both cases, we must access the corresponding employee array
-
             Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
             Document updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
 
             List<String> employees = (List<String>)clinic.get("employees");
             String dentistToUpdate = payloadDoc.get("dentist_id").toString();
-
-            System.out.println("C");
-            System.out.println(employees.toString());
-            System.out.println("C");
-
-            // addEmployee ? employees.add(dentistToUpdate) : employees.remove(dentistToUpdate);
+            
             if (addEmployee) {
                 employees.add(dentistToUpdate);
             } else {
@@ -237,38 +184,11 @@ public class DentalClinic implements Clinic {
 
             updateDoc.replace("employees", employees);
 
-            System.out.println("D2");
-            System.out.println(employees.get(0));
-            System.out.println("D2");
-
-            DatabaseManager.clinicsCollection.replaceOne(clinic, updateDoc);
-            System.out.println("G");
+            Bson query = eq("clinic_id", payloadDoc.get("clinic_id"));
+            DatabaseManager.clinicsCollection.replaceOne(query, updateDoc);
 
             String employeeOperation = addEmployee ? "added to" : "remove from";
             System.out.println("Employee successfully " + employeeOperation +  " clinic");
         }
-        // ---------------------
-        */
-        /*
-        Object[] employeeIdentifiers = getEmployeeIdentifiers(payload);
-        Document myDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", employeeIdentifiers[0])).first();
-
-        // DB-Instance was found
-        if (myDoc != null) {
-            List<String> employees = (List<String>)myDoc.get("employees");
-            
-            // TERNARY
-            if (addEmployee) {
-                employees.add((String)employeeIdentifiers[1]);
-            } else {
-                employees.remove(employeeIdentifiers[1]);
-            }
-
-            String employeeOperation = addEmployee ? "added to" : "remove from";
-            System.out.println("Employee successfully " + employeeOperation +  " clinic");
-        } else {
-            System.out.println("The employee in the clinic wasn't found");
-        }
-        */
     }
 }

@@ -29,17 +29,23 @@ public class EmploymentSchema implements CollectionSchema {
         this.dentist_id = dentist_id;
     }
 
-    @Override
-    public void assignAttributesFromPayload(String payload) {
+    public void assignAttributesFromPayload(String payload, boolean addEmployee) {
         Gson gson = new Gson();
         EmploymentSchema myObjTest = gson.fromJson(payload, getClass());
+        String dentistId = addEmployee ? UUID.randomUUID().toString() : myObjTest.dentist_id;
 
         registerData(
             // Data in payload
             myObjTest.clinic_id,
 
             // Data not in payload
-            UUID.randomUUID().toString()
+            dentistId
         );
+    }
+
+    @Override
+    public void assignAttributesFromPayload(String payload) { // TODO: Refactor soon
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
     }
 }

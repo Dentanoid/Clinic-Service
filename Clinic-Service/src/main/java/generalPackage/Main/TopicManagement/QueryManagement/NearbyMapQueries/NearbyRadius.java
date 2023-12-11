@@ -22,8 +22,10 @@ public class NearbyRadius extends NearbyClinics {
 
     @Override
     public void readPayloadAttributes(String payload) {
+        System.out.println("B");
         getReferencePosition(payload);
         getRadius(payload);
+        System.out.println("C");
     }
 
     @Override
