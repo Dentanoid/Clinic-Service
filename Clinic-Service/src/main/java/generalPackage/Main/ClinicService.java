@@ -27,7 +27,7 @@ public class ClinicService {
             helps speed up the testing process for the developers.
          */
         // DatabaseManager.deleteClinicCollectionInstances();
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "DentalClinc123");
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "null");
 
         MqttMain.initializeMqttConnection();
     }

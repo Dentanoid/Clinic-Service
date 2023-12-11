@@ -47,7 +47,7 @@ public class ClinicCreateSchema implements CollectionSchema {
             myObjTest.position,
 
             // Data not in payload
-            clinic_id,
+            clinic_id, // TODO: Remove constructor and do UUID.random() on here instead
             new ArrayList<>()
         );
     }
