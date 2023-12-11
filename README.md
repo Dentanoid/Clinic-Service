@@ -1,4 +1,14 @@
 ## Steps to Run
-1. cd Clinic-Service
-2. mvn clean compile assembly:single
-3. java -cp target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar com.group20.dentanoid.ClinicService
+The steps required to run the clinic service are as follows:
+
+1. Navigate to the root project directory
+
+```cd Clinic-Service```
+
+2. Compile the project into a binary (including deps)
+
+```mvn clean compile assembly:single```
+
+3. Run the compiled JAR file
+
+ ```java -cp target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar com.group20.dentanoid.ClinicService``` 
