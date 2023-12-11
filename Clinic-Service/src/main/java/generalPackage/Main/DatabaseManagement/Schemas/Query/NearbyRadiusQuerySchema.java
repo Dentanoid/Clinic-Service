@@ -24,4 +24,10 @@ public class NearbyRadiusQuerySchema implements CollectionSchema {
     public String getRequestId() {
         return this.requestID;
     }
+
+    @Override
+    public void assignAttributesFromPayload(String payload) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
+    }
 }

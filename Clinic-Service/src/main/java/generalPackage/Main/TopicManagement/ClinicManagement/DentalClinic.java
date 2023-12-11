@@ -1,12 +1,23 @@
 package generalPackage.Main.TopicManagement.ClinicManagement;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 import org.bson.Document;
+import org.bson.conversions.Bson;
+
 import static com.mongodb.client.model.Filters.eq;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import org.json.simple.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.mongodb.client.model.UpdateOptions;
+import com.mongodb.client.model.Updates;
+import com.mongodb.client.result.UpdateResult;
 
 import generalPackage.GoogleAPI.ValidatedClinic;
 import generalPackage.Main.ClinicService;
@@ -55,8 +66,22 @@ public class DentalClinic implements Clinic {
     }
 
     public void registerClinic(String payload) {
-        System.out.println("Store new registered clinic!");
-        payloadDoc = PayloadParser.savePayloadDocument(payload, new ClinicCreateSchema(), DatabaseManager.clinicsCollection);
+        String uuid = UUID.randomUUID().toString();
+        
+        ClinicCreateSchema mySchemaTest = new ClinicCreateSchema(uuid);
+        mySchemaTest.assignAttributesFromPayload(payload);
+        payloadDoc = mySchemaTest.getDocument();
+
+        // IDEA:
+        // Replace PayloadParser.convertPayloadToDocument to CollectionSchema.assignValues
+
+
+        // payloadDoc = PayloadParser.convertPayloadToDocument(payload, new ClinicCreateSchema());
+
+        payloadDoc.append("clinic_id", uuid);
+        payloadDoc.append("employees", new ArrayList<String>());
+
+        DatabaseManager.clinicsCollection.insertOne(payloadDoc);
 
         /*
         // Note for developers: This code is in development
@@ -125,7 +150,8 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    public void addEmployee(String payload) { // NOTE: Refactor addEmploye() and removeEmployee() later
+    public void addEmployee(String payload) {
+        /*
         Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
         Object newEmployeeName = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
 
@@ -143,9 +169,13 @@ public class DentalClinic implements Clinic {
         } else {
             System.out.println("The employee in the clinic wasn't found");
         }
+        */
+
+        updateClinicEmployees(payload, true);
     }
 
-    public void removeEmployee(String payload) { // NOTE: Refactor addEmploye() and removeEmployee() later
+    public void removeEmployee(String payload) {
+        /*
         Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
         Object employeeToDelete = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
 
@@ -160,6 +190,53 @@ public class DentalClinic implements Clinic {
 
             DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc2);
             System.out.println("Employee successfully removed from clinic");
+        } else {
+            System.out.println("The employee in the clinic wasn't found");
+        }
+        */
+        updateClinicEmployees(payload, false);
+    }
+
+    private Object[] getEmployeeIdentifiers(String payload) {
+        Object clinicName = PayloadParser.getAttributeFromPayload(payload, "clinic_name", new EmploymentSchema());
+        Object employeeToUpdate = PayloadParser.getAttributeFromPayload(payload, "employee_name", new EmploymentSchema());
+        return new Object[] {clinicName, employeeToUpdate};
+    }
+
+     // Accounts for addition and removal of dentists
+    public void updateClinicEmployees(String payload, boolean addEmployee) {
+        Object[] employeeIdentifiers = getEmployeeIdentifiers(payload);
+        Document myDoc = DatabaseManager.clinicsCollection.find(eq("clinic_name", employeeIdentifiers[0])).first();
+
+        // DB-Instance was found
+        if (myDoc != null) {
+            List<String> employees = (List<String>)myDoc.get("employees");
+            
+            // TERNARY
+            if (addEmployee) {
+                employees.add((String)employeeIdentifiers[1]);
+            } else {
+                employees.remove(employeeIdentifiers[1]);
+            }
+
+            // myDoc.replace("employees", employees); //
+            // DatabaseManager.clinicsCollection.insertOne(myDoc);
+            // Delete also
+
+
+            /*
+            Bson updates = Updates.combine(
+                    Updates.set("employees", employees));
+            */
+
+            // UpdateOptions options = new UpdateOptions().upsert(true);
+            // DatabaseManager.clinicsCollection.updateOne(myDoc, updates);
+            // DatabaseManager.clinicsCollection.findOneAndUpdate(myDoc, updates);
+
+            // DatabaseManager.clinicsCollection.replaceOne(myDoc, myDoc); // DOESN'T WORK
+
+            String employeeOperation = addEmployee ? "added to" : "remove from";
+            System.out.println("Employee successfully " + employeeOperation +  " clinic");
         } else {
             System.out.println("The employee in the clinic wasn't found");
         }

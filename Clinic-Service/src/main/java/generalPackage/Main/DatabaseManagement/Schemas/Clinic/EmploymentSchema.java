@@ -21,4 +21,10 @@ public class EmploymentSchema implements CollectionSchema {
         .append("clinic_id", this.clinic_id)
         .append("employee_name", this.employee_name);
     }
+
+    @Override
+    public void assignAttributesFromPayload(String payload) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
+    }
 }

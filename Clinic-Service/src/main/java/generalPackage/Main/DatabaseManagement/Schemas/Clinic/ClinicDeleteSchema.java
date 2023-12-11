@@ -18,4 +18,10 @@ public class ClinicDeleteSchema implements CollectionSchema {
         return new Document("clinic_name", this.clinic_name)
         .append("clinic_id", this.clinic_id);
     }
+
+    @Override
+    public void assignAttributesFromPayload(String payload) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
+    }
 }
