@@ -2,7 +2,10 @@ package com.group20.dentanoid.TopicManagement.ClinicManagement;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +19,8 @@ import com.mongodb.client.FindIterable;
 import static com.mongodb.client.model.Filters.eq;
 
 import com.group20.dentanoid.GoogleAPI.ValidatedClinic;
+import com.group20.dentanoid.Utils.Entry;
+import com.group20.dentanoid.Utils.Utils;
 import com.group20.dentanoid.ClinicService;
 import com.group20.dentanoid.MqttMain;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
@@ -53,7 +58,6 @@ public class DentalClinic implements Clinic {
         payloadDoc.remove("requestID");
 
         DatabaseManager.clinicsCollection.insertOne(payloadDoc);
-        // TODO: Send requestID in publishPayload but don't store it as an attribute in DB
 
         // Note for developers: This code is in development
         /*
@@ -116,29 +120,69 @@ public class DentalClinic implements Clinic {
     }
 
     public void getOneClinic() {
-        Document retrievedPayloadDoc = getClinicDocument("getOne", new ClinicSchema());
-        Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", retrievedPayloadDoc.get("clinic_id"))).first();
-  
         Gson gson = new Gson();
-        String clinicJson = gson.toJson(clinic);
+        Document retrievedPayloadDoc = getClinicDocument("getOne", new ClinicSchema());
 
-        Map<String, String> map = new HashMap<>(); // TODO: Refactor into PayloadParser.java and use in NearbyClinics.java
+        String clinicJson = "-1";
+        String requestID = retrievedPayloadDoc.get("requestID").toString();
+        String statusCode = "200";        
+
+        Map<String, Object> map = new HashMap<>(); // TODO: Refactor 'Map-Payload' into PayloadParser.java and use in NearbyClinics.java
+
+        try {
+            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", retrievedPayloadDoc.get("clinic_id"))).first();
+
+            if (clinic == null) { // REFACTORING IDEA: StatusCode class - Constructor value '404' --> Put -1 on every attribute except 'status'
+                statusCode = "404";
+            }
+            else {
+                clinicJson = gson.toJson(clinic);
+            }
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            statusCode = "500";
+        }
+
         map.put("clinics", clinicJson);
-        map.put("requestID", retrievedPayloadDoc.get("requestID").toString());
+        map.put("requestID", requestID);
+        map.put("status", Integer.parseInt(statusCode));
+
         publishString = gson.toJson(map);
     }
 
     public void getAllClinics() {
-        // publishPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
         Document retrievedPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
-        FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find(new Document());
+        FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find();
 
+        // TODO: Refactor later
         Gson gson = new Gson();
-        String clinicsJson = gson.toJson(allRegisteredClinics);
+        String clinicsJson = "-1";
+        String requestID = retrievedPayloadDoc.get("requestID").toString();
+        String statusCode = "200";
 
-        Map<String, String> map = new HashMap<>(); // TODO: Refactor into PayloadParser.java and use in NearbyClinics.java
-        map.put("clinics", clinicsJson);
-        map.put("requestID", retrievedPayloadDoc.get("requestID").toString());
+        try {
+            Iterator<Document> it = allRegisteredClinics.iterator();
+            ArrayList<Document> clinics = new ArrayList<>();
+
+            while (it.hasNext()) {
+                Document currentClinic = it.next();
+                clinics.add(currentClinic);
+            }
+
+            clinicsJson = gson.toJson(clinics);
+        }
+        catch (Exception e) {
+            System.out.println(e.getMessage());
+            statusCode = "500";
+        }
+
+        // TODO: Refactor later
+        Map<String, Object> map = new HashMap<>(); // TODO: Refactor into PayloadParser.java and use in NearbyClinics.java
+        map.put("clinics", clinicsJson.toString());
+        map.put("requestID", requestID.toString());
+        map.put("status", Integer.parseInt(statusCode));
+
         publishString = gson.toJson(map);
     }
 
@@ -233,12 +277,12 @@ public class DentalClinic implements Clinic {
             publishTopic = "pub/dental/clinic/delete";   
         }
         else if (topic.contains("all")) {
-            
             getAllClinics();
-            publishTopic = "grp20/req/clinics/get";
+            publishTopic = "grp20/dental/res/clinics/get/all";
         }
         else if (topic.contains("get")) {
             getOneClinic();
+            publishTopic = "grp20/dental/res/clinics/get/one";
         }
 
         return publishTopic;

@@ -40,10 +40,6 @@ public class ClinicService {
         System.out.println(payload);
         System.out.println("**********************************************");
 
-        if (topic.equals("grp20/req/map/query/nearby/radius/get")) {
-            System.out.println("breakpoint here");
-        }
-
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);
     }

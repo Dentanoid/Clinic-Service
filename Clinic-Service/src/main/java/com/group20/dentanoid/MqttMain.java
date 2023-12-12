@@ -34,8 +34,8 @@ public class MqttMain {
      * inside 'TopicManagement' folder.
      */
     public static String[] topicArtifacts = {
-            "clinic",
-            "query"
+        "clinic",
+        "query"
     };
 
     /*
@@ -87,15 +87,19 @@ public class MqttMain {
     };
 
     private static final String[] subscriptions = {
-            // Clinics
+            // Clinics: CREATE & DELETE
             "sub/dental/clinic/register", // grp20/dental/clinic/register
             "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
             "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove
             "sub/dental/clinic/delete", // grp20/dental/clinic/delete
 
+            // Clinics: GET
+            "grp20/dental/req/clinics/get/one",
+            "grp20/dental/req/clinics/get/all",
+
             // Queries
-            "sub/query/map/nearby/fixed",
-            "sub/query/map/nearby/radius"
+            "grp20/req/map/query/nearby/fixed/get",
+            "grp20/req/map/query/nearby/radius/get"
     };
 
     int qos = 0;

@@ -35,7 +35,7 @@ public class NearbyClinics extends NearbyQuery {
     @Override
     public void queryDatabase(String payload) {
         readPayloadAttributes(payload); 
-        iterateThroughClinics(referenceCoordinates); // BUG HERE
+        iterateThroughClinics(referenceCoordinates);
     }
 
     // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
@@ -106,7 +106,7 @@ public class NearbyClinics extends NearbyQuery {
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        if (topic.contains(MqttMain.queryTopicKeywords[2])) { // "fixed"
+        if (topic.contains(MqttMain.queryTopicKeywords[2])) {
             queryKey = new NearbyFixed(publishTopic, payload);  
             publishSchema = new NearbyFixedQuerySchema(); 
         }
