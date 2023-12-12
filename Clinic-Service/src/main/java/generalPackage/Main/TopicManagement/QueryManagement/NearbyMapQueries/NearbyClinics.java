@@ -92,8 +92,6 @@ public class NearbyClinics extends NearbyQuery {
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        System.out.println("A");
-
         if (topic.contains(MqttMain.queryTopicKeywords[2])) {
             queryKey = new NearbyFixed(publishTopic, payload);  
             publishSchema = new NearbyFixedQuerySchema(); 

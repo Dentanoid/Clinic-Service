@@ -1,8 +1,15 @@
 package generalPackage.Main.TopicManagement.ClinicManagement;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
+
+import com.google.gson.Gson;
+import com.mongodb.client.FindIterable;
+
 import static com.mongodb.client.model.Filters.eq;
 
 import generalPackage.Main.MqttMain;
@@ -13,8 +20,10 @@ import generalPackage.Main.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import generalPackage.Main.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
-    private Document publishPayloadDoc = null;
     private String publishTopic = "-1";
+    private Document payloadDoc = null;
+    private String publishString = "-1"; // Used only for GET methods, otherwise 'publishPayloadDoc' is used --> TODO: Refactor into a more clear structure
+
     private String topic;
     private String payload;
 
@@ -32,8 +41,14 @@ public class DentalClinic implements Clinic {
     }
 
     public void registerClinic() {
-        publishPayloadDoc = getClinicDocument("create", new ClinicSchema());
-        DatabaseManager.clinicsCollection.insertOne(publishPayloadDoc);
+        payloadDoc = getClinicDocument("create", new ClinicSchema());
+
+        // NOTE: Refactor so that publishString is the only publishing variable. Get rid of 'publishPayloadDoc'
+        publishString = payloadDoc.toJson();
+        payloadDoc.remove("requestID");
+
+        DatabaseManager.clinicsCollection.insertOne(payloadDoc);
+        // TODO: Send requestID in publishPayload but don't store it as an attribute in DB
 
         /*
         // Note for developers: This code is in development
@@ -91,22 +106,36 @@ public class DentalClinic implements Clinic {
     }
 
     public void deleteClinic() {
-        publishPayloadDoc = getClinicDocument("delete", new ClinicSchema());
-        DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", publishPayloadDoc.get("clinic_id")));
+        payloadDoc = getClinicDocument("delete", new ClinicSchema());
+        publishString = payloadDoc.toJson();
+        DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", payloadDoc.get("clinic_id")));
     }
 
     public void getOneClinic() {
         Document retrievedPayloadDoc = getClinicDocument("getOne", new ClinicSchema());
         Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", retrievedPayloadDoc.get("clinic_id"))).first();
-        publishPayloadDoc = clinic.append("requestID", retrievedPayloadDoc.get("requestID"));
+  
+        Gson gson = new Gson();
+        String clinicJson = gson.toJson(clinic);
 
-        System.out.println("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
-        System.out.println("publishPayloadDoc: " + publishPayloadDoc);
-        System.out.println("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
+        Map<String, String> map = new HashMap<>(); // TODO: Refactor into PayloadParser.java and use in NearbyClinics.java
+        map.put("clinics", clinicJson);
+        map.put("requestID", retrievedPayloadDoc.get("requestID").toString());
+        publishString = gson.toJson(map);
     }
 
     public void getAllClinics() {
-        publishPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
+        // publishPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
+        Document retrievedPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
+        FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find(new Document());
+
+        Gson gson = new Gson();
+        String clinicsJson = gson.toJson(allRegisteredClinics);
+
+        Map<String, String> map = new HashMap<>(); // TODO: Refactor into PayloadParser.java and use in NearbyClinics.java
+        map.put("clinics", clinicsJson);
+        map.put("requestID", retrievedPayloadDoc.get("requestID").toString());
+        publishString = gson.toJson(map);
     }
 
     public void addEmployee() {
@@ -128,16 +157,17 @@ public class DentalClinic implements Clinic {
     private void updateClinicEmployees(String payload, String operation) { // TODO: Refactor further according to single responsibility principle
         EmploymentSchema employmentObject = new EmploymentSchema();
         employmentObject.assignAttributesFromPayload(payload, operation);
-        publishPayloadDoc = employmentObject.getDocument();
 
-        if (publishPayloadDoc != null) {
+        payloadDoc = employmentObject.getDocument();
+
+        if (payloadDoc != null) {
 
             // TODO: Refactor this
-            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", publishPayloadDoc.get("clinic_id"))).first();
-            Document updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", publishPayloadDoc.get("clinic_id"))).first();
+            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+            Document updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
 
             List<String> employees = (List<String>)clinic.get("employees");
-            String dentistToUpdate = publishPayloadDoc.get("dentist_id").toString();
+            String dentistToUpdate = payloadDoc.get("dentist_id").toString();
             
             if (operation.equals("add")) {
                 employees.add(dentistToUpdate);
@@ -146,8 +176,10 @@ public class DentalClinic implements Clinic {
             }
 
             updateDoc.replace("employees", employees);
+            publishString = updateDoc.toJson();
 
-            Bson query = eq("clinic_id", publishPayloadDoc.get("clinic_id"));
+            Bson query = eq("clinic_id", payloadDoc.get("clinic_id"));
+            updateDoc.remove("requestID");
             DatabaseManager.clinicsCollection.replaceOne(query, updateDoc);
 
             String employeeOperation = operation.equals("add") ? "added to" : "remove from";
@@ -155,10 +187,10 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    // Publishes a JSON message to an external component (Dentist API or Patient API)
+    // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
     private void publishMessage() {
-        if (publishPayloadDoc != null) {
-            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishPayloadDoc.toJson());
+        if (publishString != "-1") {
+            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishString);
         } else {
             System.out.println("Status 404 - Did not find DB-instance based on the given topic");
         }

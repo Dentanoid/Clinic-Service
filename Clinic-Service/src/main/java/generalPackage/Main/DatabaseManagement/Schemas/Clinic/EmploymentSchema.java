@@ -12,20 +12,24 @@ import com.google.gson.Gson;
 public class EmploymentSchema implements CollectionSchema { // TODO: Add requestID as an attribute and return it in the publishMessage
     private String clinic_id;
     private String dentist_id;
+    private String requestID;
 
     public EmploymentSchema() {
         this.clinic_id = " ";
         this.dentist_id = " ";
+        this.requestID = " ";
     }
 
     @Override
     public Document getDocument() {
         return new Document("clinic_id", this.clinic_id)
-        .append("dentist_id", this.dentist_id);
+        .append("dentist_id", this.dentist_id)
+        .append("requestID", this.requestID);
     }
 
-    public void registerData(String clinic_id, String dentist_id) {
+    public void registerData(String clinic_id, String requestID, String dentist_id) {
         this.clinic_id = clinic_id;
+        this.requestID = requestID;
         this.dentist_id = dentist_id;
     }
     
@@ -38,6 +42,7 @@ public class EmploymentSchema implements CollectionSchema { // TODO: Add request
         registerData(
             // Data in payload
             myObjTest.clinic_id,
+            myObjTest.requestID,
 
             // Data not in payload
             dentistId

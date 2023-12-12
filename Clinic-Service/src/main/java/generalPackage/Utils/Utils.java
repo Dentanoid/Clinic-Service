@@ -3,8 +3,12 @@ package generalPackage.Utils;
 import java.util.Arrays;
 
 public class Utils {
-    // Haversine Formula, Credits to https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
-    // Returns the distance in kilometers between two global coordinates
+    /*
+      * Haversine Formula, Credits to https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
+    
+      * Returns the distance in kilometers between two global coordinates,
+        accounting for the spherical shape of the Earth by using its radius
+    */
     public static double haversineFormula(double[] positionA, double[] positionB) {
         double R = 6371; // Radius of the earth in km
         double dLat = deg2rad(positionB[0] - positionA[0]);
