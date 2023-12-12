@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: generalPackage.TopicManagement.QueryManagement.NearbyMapQueries.NearbyRadiusTest
+Test set: com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries.NearbyRadiusTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s - in generalPackage.TopicManagement.QueryManagement.NearbyMapQueries.NearbyRadiusTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.005 s - in com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries.NearbyRadiusTest

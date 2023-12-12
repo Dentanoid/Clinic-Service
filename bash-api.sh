@@ -1,5 +1,5 @@
 echo "API Childprocess launched!"
-cd Clinic-Service/src/main/java/generalPackage
+cd Clinic-Service/src/main/java/com.group20.dentanoid
 node GoogleAPI
 
 ( sleep 20 ) & pid=$!
