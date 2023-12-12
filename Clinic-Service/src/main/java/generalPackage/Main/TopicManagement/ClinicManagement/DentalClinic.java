@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.json.simple.JSONObject;
+// import org.json.simple.JSONObject;
 
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
@@ -232,10 +232,13 @@ public class DentalClinic implements Clinic {
             deleteClinic();
             publishTopic = "pub/dental/clinic/delete";   
         }
+        else if (topic.contains("all")) {
+            
+            getAllClinics();
+            publishTopic = "grp20/req/clinics/get";
+        }
         else if (topic.contains("get")) {
             getOneClinic();
-            // getAllClinics();
-            publishTopic = "grp20/req/clinics/get";
         }
 
         return publishTopic;

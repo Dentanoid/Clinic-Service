@@ -10,7 +10,7 @@ import java.util.List;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import generalPackage.GoogleAPI.ValidatedClinic;

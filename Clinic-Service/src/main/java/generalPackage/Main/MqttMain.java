@@ -83,6 +83,7 @@ public class MqttMain {
         */
 
         // Clinics - GET
+        "grp20/req/dental/clinic/get/all",
         "grp20/req/dental/clinic/get",
 
         // Queries - GET
