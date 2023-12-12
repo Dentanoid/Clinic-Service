@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main.TopicManagement.QueryManagement.NearbyMapQueries;
+package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,12 +8,12 @@ import java.util.PriorityQueue;
 
 import org.bson.Document;
 
-import com.group20.dentanoid.Main.MqttMain;
-import com.group20.dentanoid.Main.DatabaseManagement.DatabaseManager;
-import com.group20.dentanoid.Main.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.CollectionSchema;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
+import com.group20.dentanoid.MqttMain;
+import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
+import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
+import com.group20.dentanoid.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
 import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.Utils;
 

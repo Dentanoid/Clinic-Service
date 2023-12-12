@@ -1,7 +1,7 @@
-package com.group20.dentanoid.Main.TopicManagement.QueryManagement.NearbyMapQueries;
+package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 
-import com.group20.dentanoid.Main.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
+import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
 import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.Utils;
 

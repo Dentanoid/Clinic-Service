@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main;
+package com.group20.dentanoid;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -14,9 +14,9 @@ import java.nio.file.Paths;
 import com.google.gson.Gson;
 
 import com.group20.dentanoid.GoogleAPI.ValidatedClinic;
-import com.group20.dentanoid.Main.DatabaseManagement.DatabaseManager;
-import com.group20.dentanoid.Main.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.Main.TopicManagement.TopicManager;
+import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
+import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.TopicManagement.TopicManager;
 
 public class ClinicService {
     public static void main(String[] args) throws IOException, InterruptedException {

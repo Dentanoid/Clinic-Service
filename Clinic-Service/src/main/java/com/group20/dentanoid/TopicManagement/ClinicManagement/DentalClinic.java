@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main.TopicManagement.ClinicManagement;
+package com.group20.dentanoid.TopicManagement.ClinicManagement;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,13 +16,13 @@ import com.mongodb.client.FindIterable;
 import static com.mongodb.client.model.Filters.eq;
 
 import com.group20.dentanoid.GoogleAPI.ValidatedClinic;
-import com.group20.dentanoid.Main.ClinicService;
-import com.group20.dentanoid.Main.MqttMain;
-import com.group20.dentanoid.Main.DatabaseManagement.DatabaseManager;
-import com.group20.dentanoid.Main.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.CollectionSchema;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.Clinic.ClinicSchema;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
+import com.group20.dentanoid.ClinicService;
+import com.group20.dentanoid.MqttMain;
+import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
+import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.ClinicSchema;
+import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
     private String publishTopic = "-1";

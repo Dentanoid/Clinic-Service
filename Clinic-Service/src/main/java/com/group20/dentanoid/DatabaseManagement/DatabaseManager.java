@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main.DatabaseManagement;
+package com.group20.dentanoid.DatabaseManagement;
 
 import java.util.Iterator;
 import org.bson.Document;

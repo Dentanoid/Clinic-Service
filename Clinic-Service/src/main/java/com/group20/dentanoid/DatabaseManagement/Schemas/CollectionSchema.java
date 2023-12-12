@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main.DatabaseManagement.Schemas;
+package com.group20.dentanoid.DatabaseManagement.Schemas;
 
 import org.bson.Document;
 

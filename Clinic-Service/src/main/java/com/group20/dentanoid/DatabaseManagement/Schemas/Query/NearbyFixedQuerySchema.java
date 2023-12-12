@@ -1,7 +1,7 @@
-package com.group20.dentanoid.Main.DatabaseManagement.Schemas.Query;
+package com.group20.dentanoid.DatabaseManagement.Schemas.Query;
 import org.bson.Document;
 
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 // The payload structure that contains a fixed number of nearby clinics to return
 public class NearbyFixedQuerySchema implements CollectionSchema {

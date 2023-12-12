@@ -1,6 +1,6 @@
-package com.group20.dentanoid.Main.TopicManagement.QueryManagement.NearbyMapQueries;
+package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 
-import com.group20.dentanoid.Main.TopicManagement.QueryManagement.Query;
+import com.group20.dentanoid.TopicManagement.QueryManagement.Query;
 import com.group20.dentanoid.Utils.Entry;
 
 /*

@@ -1,10 +1,10 @@
-package com.group20.dentanoid.Main.TopicManagement;
+package com.group20.dentanoid.TopicManagement;
 
-import com.group20.dentanoid.Main.MqttMain;
-import com.group20.dentanoid.Main.TopicManagement.ClinicManagement.Clinic;
-import com.group20.dentanoid.Main.TopicManagement.ClinicManagement.DentalClinic;
-import com.group20.dentanoid.Main.TopicManagement.QueryManagement.Query;
-import com.group20.dentanoid.Main.TopicManagement.QueryManagement.NearbyMapQueries.NearbyClinics;
+import com.group20.dentanoid.MqttMain;
+import com.group20.dentanoid.TopicManagement.ClinicManagement.Clinic;
+import com.group20.dentanoid.TopicManagement.ClinicManagement.DentalClinic;
+import com.group20.dentanoid.TopicManagement.QueryManagement.Query;
+import com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries.NearbyClinics;
 
 public class TopicManager {
     private TopicOperator topicOperator;

@@ -1,5 +1,5 @@
-package com.group20.dentanoid.Main.DatabaseManagement.Schemas.Query;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.CollectionSchema;
+package com.group20.dentanoid.DatabaseManagement.Schemas.Query;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 import org.bson.Document;
 

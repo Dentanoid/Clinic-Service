@@ -1,5 +1,5 @@
-package com.group20.dentanoid.Main.DatabaseManagement.Schemas.Clinic;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.CollectionSchema;
+package com.group20.dentanoid.DatabaseManagement.Schemas.Clinic;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 import java.util.ArrayList;
 import java.util.UUID;

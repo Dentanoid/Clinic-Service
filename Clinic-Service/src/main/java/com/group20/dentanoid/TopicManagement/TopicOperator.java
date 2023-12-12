@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main.TopicManagement;
+package com.group20.dentanoid.TopicManagement;
 
 // This interface is a 'super interface' of 'Clinic.java' and 'Query.java'
 // and is the general abstraction of all possible operations we can derive

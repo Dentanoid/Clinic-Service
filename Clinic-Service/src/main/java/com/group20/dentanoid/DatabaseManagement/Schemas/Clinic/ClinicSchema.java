@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main.DatabaseManagement.Schemas.Clinic;
+package com.group20.dentanoid.DatabaseManagement.Schemas.Clinic;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -7,7 +7,7 @@ import org.bson.Document;
 
 import com.google.gson.Gson;
 
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 public class ClinicSchema implements CollectionSchema {
     private String clinic_name;

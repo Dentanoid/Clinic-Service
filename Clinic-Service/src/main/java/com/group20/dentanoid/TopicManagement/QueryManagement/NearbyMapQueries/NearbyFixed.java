@@ -1,8 +1,8 @@
-package com.group20.dentanoid.Main.TopicManagement.QueryManagement.NearbyMapQueries;
+package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 
-import com.group20.dentanoid.Main.DatabaseManagement.DatabaseManager;
-import com.group20.dentanoid.Main.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.Main.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
+import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
+import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
 import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.Utils;
 

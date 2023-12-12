@@ -1,4 +1,4 @@
-package com.group20.dentanoid.Main;
+package com.group20.dentanoid;
 
 import java.util.HashMap;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
