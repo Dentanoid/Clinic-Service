@@ -75,10 +75,12 @@ public class MqttMain {
 
     private static final String[] subscriptions = {
         // Clinics - CREATE, REMOVE
+        /*
         "sub/dental/clinic/register", // grp20/dental/clinic/register
         "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
         "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove
         "sub/dental/clinic/delete", // grp20/dental/clinic/delete
+        */
 
         // Clinics - GET
         "grp20/req/dental/clinic/get",

@@ -32,7 +32,5 @@ public class NearbyFixedQuerySchema implements CollectionSchema {
 
     @Override
     public void assignAttributesFromPayload(String payload, String operation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
     }
 }

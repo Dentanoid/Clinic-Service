@@ -27,7 +27,7 @@ public class ClinicService {
             helps speed up the testing process for the developers.
          */
         // DatabaseManager.deleteClinicCollectionInstances();
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "DentoJJJ");
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "TestClinic23888");
 
         MqttMain.initializeMqttConnection();
     }
@@ -39,6 +39,10 @@ public class ClinicService {
         System.out.println(topic);
         System.out.println(payload);
         System.out.println("**********************************************");
+
+        if (topic.equals("grp20/req/map/query/nearby/radius/get")) {
+            System.out.println("breakpoint here");
+        }
 
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);

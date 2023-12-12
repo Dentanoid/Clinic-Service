@@ -34,8 +34,8 @@ public class NearbyClinics extends NearbyQuery {
 
     @Override
     public void queryDatabase(String payload) {
-        readPayloadAttributes(payload);
-        iterateThroughClinics(referenceCoordinates);        
+        readPayloadAttributes(payload); 
+        iterateThroughClinics(referenceCoordinates); // BUG HERE
     }
 
     // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
@@ -71,28 +71,42 @@ public class NearbyClinics extends NearbyQuery {
         return closestClinics;
     }
 
-    // Format the document-data of the clinics to display into a JSON-String
+    // Format the document-data of the clinics to display into a JSON-String that will be published to Patient API
     private String formatRetrievedClinics(Document[] clinics, String payload, CollectionSchema querySchema) {
         Gson gson = new Gson();
-        String clinicsJson = gson.toJson(clinics);
 
-        String requestId = PayloadParser.getAttributeFromPayload(payload, "requestId", querySchema).toString();
+        // Payload attributes
+        String statusCode = "500";
+        String requestId = "-1";
+        String clinicsJson = "-1";
 
-        Map<String, String> map = new HashMap<>();
-        map.put("clinics", clinicsJson);
-        map.put("requestID", requestId);
-        String jsonPublish = gson.toJson(map);
+        try {
+            clinicsJson = gson.toJson(clinics);
+            requestId = PayloadParser.getAttributeFromPayload(payload, "requestId", querySchema).toString();
+            statusCode = requestId.length() > 0 ? "200" : "404";
 
-        return jsonPublish;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        // Publish message to Patient API
+        Map<String, Object> map = new HashMap<>();
+        map.put("clinics", clinicsJson.toString());
+        map.put("requestID", requestId.toString());
+        map.put("status", Integer.parseInt(statusCode));
+
+        System.out.println(gson.toJson(map));
+        return gson.toJson(map);
     }
 
     @Override
     public void executeRequestedOperation(String topic, String payload) {
         String publishTopic = "grp20/req/map/nearby";
+
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        if (topic.contains(MqttMain.queryTopicKeywords[2])) {
+        if (topic.contains(MqttMain.queryTopicKeywords[2])) { // "fixed"
             queryKey = new NearbyFixed(publishTopic, payload);  
             publishSchema = new NearbyFixedQuerySchema(); 
         }

@@ -1,17 +1,22 @@
 package generalPackage.Main.TopicManagement.ClinicManagement;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.json.simple.JSONObject;
 
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
 import static com.mongodb.client.model.Filters.eq;
 
+import generalPackage.GoogleAPI.ValidatedClinic;
+import generalPackage.Main.ClinicService;
 import generalPackage.Main.MqttMain;
 import generalPackage.Main.DatabaseManagement.DatabaseManager;
 import generalPackage.Main.DatabaseManagement.PayloadParser;
@@ -50,9 +55,8 @@ public class DentalClinic implements Clinic {
         DatabaseManager.clinicsCollection.insertOne(payloadDoc);
         // TODO: Send requestID in publishPayload but don't store it as an attribute in DB
 
-        /*
         // Note for developers: This code is in development
-
+        /*
         JSONObject jsonObject = new JSONObject();
         ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
 
@@ -101,8 +105,8 @@ public class DentalClinic implements Clinic {
         catch (Exception e){
            System.out.println("Error: " + e);
         }
-        // ------------------------------------------------------------
         */
+        // ------------------------------------------------------------
     }
 
     public void deleteClinic() {
@@ -210,21 +214,21 @@ public class DentalClinic implements Clinic {
         // 2) Each action below is defined as the last substring of the topic. Use a general pattern check in the if-statements
 
         // Register clinic
-        if (topic.contains(MqttMain.clinicTopicKeywords[1])) { // "register"
+        if (topic.contains(MqttMain.clinicTopicKeywords[1])) {
             registerClinic();
             publishTopic = "pub/dentist/clinic/register";
         }
         // Add dentist to clinic
-        else if (topic.contains(MqttMain.clinicTopicKeywords[3])) { // "add"
+        else if (topic.contains(MqttMain.clinicTopicKeywords[3])) {
             addEmployee();
             publishTopic = "pub/dental/clinic/dentist/add";
         }
         // Delete dentist from clinic
-        else if (topic.contains(MqttMain.clinicTopicKeywords[4])) { // "remove"
+        else if (topic.contains(MqttMain.clinicTopicKeywords[4])) {
             removeEmployee();
             publishTopic = "pub/dental/clinic/dentist/remove";
         }
-        else if (topic.contains(MqttMain.clinicTopicKeywords[5])) { // "delete"
+        else if (topic.contains(MqttMain.clinicTopicKeywords[5])) {
             deleteClinic();
             publishTopic = "pub/dental/clinic/delete";   
         }
