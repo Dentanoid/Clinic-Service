@@ -28,7 +28,8 @@ public class EmploymentSchema implements CollectionSchema {
         this.clinic_id = clinic_id;
         this.dentist_id = dentist_id;
     }
-
+    
+    @Override
     public void assignAttributesFromPayload(String payload, boolean addEmployee) {
         Gson gson = new Gson();
         EmploymentSchema myObjTest = gson.fromJson(payload, getClass());

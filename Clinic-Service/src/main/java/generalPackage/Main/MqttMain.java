@@ -75,7 +75,7 @@ public class MqttMain {
 
     private static final String[] subscriptions = {
         // Clinics
-        // TODO 11th December: Change topics to group's conform to agreed mqtt topics:
+        // TODO: Change topics to group's conform to agreed mqtt topics:
         "sub/dental/clinic/register", // grp20/dental/clinic/register
         "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
         "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove

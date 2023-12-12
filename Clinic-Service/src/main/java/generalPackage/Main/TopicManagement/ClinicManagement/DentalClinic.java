@@ -1,84 +1,39 @@
 package generalPackage.Main.TopicManagement.ClinicManagement;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
-
 import static com.mongodb.client.model.Filters.eq;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import org.json.simple.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.model.UpdateOptions;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.result.UpdateResult;
-
-import generalPackage.GoogleAPI.ValidatedClinic;
-import generalPackage.Main.ClinicService;
 import generalPackage.Main.MqttMain;
 import generalPackage.Main.DatabaseManagement.DatabaseManager;
 import generalPackage.Main.DatabaseManagement.PayloadParser;
-import generalPackage.Main.DatabaseManagement.Schemas.Clinic.ClinicCreateSchema;
-import generalPackage.Main.DatabaseManagement.Schemas.Clinic.ClinicDeleteSchema;
+import generalPackage.Main.DatabaseManagement.Schemas.CollectionSchema;
+import generalPackage.Main.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import generalPackage.Main.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
     private Document payloadDoc = null;
+    private String publishTopic = "-1";
+    private String topic;
+    private String payload;
+
+    // TODO: Make 'topic' and 'payload' a private String attribute to avoid reduntant passing as a parameter across all methods
     
     public DentalClinic(String topic, String payload) {
+        this.topic = topic;
+        this.payload = payload;
         executeRequestedOperation(topic, payload);
     }
 
-    public void executeRequestedOperation(String topic, String payload) {
-        String publishTopic = "";
-
-        // Register clinic
-        if (topic.contains("register")) {
-            registerClinic(payload);
-            publishTopic = "pub/dentist/clinic/register";
-        }
-        // Add dentist to clinic
-        else if (topic.contains("add")) {
-            addEmployee(payload);
-            publishTopic = "pub/dental/clinic/dentist/add";
-        }
-        // Delete dentist from clinic
-        else if (topic.contains("remove")) {
-            removeEmployee(payload);
-            publishTopic = "pub/dental/clinic/dentist/remove";
-        }
-        else if (topic.contains("delete")) {
-            deleteClinic(payload);
-            publishTopic = "pub/dental/clinic/delete";   
-        }
-
-        if (payloadDoc != null) {
-            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, payloadDoc.toJson());
-        } else {
-            System.out.println("Status 404 - Did not find DB-instance based on the given topic");
-        }
+    public void executeRequestedOperation(String topic, String payload) { // TODO: Remove both parameters in Client.java
+        publishTopic = runRequestedMethod();
+        publishMessage();
     }
 
-    public void registerClinic(String payload) {
-        String uuid = UUID.randomUUID().toString();
-
-        // TODO:
-        // 1) Create similar 'assignAttributesFrompayload' methods in the other Schema-classes
-        // 2) Refactor these 3 lines into a general method that takes CollectionSchema as a parameter
-        ClinicCreateSchema clinicObject = new ClinicCreateSchema(uuid);
-        clinicObject.assignAttributesFromPayload(payload);
-        payloadDoc = clinicObject.getDocument();
-
+    public void registerClinic() {
+        payloadDoc = updateClinicStatus(true, new ClinicSchema());
         DatabaseManager.clinicsCollection.insertOne(payloadDoc);
-
 
         /*
         // Note for developers: This code is in development
@@ -135,36 +90,28 @@ public class DentalClinic implements Clinic {
         */
     }
 
-    public void deleteClinic(String payload) {
-        System.out.println("Delete clinic!");
-        String objectId =  PayloadParser.getObjectId(payload, new ClinicDeleteSchema(), DatabaseManager.clinicsCollection);
-
-        if (objectId != "-1") {
-            payloadDoc = PayloadParser.findDocumentById(objectId, DatabaseManager.clinicsCollection);
-            DatabaseManager.clinicsCollection.findOneAndDelete(payloadDoc);
-        } else {
-            System.out.println("Requested item does not exist in DB");
-        }
+    public void deleteClinic() {
+        payloadDoc = updateClinicStatus(false, new ClinicSchema());
+        DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", payloadDoc.get("clinic_id")));
     }
 
-    public void addEmployee(String payload) {
+    public void addEmployee() {
         updateClinicEmployees(payload, true);
     }
 
-    public void removeEmployee(String payload) {
+    public void removeEmployee() {
         updateClinicEmployees(payload, false);
     }
 
-    private Object[] getEmployeeIdentifiers(String payload) {
-        Object clinic = PayloadParser.getAttributeFromPayload(payload, "clinic_id", new EmploymentSchema());
-
-        // TODO: ADD uuid for employees and check for their id rather than their names --> Scalability
-        Object employeeToUpdate = PayloadParser.getAttributeFromPayload(payload, "dentist_id", new EmploymentSchema());
-        return new Object[] {clinic, employeeToUpdate};
+    // Register or delete clinic from system
+    private Document updateClinicStatus(boolean createClinic, CollectionSchema collectionSchema) { // TODO: Replace this method in the method below where we use EmploymentSchema
+        CollectionSchema clinicObject = new ClinicSchema();
+        clinicObject.assignAttributesFromPayload(payload, createClinic);
+        return clinicObject.getDocument();
     }
 
      // Accounts for addition and removal of dentists
-    public void updateClinicEmployees(String payload, boolean addEmployee) { // TODO: Refactor further according to single responsibility principle
+    private void updateClinicEmployees(String payload, boolean addEmployee) { // TODO: Refactor further according to single responsibility principle
         EmploymentSchema employmentObject = new EmploymentSchema();
         employmentObject.assignAttributesFromPayload(payload, addEmployee);
         payloadDoc = employmentObject.getDocument();
@@ -190,5 +137,46 @@ public class DentalClinic implements Clinic {
             String employeeOperation = addEmployee ? "added to" : "remove from";
             System.out.println("Employee successfully " + employeeOperation +  " clinic");
         }
+    }
+
+    // Publishes a JSON message to an external component (Dentist API or Patient API)
+    private void publishMessage() {
+        if (payloadDoc != null) {
+            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, payloadDoc.toJson());
+        } else {
+            System.out.println("Status 404 - Did not find DB-instance based on the given topic");
+        }
+    }
+
+    /*
+     Direct the codeflow to the method that deals with the
+     requested operation specified in the mqtt subscription-topic.
+     This method returns the corresponding topic to publish to,
+     based on the performed operation.
+    */
+    private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
+        String publishTopic = "-1";
+
+        // Register clinic
+        if (topic.contains(MqttMain.clinicTopicKeywords[1])) { // "register"
+            registerClinic();
+            publishTopic = "pub/dentist/clinic/register";
+        }
+        // Add dentist to clinic
+        else if (topic.contains(MqttMain.clinicTopicKeywords[3])) { // "add"
+            addEmployee();
+            publishTopic = "pub/dental/clinic/dentist/add";
+        }
+        // Delete dentist from clinic
+        else if (topic.contains(MqttMain.clinicTopicKeywords[4])) { // "remove"
+            removeEmployee();
+            publishTopic = "pub/dental/clinic/dentist/remove";
+        }
+        else if (topic.contains(MqttMain.clinicTopicKeywords[5])) { // "delete"
+            deleteClinic();
+            publishTopic = "pub/dental/clinic/delete";   
+        }
+
+        return publishTopic;
     }
 }
