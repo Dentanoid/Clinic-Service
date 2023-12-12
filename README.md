@@ -11,4 +11,4 @@ The steps required to run the clinic service are as follows:
 
 3. Run the compiled JAR file
 
- ```java -cp target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar com.group20.dentanoid.ClinicService``` 
+ ```java -jar target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar``` 
