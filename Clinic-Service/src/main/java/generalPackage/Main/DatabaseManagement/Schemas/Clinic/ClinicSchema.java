@@ -14,12 +14,14 @@ public class ClinicSchema implements CollectionSchema {
     private String position;
     private String clinic_id;
     private ArrayList<String> employees;
+    private String requestID; // TODO: Add requestID for the remaining register-methods below
 
     public ClinicSchema() { // IDEA: Run 'assignAttributesFromPayload()' in constructor
         this.clinic_name = " ";
         this.clinic_id = " ";
         this.position = " ";
         this.employees = new ArrayList<>(); 
+        this.requestID = " ";
     }
 
     @Override
@@ -27,7 +29,8 @@ public class ClinicSchema implements CollectionSchema {
         return new Document("clinic_name", this.clinic_name)
         .append("clinic_id", this.clinic_id)
         .append("position", this.position)
-        .append("employees", this.employees);
+        .append("employees", this.employees)
+        .append("requestID", this.requestID);
     }
 
     // POST: Assign values to attributes at creation
@@ -39,27 +42,47 @@ public class ClinicSchema implements CollectionSchema {
     }
 
     // DELETE: Use the clinic's id to find it in the DB
-    private void registerDeleteClinicData(String clinic_id) {
+    private void registerClinicIdentifier(String clinic_id, String requestID) {
         this.clinic_id = clinic_id;
+        this.requestID = requestID;
     }
 
+    private void registerRequestID(String requestID) {
+        this.requestID = requestID;
+    }
+
+    // Assign values to the attributes of the schema based on the specified clinic operation
     @Override
-    public void assignAttributesFromPayload(String payload, boolean createClinic) {
+    public void assignAttributesFromPayload(String payload, String operation) { // String operation = ["create", "delete", "getOne", "getAll"]
         Gson gson = new Gson();
         ClinicSchema myObjTest = gson.fromJson(payload, getClass());
 
-        if (createClinic) {
+        // TODO: Refactor if-statements - IDEA: Interface or Abstract class 'DataRegisterer.java'
+
+        // The payload include
+        if (operation.equals("create")) { // IDEA: Refactor register-data-parameters into ArrayList<String>, add them in the operation-if-statements and register(ArrayList<String> attributes) becomes a general method
             registerCreateClinicData(
-                // Data in payload
+                // Data included in payload:
                 myObjTest.clinic_name,
                 myObjTest.position,
 
-                // Data not in payload
+                // Data automatically defined:
                 UUID.randomUUID().toString(),
                 new ArrayList<>()
             );
-        } else {
-            registerDeleteClinicData(myObjTest.clinic_id);
+        }
+        /*
+         Deleting and reading one clinic only needs one attribute
+         in the payload to find the requested clinic in the DB: 'clinic_id'
+        */
+        else if (operation.equals("delete") || operation.equals("getOne")) {
+            registerClinicIdentifier(
+                myObjTest.clinic_id,
+                myObjTest.requestID
+                );
+        }
+        else if (operation.equals("getAll")) {
+            registerRequestID(myObjTest.requestID);
         }
     }
 

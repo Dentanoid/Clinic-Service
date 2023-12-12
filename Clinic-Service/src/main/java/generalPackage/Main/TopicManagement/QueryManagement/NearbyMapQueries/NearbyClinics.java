@@ -35,7 +35,6 @@ public class NearbyClinics extends NearbyQuery {
     @Override
     public void queryDatabase(String payload) {
         readPayloadAttributes(payload);
-        System.out.println("D");
         iterateThroughClinics(referenceCoordinates);        
     }
 

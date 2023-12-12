@@ -13,7 +13,7 @@ import generalPackage.Main.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import generalPackage.Main.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
-    private Document payloadDoc = null;
+    private Document publishPayloadDoc = null;
     private String publishTopic = "-1";
     private String topic;
     private String payload;
@@ -32,8 +32,8 @@ public class DentalClinic implements Clinic {
     }
 
     public void registerClinic() {
-        payloadDoc = updateClinicStatus(true, new ClinicSchema());
-        DatabaseManager.clinicsCollection.insertOne(payloadDoc);
+        publishPayloadDoc = getClinicDocument("create", new ClinicSchema());
+        DatabaseManager.clinicsCollection.insertOne(publishPayloadDoc);
 
         /*
         // Note for developers: This code is in development
@@ -91,39 +91,55 @@ public class DentalClinic implements Clinic {
     }
 
     public void deleteClinic() {
-        payloadDoc = updateClinicStatus(false, new ClinicSchema());
-        DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", payloadDoc.get("clinic_id")));
+        publishPayloadDoc = getClinicDocument("delete", new ClinicSchema());
+        DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", publishPayloadDoc.get("clinic_id")));
+    }
+
+    public void getOneClinic() {
+        Document retrievedPayloadDoc = getClinicDocument("getOne", new ClinicSchema());
+        Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", retrievedPayloadDoc.get("clinic_id"))).first();
+        publishPayloadDoc = clinic.append("requestID", retrievedPayloadDoc.get("requestID"));
+
+        System.out.println("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
+        System.out.println("publishPayloadDoc: " + publishPayloadDoc);
+        System.out.println("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
+    }
+
+    public void getAllClinics() {
+        publishPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
     }
 
     public void addEmployee() {
-        updateClinicEmployees(payload, true);
+        updateClinicEmployees(payload, "add");
     }
 
     public void removeEmployee() {
-        updateClinicEmployees(payload, false);
+        updateClinicEmployees(payload, "remove");
     }
 
     // Register or delete clinic from system
-    private Document updateClinicStatus(boolean createClinic, CollectionSchema collectionSchema) { // TODO: Replace this method in the method below where we use EmploymentSchema
+    private Document getClinicDocument(String operation, CollectionSchema collectionSchema) { // TODO: Replace this method in the method below where we use EmploymentSchema
         CollectionSchema clinicObject = new ClinicSchema();
-        clinicObject.assignAttributesFromPayload(payload, createClinic);
+        clinicObject.assignAttributesFromPayload(payload, operation);
         return clinicObject.getDocument();
     }
 
      // Accounts for addition and removal of dentists
-    private void updateClinicEmployees(String payload, boolean addEmployee) { // TODO: Refactor further according to single responsibility principle
+    private void updateClinicEmployees(String payload, String operation) { // TODO: Refactor further according to single responsibility principle
         EmploymentSchema employmentObject = new EmploymentSchema();
-        employmentObject.assignAttributesFromPayload(payload, addEmployee);
-        payloadDoc = employmentObject.getDocument();
+        employmentObject.assignAttributesFromPayload(payload, operation);
+        publishPayloadDoc = employmentObject.getDocument();
 
-        if (payloadDoc != null) {
-            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
-            Document updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+        if (publishPayloadDoc != null) {
+
+            // TODO: Refactor this
+            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", publishPayloadDoc.get("clinic_id"))).first();
+            Document updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", publishPayloadDoc.get("clinic_id"))).first();
 
             List<String> employees = (List<String>)clinic.get("employees");
-            String dentistToUpdate = payloadDoc.get("dentist_id").toString();
+            String dentistToUpdate = publishPayloadDoc.get("dentist_id").toString();
             
-            if (addEmployee) {
+            if (operation.equals("add")) {
                 employees.add(dentistToUpdate);
             } else {
                 employees.remove(dentistToUpdate);
@@ -131,18 +147,18 @@ public class DentalClinic implements Clinic {
 
             updateDoc.replace("employees", employees);
 
-            Bson query = eq("clinic_id", payloadDoc.get("clinic_id"));
+            Bson query = eq("clinic_id", publishPayloadDoc.get("clinic_id"));
             DatabaseManager.clinicsCollection.replaceOne(query, updateDoc);
 
-            String employeeOperation = addEmployee ? "added to" : "remove from";
+            String employeeOperation = operation.equals("add") ? "added to" : "remove from";
             System.out.println("Employee successfully " + employeeOperation +  " clinic");
         }
     }
 
     // Publishes a JSON message to an external component (Dentist API or Patient API)
     private void publishMessage() {
-        if (payloadDoc != null) {
-            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, payloadDoc.toJson());
+        if (publishPayloadDoc != null) {
+            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishPayloadDoc.toJson());
         } else {
             System.out.println("Status 404 - Did not find DB-instance based on the given topic");
         }
@@ -156,6 +172,10 @@ public class DentalClinic implements Clinic {
     */
     private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
         String publishTopic = "-1";
+
+        // TODO:
+        // 1) Refactor away the if-statements below
+        // 2) Each action below is defined as the last substring of the topic. Use a general pattern check in the if-statements
 
         // Register clinic
         if (topic.contains(MqttMain.clinicTopicKeywords[1])) { // "register"
@@ -175,6 +195,11 @@ public class DentalClinic implements Clinic {
         else if (topic.contains(MqttMain.clinicTopicKeywords[5])) { // "delete"
             deleteClinic();
             publishTopic = "pub/dental/clinic/delete";   
+        }
+        else if (topic.contains("get")) {
+            getOneClinic();
+            // getAllClinics();
+            publishTopic = "grp20/req/clinics/get";
         }
 
         return publishTopic;

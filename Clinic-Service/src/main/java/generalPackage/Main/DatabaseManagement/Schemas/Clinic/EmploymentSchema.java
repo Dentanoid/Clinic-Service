@@ -9,7 +9,7 @@ import org.bson.Document;
 import com.google.gson.Gson;
 
 // This schema covers the payload-cases where an employee is to be added or removed from the clinic
-public class EmploymentSchema implements CollectionSchema {
+public class EmploymentSchema implements CollectionSchema { // TODO: Add requestID as an attribute and return it in the publishMessage
     private String clinic_id;
     private String dentist_id;
 
@@ -30,10 +30,10 @@ public class EmploymentSchema implements CollectionSchema {
     }
     
     @Override
-    public void assignAttributesFromPayload(String payload, boolean addEmployee) {
+    public void assignAttributesFromPayload(String payload, String operation) { // operation = ["add", "remove"]
         Gson gson = new Gson();
         EmploymentSchema myObjTest = gson.fromJson(payload, getClass());
-        String dentistId = addEmployee ? UUID.randomUUID().toString() : myObjTest.dentist_id;
+        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id;
 
         registerData(
             // Data in payload

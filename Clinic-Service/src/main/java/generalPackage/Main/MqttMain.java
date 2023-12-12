@@ -74,14 +74,16 @@ public class MqttMain {
     };
 
     private static final String[] subscriptions = {
-        // Clinics
-        // TODO: Change topics to group's conform to agreed mqtt topics:
+        // Clinics - CREATE, REMOVE
         "sub/dental/clinic/register", // grp20/dental/clinic/register
         "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
         "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove
         "sub/dental/clinic/delete", // grp20/dental/clinic/delete
 
-        // Queries
+        // Clinics - GET
+        "grp20/req/dental/clinic/get",
+
+        // Queries - GET
         "grp20/req/map/query/nearby/radius/get",
         "grp20/req/map/query/nearby/fixed/get"
     };
