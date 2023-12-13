@@ -3,7 +3,6 @@ package com.group20.dentanoid.TopicManagement.ClinicManagement;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,8 +10,6 @@ import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
-// import org.json.simple.JSONObject;
-
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
@@ -144,6 +141,8 @@ public class DentalClinic implements Clinic {
             statusCode = "500";
         }
 
+
+        // Refactor: PayloadParser.createJSONPayload(map)
         map.put("clinics", clinicJson);
         map.put("requestID", requestID);
         map.put("status", Integer.parseInt(statusCode));
