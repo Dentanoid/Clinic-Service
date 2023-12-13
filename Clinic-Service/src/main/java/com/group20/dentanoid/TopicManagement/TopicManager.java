@@ -31,7 +31,7 @@ public class TopicManager {
     public Query getQuery(String topic, String payload) {
         if (topic.contains(MqttMain.queryTopicKeywords[0])) { // TODO: Refactor according to the convention followed in 'getClinic'
             Query nearbyQuery = new NearbyClinics(topic, payload);
-            nearbyQuery.executeRequestedOperation(topic, payload);
+            nearbyQuery.executeRequestedOperation();
             return new NearbyClinics(topic, payload);
         }
         return null; // This is where we extend the code for more types of query operations

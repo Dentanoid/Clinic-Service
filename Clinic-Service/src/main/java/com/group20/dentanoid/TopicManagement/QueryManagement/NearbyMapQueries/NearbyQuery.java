@@ -14,6 +14,6 @@ import com.group20.dentanoid.Utils.Entry;
 public abstract class NearbyQuery implements Query {
     public void addPQElement(Entry element) {}
     public int getN() { return -1; }
-    public void getReferencePosition(String payload) {}
-    public void readPayloadAttributes(String payload) {}
+    public void getReferencePosition() {}
+    public void readPayloadAttributes() {}
 }

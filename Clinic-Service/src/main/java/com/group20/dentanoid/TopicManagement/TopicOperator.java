@@ -6,5 +6,5 @@ package com.group20.dentanoid.TopicManagement;
 // Clinic operations: Clinic.java --> DentalClinic.java
 // Query operations: Query.java --> NearbyClinics.java
 public interface TopicOperator {
-    public void executeRequestedOperation(String topic, String payload);
+    public void executeRequestedOperation();
 }

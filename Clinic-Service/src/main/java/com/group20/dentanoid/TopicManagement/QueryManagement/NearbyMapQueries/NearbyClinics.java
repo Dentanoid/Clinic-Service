@@ -29,17 +29,23 @@ public class NearbyClinics extends NearbyQuery {
      */
     public double[] referenceCoordinates;
 
+    // TODO: Refactor these variable to avoid redundant parameters
+    public String topic;
+    public String payload;
+
     public NearbyClinics(String topic, String payload) {
+        this.topic = topic;
+        this.payload = payload;
     }
 
     @Override
-    public void queryDatabase(String payload) {
-        readPayloadAttributes(payload); 
-        iterateThroughClinics(referenceCoordinates);
+    public void queryDatabase() {
+        readPayloadAttributes(); 
+        iterateThroughClinics();
     }
 
     // Linear search through every DB-Instance reading 'location' values and comparing them to the user's global coordinates
-    public void iterateThroughClinics(double[] referenceCoordinates) {
+    public void iterateThroughClinics() {
         pq = new PriorityQueue<Entry>(Collections.reverseOrder());
 
         FindIterable<Document> clinics = DatabaseManager.clinicsCollection.find();
@@ -72,7 +78,7 @@ public class NearbyClinics extends NearbyQuery {
     }
 
     // Format the document-data of the clinics to display into a JSON-String that will be published to Patient API
-    private String formatRetrievedClinics(Document[] clinics, String payload, CollectionSchema querySchema) {
+    private String formatRetrievedClinics(Document[] clinics, CollectionSchema querySchema) {
         Gson gson = new Gson();
 
         // Payload attributes
@@ -100,7 +106,7 @@ public class NearbyClinics extends NearbyQuery {
     }
 
     @Override
-    public void executeRequestedOperation(String topic, String payload) {
+    public void executeRequestedOperation() { // TODO: Remove string-arguments from parameters and put them as class-attributes
         String publishTopic = "grp20/req/map/nearby";
 
         CollectionSchema publishSchema;
@@ -115,10 +121,10 @@ public class NearbyClinics extends NearbyQuery {
             publishSchema = new NearbyRadiusQuerySchema();
         }
 
-        queryKey.queryDatabase(payload);
+        queryKey.queryDatabase();
 
         Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey);
-        String publishMessage = formatRetrievedClinics(clinicsToDisplay, payload, publishSchema);
+        String publishMessage = formatRetrievedClinics(clinicsToDisplay, publishSchema);
 
         MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishMessage);
     }

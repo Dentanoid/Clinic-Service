@@ -14,19 +14,19 @@ public class NearbyFixed extends NearbyClinics {
     }
 
     @Override
-    public void readPayloadAttributes(String payload) {
-        getNumberOfClinicsToQuery(payload);
-        getReferencePosition(payload);
+    public void readPayloadAttributes() {
+        getNumberOfClinicsToQuery();
+        getReferencePosition();
     }
 
     @Override
-        public void getReferencePosition(String payload) {
+        public void getReferencePosition() {
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyFixedQuerySchema());
         System.out.println(user_position);
         referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 
-    private void getNumberOfClinicsToQuery(String payload) {
+    private void getNumberOfClinicsToQuery() {
         int requestedPayloadNumber = Integer.parseInt(PayloadParser.getAttributeFromPayload(payload, "nearby_clinics_number", new NearbyFixedQuerySchema()).toString());
         int numberOfExistingClinics = (int)DatabaseManager.clinicsCollection.countDocuments();
         setN(Math.min(requestedPayloadNumber, numberOfExistingClinics));

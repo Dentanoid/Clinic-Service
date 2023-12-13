@@ -42,10 +42,10 @@ public class DentalClinic implements Clinic {
     public DentalClinic(String topic, String payload) {
         this.topic = topic;
         this.payload = payload;
-        executeRequestedOperation(topic, payload);
+        executeRequestedOperation();
     }
 
-    public void executeRequestedOperation(String topic, String payload) { // TODO: Remove both parameters in Client.java
+    public void executeRequestedOperation() { // TODO: Remove both parameters in Client.java
         publishTopic = runRequestedMethod();
         publishMessage();
     }
@@ -187,11 +187,11 @@ public class DentalClinic implements Clinic {
     }
 
     public void addEmployee() {
-        updateClinicEmployees(payload, "add");
+        updateClinicEmployees("add");
     }
 
     public void removeEmployee() {
-        updateClinicEmployees(payload, "remove");
+        updateClinicEmployees("remove");
     }
 
     // Register or delete clinic from system
@@ -202,7 +202,7 @@ public class DentalClinic implements Clinic {
     }
 
      // Accounts for addition and removal of dentists
-    private void updateClinicEmployees(String payload, String operation) { // TODO: Refactor further according to single responsibility principle
+    private void updateClinicEmployees(String operation) { // TODO: Refactor further according to single responsibility principle
         EmploymentSchema employmentObject = new EmploymentSchema();
         employmentObject.assignAttributesFromPayload(payload, operation);
 

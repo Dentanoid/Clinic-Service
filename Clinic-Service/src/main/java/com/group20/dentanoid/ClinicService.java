@@ -25,7 +25,7 @@ public class ClinicService {
         /*
             The two methods below are temporarily used in this script and
             helps speed up the testing process for the developers.
-         */
+        */
         // DatabaseManager.deleteClinicCollectionInstances();
         // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "TestClinic23888");
 

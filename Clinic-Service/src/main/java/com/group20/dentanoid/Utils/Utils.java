@@ -1,5 +1,6 @@
 package com.group20.dentanoid.Utils;
 
+import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Utils {
