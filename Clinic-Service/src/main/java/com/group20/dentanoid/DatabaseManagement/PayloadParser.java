@@ -6,8 +6,11 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
+
+import java.util.HashMap;
 
 public class PayloadParser {
     public static Object getAttributeFromPayload(String payload, String attributeName, CollectionSchema classSchema) {
@@ -56,5 +59,18 @@ public class PayloadParser {
 
         collection.insertOne(payloadDoc);
         return payloadDoc;
+    }
+
+    public static String createJSONPayload(HashMap<String, String> map) {
+        JsonObject jsonObject = new JsonObject();
+        
+        for (String key : map.keySet()) {
+            jsonObject.addProperty(key, map.get(key));
+        }
+
+        Gson gson = new Gson();
+        String payload = gson.toJson(jsonObject);
+
+        return payload;
     }
 }
