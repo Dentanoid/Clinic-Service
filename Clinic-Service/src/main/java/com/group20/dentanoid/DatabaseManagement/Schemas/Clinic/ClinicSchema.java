@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.bson.Document;
 
 import com.google.gson.Gson;
-
+import com.google.gson.JsonObject;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 public class ClinicSchema implements CollectionSchema {

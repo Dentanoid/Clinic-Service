@@ -1,6 +1,7 @@
 package com.group20.dentanoid.DatabaseManagement.Schemas.Query;
 import org.bson.Document;
 
+import com.google.gson.JsonObject;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 // The payload structure that contains a fixed number of nearby clinics to return

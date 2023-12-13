@@ -6,7 +6,12 @@ import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.Utils;
 
 public class NearbyRadius extends NearbyClinics {
+    /*
+      Since we cannot predict the quantity of clinics that are within
+      the specifed range, an upper limit is defined.
+     */
     private static Integer maximumClinicsInQuery = 1000;
+
     private Double radius;
     private Integer numberOfFoundClinics;
 
@@ -57,7 +62,7 @@ public class NearbyRadius extends NearbyClinics {
     @Override
     public void getReferencePosition() {
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyRadiusQuerySchema());
-       referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
+        referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 
     private void getRadius(String payload) {
