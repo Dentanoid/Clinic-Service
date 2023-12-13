@@ -41,6 +41,16 @@ public class NearbyRadius extends NearbyClinics {
         }
     }
 
+    @Override
+    public void getReferencePosition() {
+        Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyRadiusQuerySchema());
+        referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
+    }
+
+    public static Integer getQueryLimit() {
+        return maximumClinicsInQuery;
+    }
+
     // Display clinic if it is within the requested radius
     private void addClinicWithinRadius(Entry element) {
         if (element.getKey() <= radius) {
@@ -57,12 +67,6 @@ public class NearbyRadius extends NearbyClinics {
         if (numberOfFoundClinics < maximumClinicsInQuery) {
             numberOfFoundClinics++;
         }
-    }
-
-    @Override
-    public void getReferencePosition() {
-        Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyRadiusQuerySchema());
-        referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 
     private void getRadius(String payload) {

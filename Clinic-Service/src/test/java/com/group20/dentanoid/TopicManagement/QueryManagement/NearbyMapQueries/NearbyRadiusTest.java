@@ -1,11 +1,9 @@
 package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 
 import org.junit.jupiter.api.Test;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.Utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,29 +40,29 @@ class NearbyRadiusTest {
     }
 
     @Test
-    void priorityQueMaxHeapUnitTest() {
+    void priorityQueMaxHeapRadiusUnitTest() {
         
         // Define data variables
-        String topic = "grp20/req/map/query/nearby/fixed/get";
-        String[] referenceCoordinatesExpected = new String[] { "10.17", "19.1" };
+        String topic = "grp20/req/map/query/nearby/radius/get";
+        String[] referenceCoordinatesExpected = new String[] { "19.12321", "89.129947" };
         String joinedCoordinates = String.join(",", referenceCoordinatesExpected);
 
         DatabaseManager.initializeDatabaseConnection();
 
-        long requestNr = 34; // The quantity of requested clinics the user wants to query on the map
-        long numberOfRegisteredClinics = DatabaseManager.clinicsCollection.countDocuments();
-        long expectedQuantityOfClinics = requestNr > numberOfRegisteredClinics ? numberOfRegisteredClinics : requestNr;
+        long quantityLimit = NearbyRadius.getQueryLimit();
+        long expectedNumberOfClinicsReturned = Math.min(quantityLimit, DatabaseManager.clinicsCollection.countDocuments());
 
         // Create payload
-        String payload = PayloadParser.createJSONPayload(new HashMap<>() {{ // NOTE: Refactor further - Input NearbyRadiusSchema in parameters
-            put("nearby_clinics_number", Long.toString(expectedQuantityOfClinics));
+        String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
+            put("radius", Double.toString(Utils.earthCircumference)); // Set the radius to the size at which every clinic in the database is returned
             put("reference_position", joinedCoordinates);
             put("requestID", "requestId");
         }});
 
         // Test code
-        NearbyClinics nearbyFixedNumber = new NearbyFixed(topic, payload);
-        nearbyFixedNumber.queryDatabase();
-        assertEquals(expectedQuantityOfClinics, nearbyFixedNumber.pq.size());
+        NearbyClinics nearbyRadius = new NearbyRadius(topic, payload);
+        nearbyRadius.queryDatabase();
+
+        assertEquals(expectedNumberOfClinicsReturned, nearbyRadius.pq.size());
     }
 }

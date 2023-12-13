@@ -1,9 +1,11 @@
 package com.group20.dentanoid.Utils;
-
-import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class Utils {
+  // Physical measures of the Earth in KM
+  public static double earthRadius = 6371;
+  public static double earthCircumference = 40075;
+
     /*
       * Haversine Formula, Credits to https://stackoverflow.com/questions/27928/calculate-distance-between-two-latitude-longitude-points-haversine-formula
     
@@ -11,7 +13,6 @@ public class Utils {
         accounting for the spherical shape of the Earth by using its radius
     */
     public static double haversineFormula(double[] positionA, double[] positionB) {
-        double R = 6371; // Radius of the earth in km
         double dLat = deg2rad(positionB[0] - positionA[0]);
         double dLon = deg2rad(positionB[1] - positionA[1]);
 
@@ -21,7 +22,7 @@ public class Utils {
           Math.sin(dLon/2) * Math.sin(dLon/2);
         
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-        double d = R * c; // Distance in km
+        double d = earthRadius * c; // Distance in km
         return d;
       }
       
