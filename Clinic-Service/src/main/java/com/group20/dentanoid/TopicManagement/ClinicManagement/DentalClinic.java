@@ -216,11 +216,22 @@ public class DentalClinic implements Clinic {
 
         payloadDoc = employmentObject.getDocument();
 
-        if (payloadDoc != null) {
+        String status = "200";
+        String requestID = payloadDoc.get("requestID").toString();
 
-            // TODO: Refactor this
-            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
-            Document updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+        Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+
+        // Check if payload is valid and if the clinic was found
+        if (payloadDoc != null && clinic != null) {
+            Document updateDoc = new Document();
+
+            try {
+                // TODO: Refactor this
+                updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+            }
+            catch (Exception exception) {
+                status = "500";
+            }
 
             List<String> employees = (List<String>)clinic.get("employees");
             String dentistToUpdate = payloadDoc.get("dentist_id").toString();
@@ -228,18 +239,33 @@ public class DentalClinic implements Clinic {
             if (operation.equals("add")) {
                 employees.add(dentistToUpdate);
             } else {
-                employees.remove(dentistToUpdate);
+                if (employees.contains(dentistToUpdate)) {
+                    employees.remove(dentistToUpdate);
+                }   
+                else { // Employee to remove was not found, return status 404
+                    status = "404";
+                }
             }
 
+            // TODO: Refactor this
             updateDoc.replace("employees", employees);
+
+            updateDoc.append("requestID", requestID);
+            updateDoc.append("status", status);
+
             publishString = updateDoc.toJson();
 
             Bson query = eq("clinic_id", payloadDoc.get("clinic_id"));
-            updateDoc.remove("requestID");
+            updateDoc.remove("requestID"); // REFACTORING IDEA: Create method in PayloadParser.java --> ReturnStatus() where the document's requestID among other generalities are performed
+            updateDoc.remove("status");
             DatabaseManager.clinicsCollection.replaceOne(query, updateDoc);
 
-            String employeeOperation = operation.equals("add") ? "added to" : "remove from";
+            String employeeOperation = operation.equals("add") ? "added to" : "removed from";
             System.out.println("Employee successfully " + employeeOperation +  " clinic");
+        } else {
+            status = "404";
+            payloadDoc.append("status", status);
+            publishString = payloadDoc.toJson();
         }
     }
 

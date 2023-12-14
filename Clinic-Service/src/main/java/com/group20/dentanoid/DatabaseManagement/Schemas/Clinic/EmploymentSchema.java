@@ -1,15 +1,12 @@
 package com.group20.dentanoid.DatabaseManagement.Schemas.Clinic;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
-import java.util.ArrayList;
 import java.util.UUID;
-
 import org.bson.Document;
-
 import com.google.gson.Gson;
 
-// This schema covers the payload-cases where an employee is to be added or removed from the clinic
-public class EmploymentSchema implements CollectionSchema { // TODO: Add requestID as an attribute and return it in the publishMessage
+// This schema covers the payload-cases where an employee is to be added or removed from the clinic.
+public class EmploymentSchema implements CollectionSchema {
     private String clinic_id;
     private String dentist_id;
     private String requestID;
@@ -27,25 +24,22 @@ public class EmploymentSchema implements CollectionSchema { // TODO: Add request
         .append("requestID", this.requestID);
     }
 
-    public void registerData(String clinic_id, String requestID, String dentist_id) {
+    public void registerData(String clinic_id, String dentist_id, String requestID) {
         this.clinic_id = clinic_id;
-        this.requestID = requestID;
         this.dentist_id = dentist_id;
+        this.requestID = requestID;
     }
     
     @Override
-    public void assignAttributesFromPayload(String payload, String operation) { // operation = ["add", "remove"]
+    public void assignAttributesFromPayload(String payload, String operation) { // Potential values for 'operation' = ["add", "remove"]
         Gson gson = new Gson();
         EmploymentSchema myObjTest = gson.fromJson(payload, getClass());
-        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id;
+        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id; // TODO: Replace UUID.randomUUID with the dentist_id retrieved from dentist_client
 
         registerData(
-            // Data in payload
             myObjTest.clinic_id,
-            myObjTest.requestID,
-
-            // Data not in payload
-            dentistId
+            dentistId,
+            myObjTest.requestID
         );
     }
 
