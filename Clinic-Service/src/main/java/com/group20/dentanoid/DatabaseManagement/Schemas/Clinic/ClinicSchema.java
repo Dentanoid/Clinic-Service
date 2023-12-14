@@ -34,11 +34,12 @@ public class ClinicSchema implements CollectionSchema {
     }
 
     // POST: Assign values to attributes at creation
-    private void registerCreateClinicData(String clinic_name, String position, String clinic_id, ArrayList<String> employees) {
+    private void registerCreateClinicData(String clinic_name, String position, String clinic_id, ArrayList<String> employees, String requestID) {
         this.clinic_name = clinic_name;
         this.position = position;
         this.clinic_id = clinic_id;
         this.employees = employees;
+        this.requestID = requestID;
     }
 
     // DELETE: Use the clinic's id to find it in the DB
@@ -68,7 +69,8 @@ public class ClinicSchema implements CollectionSchema {
 
                 // Data automatically defined:
                 UUID.randomUUID().toString(),
-                new ArrayList<>()
+                new ArrayList<>(),
+                myObjTest.requestID
             );
         }
         /*

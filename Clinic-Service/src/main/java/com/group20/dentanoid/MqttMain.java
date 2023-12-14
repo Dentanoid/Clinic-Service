@@ -34,7 +34,7 @@ public class MqttMain {
      * inside 'TopicManagement' folder.
      */
     public static String[] topicArtifacts = {
-        "clinic",
+        "clinics",
         "query"
     };
 
@@ -88,10 +88,10 @@ public class MqttMain {
 
     private static final String[] subscriptions = {
             // Clinics: CREATE & DELETE
-            "sub/dental/clinic/register", // grp20/dental/clinic/register
-            "sub/dental/clinic/dentist/add", // grp20/dental/clinic/add
-            "sub/dental/clinic/dentist/remove", // grp20/dental/clinic/dentist/remove
-            "sub/dental/clinic/delete", // grp20/dental/clinic/delete
+            "sub/dental/clinics/register", // grp20/dental/clinic/register
+            "sub/dental/clinics/dentist/add", // grp20/dental/clinic/add
+            "sub/dental/clinics/dentist/remove", // grp20/dental/clinic/dentist/remove
+            "sub/dental/clinics/delete", // grp20/dental/clinic/delete
 
             // Clinics: GET
             "grp20/dental/req/clinics/get/one",
@@ -151,8 +151,8 @@ public class MqttMain {
 
     public static MqttClient getInstance() throws MqttException {
         if (client == null) {
-            String username = "Test";
-            String password = "Test123";
+            String username = "username";
+            String password = "password";
             String clientid = MqttClient.generateClientId();
             client = new MqttClient(broker, clientid, persistence);
 

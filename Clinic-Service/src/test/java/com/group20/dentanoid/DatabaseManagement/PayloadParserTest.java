@@ -22,8 +22,4 @@ class PayloadParserTest {
         Document payloadDoc = PayloadParser.convertPayloadToDocument(payload, new ClinicSchema());
         assertEquals(expectedRequestID, payloadDoc.get("requestID").toString());
     }
-
-    @Test
-    void queryBySchema() {
-    }
 }

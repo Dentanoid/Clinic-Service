@@ -42,19 +42,28 @@ public class DentalClinic implements Clinic {
         executeRequestedOperation();
     }
 
-    public void executeRequestedOperation() { // TODO: Remove both parameters in Client.java
+    public void executeRequestedOperation() {
         publishTopic = runRequestedMethod();
         publishMessage();
     }
 
     public void registerClinic() {
+        String status = "200";
+
         payloadDoc = getClinicDocument("create", new ClinicSchema());
+        String requestID = payloadDoc.remove("requestID").toString(); // Don't store requestID in DB
 
-        // NOTE: Refactor so that publishString is the only publishing variable. Get rid of 'publishPayloadDoc'
+        try {
+            DatabaseManager.clinicsCollection.insertOne(payloadDoc);
+        }
+        catch (Exception exception) {
+            status = "500";
+            publishString = payloadDoc.toJson();
+        }
+
+        payloadDoc.append("requestID", requestID);
+        payloadDoc.append("status", status);
         publishString = payloadDoc.toJson();
-        payloadDoc.remove("requestID");
-
-        DatabaseManager.clinicsCollection.insertOne(payloadDoc);
 
         // Note for developers: This code is in development
         /*
@@ -259,21 +268,21 @@ public class DentalClinic implements Clinic {
         // Register clinic
         if (topic.contains(MqttMain.clinicTopicKeywords[1])) {
             registerClinic();
-            publishTopic = "pub/dentist/clinic/register";
+            publishTopic = "pub/dentist/clinics/register";
         }
         // Add dentist to clinic
         else if (topic.contains(MqttMain.clinicTopicKeywords[3])) {
             addEmployee();
-            publishTopic = "pub/dental/clinic/dentist/add";
+            publishTopic = "pub/dental/clinics/dentist/add";
         }
         // Delete dentist from clinic
         else if (topic.contains(MqttMain.clinicTopicKeywords[4])) {
             removeEmployee();
-            publishTopic = "pub/dental/clinic/dentist/remove";
+            publishTopic = "pub/dental/clinics/dentist/remove";
         }
         else if (topic.contains(MqttMain.clinicTopicKeywords[5])) {
             deleteClinic();
-            publishTopic = "pub/dental/clinic/delete";   
+            publishTopic = "pub/dental/clinics/delete";   
         }
         else if (topic.contains("all")) {
             getAllClinics();
