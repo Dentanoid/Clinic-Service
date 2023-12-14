@@ -59,8 +59,6 @@ public class ClinicSchema implements CollectionSchema {
         ClinicSchema myObjTest = gson.fromJson(payload, getClass());
 
         // TODO: Refactor if-statements - IDEA: Interface or Abstract class 'DataRegisterer.java'
-
-        // The payload include
         if (operation.equals("create")) { // IDEA: Refactor register-data-parameters into ArrayList<String>, add them in the operation-if-statements and register(ArrayList<String> attributes) becomes a general method
             registerCreateClinicData(
                 // Data included in payload:

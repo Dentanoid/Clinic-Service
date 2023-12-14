@@ -122,6 +122,33 @@ public class DentalClinic implements Clinic {
     public void deleteClinic() {
         payloadDoc = getClinicDocument("delete", new ClinicSchema());
         publishString = payloadDoc.toJson();
+
+        String requestID = payloadDoc.getString("requestID");
+        String status = "200";
+
+        Document clinicToDelete = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+
+        // TODO: Refactor later
+        if (clinicToDelete != null) {
+            try {
+                clinicToDelete.append("requestID", requestID);
+                clinicToDelete.append("status", status);                
+
+                publishString = clinicToDelete.toJson();
+
+                clinicToDelete.remove("requestID");
+                DatabaseManager.clinicsCollection.deleteOne(clinicToDelete);
+            } catch (Exception exception) {
+                status = "500";
+                clinicToDelete.append("status", status);
+                publishString = clinicToDelete.toJson();
+            }
+        } else {
+            status = "404";
+            payloadDoc.append("status", status);
+            publishString = payloadDoc.toJson();
+        }
+
         DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", payloadDoc.get("clinic_id")));
     }
 
