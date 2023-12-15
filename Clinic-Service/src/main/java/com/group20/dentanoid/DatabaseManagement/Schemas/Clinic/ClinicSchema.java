@@ -14,7 +14,7 @@ public class ClinicSchema implements CollectionSchema {
     private String position;
     private String clinic_id;
     private ArrayList<String> employees;
-    private String requestID; // TODO: Add requestID for the remaining register-methods below
+    private String requestID;
 
     public ClinicSchema() { // IDEA: Run 'assignAttributesFromPayload()' in constructor
         this.clinic_name = " ";

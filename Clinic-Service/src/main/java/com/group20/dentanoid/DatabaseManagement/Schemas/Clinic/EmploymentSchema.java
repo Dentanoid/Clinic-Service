@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 public class EmploymentSchema implements CollectionSchema {
     private String clinic_id;
     private String dentist_id;
+    private String dentist_name;
     private String requestID;
 
     public EmploymentSchema() {
@@ -17,16 +18,23 @@ public class EmploymentSchema implements CollectionSchema {
         this.requestID = " ";
     }
 
+    public EmploymentSchema(String dentist_id, String dentist_name) {
+        this.dentist_id = dentist_id;
+        this.dentist_name = dentist_name;
+    }
+
     @Override
     public Document getDocument() {
         return new Document("clinic_id", this.clinic_id)
         .append("dentist_id", this.dentist_id)
+        .append("dentist_name", this.dentist_name)
         .append("requestID", this.requestID);
     }
 
-    public void registerData(String clinic_id, String dentist_id, String requestID) {
+    public void registerData(String clinic_id, String dentist_id, String dentist_name, String requestID) {
         this.clinic_id = clinic_id;
         this.dentist_id = dentist_id;
+        this.dentist_name = dentist_name;
         this.requestID = requestID;
     }
     
@@ -34,11 +42,14 @@ public class EmploymentSchema implements CollectionSchema {
     public void assignAttributesFromPayload(String payload, String operation) { // Potential values for 'operation' = ["add", "remove"]
         Gson gson = new Gson();
         EmploymentSchema myObjTest = gson.fromJson(payload, getClass());
-        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id; // TODO: Replace UUID.randomUUID with the dentist_id retrieved from dentist_client
+
+        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id;
+        String dentistName = operation.equals("add") ? myObjTest.dentist_name : "-1";
 
         registerData(
             myObjTest.clinic_id,
             dentistId,
+            dentistName,
             myObjTest.requestID
         );
     }
@@ -48,4 +59,10 @@ public class EmploymentSchema implements CollectionSchema {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
     }
+
+    /*
+    public String toString() {
+        return "{g}";
+    }
+    */
 }

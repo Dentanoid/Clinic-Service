@@ -260,18 +260,70 @@ public class DentalClinic implements Clinic {
                 status = "500";
             }
 
-            List<String> employees = (List<String>)clinic.get("employees");
-            String dentistToUpdate = payloadDoc.get("dentist_id").toString();
+            // List<String> employees = (List<String>)clinic.get("employees"); // PREVIOUS : WORKS
+            List<Document> employees = (List<Document>) clinic.get("employees");
+            // String dentistToUpdate = payloadDoc.get("dentist_id").toString(); // PREVIOUS
+
+            String dentistName = payloadDoc.get("dentist_name").toString();
+            String dentistId = payloadDoc.get("dentist_id").toString();
+
+            EmploymentSchema dentistToUpdate = new EmploymentSchema(dentistId, dentistName);
+            Document dentistToUpdateDoc = new Document()
+                    .append("dentist_id", dentistId)
+                    .append("dentist_name", dentistName);
+
+            System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+            System.out.println(dentistId);
+            System.out.println(dentistName);
+            System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
             
+            // Add dentist to clinic
             if (operation.equals("add")) {
-                employees.add(dentistToUpdate);
-            } else {
-                if (employees.contains(dentistToUpdate)) {
+                // employees.add(dentistToUpdate); // PREVIOUS
+                employees.add(dentistToUpdateDoc);
+            }
+            // Remove dentist from clinic
+            else {
+                /*
+                // PREVIOUS: WORKS
+                if (employees.contains(dentistToUpdate)) { // Check if the requested dentist to delete is present in the specified clinic
                     employees.remove(dentistToUpdate);
                 }   
                 else { // Employee to remove was not found, return status 404
                     status = "404";
                 }
+                */
+
+                /*
+                    Perform a linear search on the existing dentistIds in the clinic to
+                    check whetherthe dentist we want to delete exists in the DB
+                */
+                String currentId = "-1";
+                Integer i = -1;
+                while (i < employees.size() - 1 && currentId != dentistId) {
+                    currentId = employees.get(++i).get("dentist_id").toString();
+                    System.out.println(currentId);
+                }
+
+                boolean dentistExists = currentId.equals(dentistId);
+
+                if (dentistExists) {
+                    Document employeeToRemove = employees.get(i);
+                    employees.remove(employeeToRemove);
+                } else { // The requested dentist to delete does not exist in DB
+                    status = "404";
+                }
+
+                /*
+                if (employees.contains(dentistToUpdateDoc)) { // Check if the requested dentist to delete is present in the specified clinic
+                    employees.remove(dentistToUpdateDoc);
+
+                    employees.get(i).get("dentist_id");
+                }   
+                else { // Employee to remove was not found, return status 404
+                    status = "404";
+                }
+                */
             }
 
             // TODO: Refactor this
