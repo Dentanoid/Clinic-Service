@@ -299,7 +299,7 @@ public class DentalClinic implements Clinic {
     // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
     private void publishMessage() {
         if (publishString != "-1") {
-            MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishString);
+            MqttMain.publish(publishTopic, publishString);
         } else {
             System.out.println("Status 404 - Did not find DB-instance based on the given topic");
         }
@@ -321,21 +321,21 @@ public class DentalClinic implements Clinic {
         // Register clinic
         if (topic.contains(MqttMain.clinicTopicKeywords[1])) {
             registerClinic();
-            publishTopic = "pub/dentist/clinics/register";
+            publishTopic = "grp20/res/dental/clinics/register";
         }
         // Add dentist to clinic
         else if (topic.contains(MqttMain.clinicTopicKeywords[3])) {
             addEmployee();
-            publishTopic = "pub/dental/clinics/dentist/add";
+            publishTopic = "grp20/res/dental/clinics/add";
         }
         // Delete dentist from clinic
         else if (topic.contains(MqttMain.clinicTopicKeywords[4])) {
             removeEmployee();
-            publishTopic = "pub/dental/clinics/dentist/remove";
+            publishTopic = "grp20/res/dental/clinics/remove";
         }
         else if (topic.contains(MqttMain.clinicTopicKeywords[5])) {
             deleteClinic();
-            publishTopic = "pub/dental/clinics/delete";   
+            publishTopic = "grp20/res/dental/clinics/delete";   
         }
         else if (topic.contains("all")) {
             getAllClinics();

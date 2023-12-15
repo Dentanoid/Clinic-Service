@@ -8,6 +8,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 // import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,8 +21,9 @@ import com.group20.dentanoid.DatabaseManagement.PayloadParser;
 import com.group20.dentanoid.TopicManagement.TopicManager;
 
 public class ClinicService {
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException, MqttException {
         DatabaseManager.initializeDatabaseConnection();
+        MqttMain.initializeMqttConnection();
 
         /*
             The two methods below are temporarily used in this script and
@@ -28,8 +31,6 @@ public class ClinicService {
         */
         // DatabaseManager.deleteClinicCollectionInstances();
         // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "TestClinic23888");
-
-        MqttMain.initializeMqttConnection();
     }
 
     // Once this service has recieved the payload, it has to be managed

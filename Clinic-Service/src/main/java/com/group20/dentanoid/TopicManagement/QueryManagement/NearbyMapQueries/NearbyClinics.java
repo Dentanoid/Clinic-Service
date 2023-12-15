@@ -126,6 +126,6 @@ public class NearbyClinics extends NearbyQuery {
         Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey);
         String publishMessage = formatRetrievedClinics(clinicsToDisplay, publishSchema);
 
-        MqttMain.subscriptionManagers.get(topic).publishMessage(publishTopic, publishMessage);
+        MqttMain.publish(publishTopic, publishMessage);
     }
 }

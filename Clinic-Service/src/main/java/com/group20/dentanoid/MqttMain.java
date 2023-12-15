@@ -13,7 +13,6 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class MqttMain {
-    public static HashMap<String, MqttMain> subscriptionManagers; // Format: // <"subTopic", new MqttMain Object>
     private static final String broker = "tcp://broker.hivemq.com:1883";
     private static MqttClient client;
 
@@ -88,30 +87,25 @@ public class MqttMain {
 
     private static final String[] subscriptions = {
             // Clinics: CREATE & DELETE
-            "sub/dental/clinics/register", // grp20/dental/clinic/register
-            "sub/dental/clinics/dentist/add", // grp20/dental/clinic/add
-            "sub/dental/clinics/dentist/remove", // grp20/dental/clinic/dentist/remove
-            "sub/dental/clinics/delete", // grp20/dental/clinic/delete
+            "grp20/req/dental/clinics/register",
+            "grp20/req/dental/clinics/add",
+            "grp20/req/dental/clinics/remove",
+            "grp20/req/dental/clinics/delete",
 
             // Clinics: GET
             "grp20/dental/req/clinics/get/one",
             "grp20/dental/req/clinics/get/all",
 
-            // Queries
+            // Queries: GET
             "grp20/req/map/query/nearby/fixed/get",
             "grp20/req/map/query/nearby/radius/get"
     };
 
-    int qos = 0;
+    private static int qos = 0;
 
     // Create new instances of MqttMain that are mapped to their respective topics
-    public static void initializeMqttConnection() {
-        subscriptionManagers = new HashMap<>();
-
-        for (int i = 0; i < subscriptions.length; i++) {
-            subscriptionManagers.put(subscriptions[i], new MqttMain());
-            subscriptionManagers.get(subscriptions[i]).subscribe(subscriptions[i]);
-        }
+    public static void initializeMqttConnection() throws MqttException {
+        getInstance().subscribe(subscriptions);
     }
 
     public void publishMessage(String topic, String content) {
@@ -197,5 +191,27 @@ public class MqttMain {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void publish(String topic, String content) {
+        MqttMessage message = new MqttMessage(content.getBytes());
+        message.setQos(qos);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        executorService.execute(() -> {
+
+            try {
+                getInstance().publish(topic, message);
+            } catch (MqttException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+        executorService.shutdown();
+        System.out.println("Message published");
+    }
+
+    public static MqttClient getClient() {
+        return client;
     }
 }
