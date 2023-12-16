@@ -1,5 +1,7 @@
 package com.group20.dentanoid.DatabaseManagement;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.TopicManagement.TopicOperator;
+import com.group20.dentanoid.TopicManagement.ClinicManagement.Clinic;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -10,7 +12,11 @@ import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
+
+import javax.print.Doc;
 
 public class PayloadParser {
     public static Object getAttributeFromPayload(String payload, String attributeName, CollectionSchema classSchema) {
@@ -34,6 +40,11 @@ public class PayloadParser {
         Gson gson = new Gson();
         CollectionSchema schemaClass = gson.fromJson(payload, classSchema.getClass());
         return schemaClass.getDocument();
+    }
+
+    public static Document convertPayloadToDocumentGeneral(String payload) { // TODO: Change name
+        Document doc = Document.parse(payload);
+        return doc;
     }
 
     // Get ObjectId of already existing DB-instance that has content identical to the payload
@@ -72,5 +83,39 @@ public class PayloadParser {
         String payload = gson.toJson(jsonObject);
 
         return payload;
+    }
+
+    // Return the expected format - IDEA: Clinic.java and Query.java has this method --> TopicOperator.java
+    public static String parseToAPI(TopicOperator topicOperator, Document payloadDoc, boolean addDBInstance) { // TODO: Rename later: Return publishMessage JSON string
+        String status = "200";
+        String requestID = payloadDoc.remove("requestID").toString();
+
+        try {
+            topicOperator.executeRequestedOperation(); // IDEA: Add 'status' as an attribute inside this method
+        } catch (Exception exception) {
+            status = "500";
+        }
+
+        // Add the expected attributes of the APIs
+        payloadDoc.append("requestID", requestID);
+        payloadDoc.append("status", status);
+
+        return payloadDoc.toJson();
+    }
+
+    public static String parsePublishMessage(Document payloadDoc, String requestID, String status) {
+        payloadDoc.append("requestID", requestID);
+        payloadDoc.append("status", status);
+        return payloadDoc.toJson();
+    }
+
+    public static String parsePublishMessage(String payloadData, String requestID, String status) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("clinics", payloadData.toString());
+        map.put("requestID", requestID.toString());
+        map.put("status", Integer.parseInt(status));
+
+        Gson gson = new Gson();
+        return gson.toJson(map);
     }
 }

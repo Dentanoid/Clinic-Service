@@ -31,10 +31,16 @@ public class EmploymentSchema implements CollectionSchema {
         .append("requestID", this.requestID);
     }
 
-    public void registerData(String clinic_id, String dentist_id, String dentist_name, String requestID) {
+    public void registerAddData(String clinic_id, String dentist_id, String dentist_name, String requestID) {
         this.clinic_id = clinic_id;
         this.dentist_id = dentist_id;
         this.dentist_name = dentist_name;
+        this.requestID = requestID;
+    }
+
+    public void registerRemoveData(String clinic_id, String dentist_id, String requestID) {
+        this.clinic_id = clinic_id;
+        this.dentist_id = dentist_id;
         this.requestID = requestID;
     }
     
@@ -42,16 +48,22 @@ public class EmploymentSchema implements CollectionSchema {
     public void assignAttributesFromPayload(String payload, String operation) { // Potential values for 'operation' = ["add", "remove"]
         Gson gson = new Gson();
         EmploymentSchema myObjTest = gson.fromJson(payload, getClass());
-
         String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id;
-        String dentistName = operation.equals("add") ? myObjTest.dentist_name : "-1";
 
-        registerData(
-            myObjTest.clinic_id,
-            dentistId,
-            dentistName,
-            myObjTest.requestID
-        );
+        if (operation.equals("add")) {
+            registerAddData(
+                myObjTest.clinic_id,
+                dentistId,
+                myObjTest.dentist_name,
+                myObjTest.requestID
+            );
+        } else {
+            registerRemoveData(
+                myObjTest.clinic_id,
+                dentistId,
+                myObjTest.requestID
+            );
+        }
     }
 
     @Override
@@ -59,10 +71,4 @@ public class EmploymentSchema implements CollectionSchema {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
     }
-
-    /*
-    public String toString() {
-        return "{g}";
-    }
-    */
 }

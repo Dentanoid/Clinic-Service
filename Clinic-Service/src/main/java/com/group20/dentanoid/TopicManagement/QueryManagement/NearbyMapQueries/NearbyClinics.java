@@ -128,4 +128,16 @@ public class NearbyClinics extends NearbyQuery {
 
         MqttMain.publish(publishTopic, publishMessage);
     }
+
+    @Override
+    public String parsePublishMessage(Document payloadDoc, String operation) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'parsePublishMessage'");
+    }
+
+    @Override
+    public void parsePublishMessage() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'parsePublishMessage'");
+    }
 }

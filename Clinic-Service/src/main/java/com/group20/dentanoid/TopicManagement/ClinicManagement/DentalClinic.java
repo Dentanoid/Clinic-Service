@@ -29,10 +29,14 @@ import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 public class DentalClinic implements Clinic {
     private String publishTopic = "-1";
     private Document payloadDoc = null;
-    private String publishString = "-1"; // Used only for GET methods, otherwise 'publishPayloadDoc' is used --> TODO: Refactor into a more clear structure
+    private String publishMessage = "-1";
 
     private String topic;
     private String payload;
+
+    private String status = "";
+    private String requestID = "";
+    private String clinicsData = "-1";
 
     // TODO: Make 'topic' and 'payload' a private String attribute to avoid reduntant passing as a parameter across all methods
     
@@ -48,22 +52,15 @@ public class DentalClinic implements Clinic {
     }
 
     public void registerClinic() {
-        String status = "200";
-
         payloadDoc = getClinicDocument("create", new ClinicSchema());
-        String requestID = payloadDoc.remove("requestID").toString(); // Don't store requestID in DB
+        requestID = payloadDoc.remove("requestID").toString();
 
         try {
             DatabaseManager.clinicsCollection.insertOne(payloadDoc);
         }
         catch (Exception exception) {
             status = "500";
-            publishString = payloadDoc.toJson();
         }
-
-        payloadDoc.append("requestID", requestID);
-        payloadDoc.append("status", status);
-        publishString = payloadDoc.toJson();
 
         // Note for developers: This code is in development
         /*
@@ -121,80 +118,49 @@ public class DentalClinic implements Clinic {
 
     public void deleteClinic() {
         payloadDoc = getClinicDocument("delete", new ClinicSchema());
-        publishString = payloadDoc.toJson();
+        requestID = payloadDoc.getString("requestID");
+        String clinicId = payloadDoc.get("clinic_id").toString();
 
-        String requestID = payloadDoc.getString("requestID");
-        String status = "200";
+        Document clinicToDelete = getClinicById(clinicId);
 
-        Document clinicToDelete = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
-
-        // TODO: Refactor later
         if (clinicToDelete != null) {
             try {
-                clinicToDelete.append("requestID", requestID);
-                clinicToDelete.append("status", status);                
-
-                publishString = clinicToDelete.toJson();
-
-                clinicToDelete.remove("requestID");
+                payloadDoc = clinicToDelete; // TODO: Find a better code solution for this
                 DatabaseManager.clinicsCollection.deleteOne(clinicToDelete);
             } catch (Exception exception) {
                 status = "500";
-                clinicToDelete.append("status", status);
-                publishString = clinicToDelete.toJson();
             }
         } else {
             status = "404";
-            payloadDoc.append("status", status);
-            publishString = payloadDoc.toJson();
         }
-
-        DatabaseManager.clinicsCollection.deleteOne(eq("clinic_id", payloadDoc.get("clinic_id")));
     }
 
     public void getOneClinic() {
-        Gson gson = new Gson();
-        Document retrievedPayloadDoc = getClinicDocument("getOne", new ClinicSchema());
+        payloadDoc = getClinicDocument("getOne", new ClinicSchema());
+        requestID = payloadDoc.get("requestID").toString();
+        String clinicId = payloadDoc.get("clinic_id").toString();
 
-        String clinicJson = "-1";
-        String requestID = retrievedPayloadDoc.get("requestID").toString();
-        String statusCode = "200";        
+        Document clinic = getClinicById(clinicId);
 
-        Map<String, Object> map = new HashMap<>(); // TODO: Refactor 'Map-Payload' into PayloadParser.java and use in NearbyClinics.java
-
-        try {
-            Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", retrievedPayloadDoc.get("clinic_id"))).first();
-
-            if (clinic == null) { // REFACTORING IDEA: StatusCode class - Constructor value '404' --> Put -1 on every attribute except 'status'
-                statusCode = "404";
+        if (clinic != null) {
+            try {
+                Gson gson = new Gson();
+                clinicsData = gson.toJson(clinic);
             }
-            else {
-                clinicJson = gson.toJson(clinic);
+            catch (Exception e) {
+                System.out.println(e.getMessage());
+                status = "500";
             }
+        } else {
+            status = "404";
         }
-        catch (Exception e) {
-            System.out.println(e.getMessage());
-            statusCode = "500";
-        }
-
-
-        // Refactor: PayloadParser.createJSONPayload(map)
-        map.put("clinics", clinicJson);
-        map.put("requestID", requestID);
-        map.put("status", Integer.parseInt(statusCode));
-
-        publishString = gson.toJson(map);
     }
 
     public void getAllClinics() {
         Document retrievedPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
         FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find();
 
-        // TODO: Refactor later
-        Gson gson = new Gson();
-        String clinicsJson = "-1";
-        String requestID = retrievedPayloadDoc.get("requestID").toString();
-        String statusCode = "200";
+        requestID = retrievedPayloadDoc.get("requestID").toString();
 
         try {
             Iterator<Document> it = allRegisteredClinics.iterator();
@@ -205,20 +171,13 @@ public class DentalClinic implements Clinic {
                 clinics.add(currentClinic);
             }
 
-            clinicsJson = gson.toJson(clinics);
+            Gson gson = new Gson();
+            clinicsData = gson.toJson(clinics);
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
-            statusCode = "500";
+            status = "500";
         }
-
-        // TODO: Refactor later
-        Map<String, Object> map = new HashMap<>(); // TODO: Refactor into PayloadParser.java and use in NearbyClinics.java
-        map.put("clinics", clinicsJson.toString());
-        map.put("requestID", requestID.toString());
-        map.put("status", Integer.parseInt(statusCode));
-
-        publishString = gson.toJson(map);
     }
 
     public void addEmployee() {
@@ -242,116 +201,57 @@ public class DentalClinic implements Clinic {
         employmentObject.assignAttributesFromPayload(payload, operation);
 
         payloadDoc = employmentObject.getDocument();
+        requestID = payloadDoc.remove("requestID").toString();
 
-        String status = "200";
-        String requestID = payloadDoc.get("requestID").toString();
+        String clinicId = payloadDoc.get("clinic_id").toString();
+        
+        Document clinic = getClinicById(clinicId);
+        Document updateDoc = getClinicById(clinicId);
 
-        Document clinic = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
-
-        // Check if payload is valid and if the clinic was found
-        if (payloadDoc != null && clinic != null) {
-            Document updateDoc = new Document();
-
+        if (clinic != null) {
             try {
-                // TODO: Refactor this
-                updateDoc = DatabaseManager.clinicsCollection.find(eq("clinic_id", payloadDoc.get("clinic_id"))).first();
+                List<Document> employees = (List<Document>) clinic.get("employees"); 
+                String dentistId = payloadDoc.get("dentist_id").toString();
+                
+                // Add dentist to clinic
+                if (operation.equals("add")) {                    
+                    String dentistName = payloadDoc.get("dentist_name").toString();
+
+                    employees.add(new Document()
+                        .append("dentist_id", dentistId)
+                        .append("dentist_name", dentistName));
+                }
+                // Remove dentist from clinic
+                else {
+                    int dentistIdx = DatabaseManager.getIndexOfNestedInstanceList(clinic, "employees", "dentist_id", dentistId);
+
+                    if (dentistIdx != -1) { // If the dentist to delete exists in database
+                        employees.remove(dentistIdx);
+
+                    } else {
+                        status = "404";
+                    }
+                }
+
+                updateDoc.replace("employees", employees);
+
+                DatabaseManager.updateInstanceByAttributeFilter("clinic_id", clinicId, updateDoc);
+
+                String employeeOperation = operation.equals("add") ? "added to" : "removed from";
+                System.out.println("Employee successfully " + employeeOperation +  " clinic");
             }
             catch (Exception exception) {
                 status = "500";
             }
-
-            // List<String> employees = (List<String>)clinic.get("employees"); // PREVIOUS : WORKS
-            List<Document> employees = (List<Document>) clinic.get("employees");
-            // String dentistToUpdate = payloadDoc.get("dentist_id").toString(); // PREVIOUS
-
-            String dentistName = payloadDoc.get("dentist_name").toString();
-            String dentistId = payloadDoc.get("dentist_id").toString();
-
-            EmploymentSchema dentistToUpdate = new EmploymentSchema(dentistId, dentistName);
-            Document dentistToUpdateDoc = new Document()
-                    .append("dentist_id", dentistId)
-                    .append("dentist_name", dentistName);
-
-            System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-            System.out.println(dentistId);
-            System.out.println(dentistName);
-            System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
-            
-            // Add dentist to clinic
-            if (operation.equals("add")) {
-                // employees.add(dentistToUpdate); // PREVIOUS
-                employees.add(dentistToUpdateDoc);
-            }
-            // Remove dentist from clinic
-            else {
-                /*
-                // PREVIOUS: WORKS
-                if (employees.contains(dentistToUpdate)) { // Check if the requested dentist to delete is present in the specified clinic
-                    employees.remove(dentistToUpdate);
-                }   
-                else { // Employee to remove was not found, return status 404
-                    status = "404";
-                }
-                */
-
-                /*
-                    Perform a linear search on the existing dentistIds in the clinic to
-                    check whetherthe dentist we want to delete exists in the DB
-                */
-                String currentId = "-1";
-                Integer i = -1;
-                while (i < employees.size() - 1 && currentId != dentistId) {
-                    currentId = employees.get(++i).get("dentist_id").toString();
-                    System.out.println(currentId);
-                }
-
-                boolean dentistExists = currentId.equals(dentistId);
-
-                if (dentistExists) {
-                    Document employeeToRemove = employees.get(i);
-                    employees.remove(employeeToRemove);
-                } else { // The requested dentist to delete does not exist in DB
-                    status = "404";
-                }
-
-                /*
-                if (employees.contains(dentistToUpdateDoc)) { // Check if the requested dentist to delete is present in the specified clinic
-                    employees.remove(dentistToUpdateDoc);
-
-                    employees.get(i).get("dentist_id");
-                }   
-                else { // Employee to remove was not found, return status 404
-                    status = "404";
-                }
-                */
-            }
-
-            // TODO: Refactor this
-            updateDoc.replace("employees", employees);
-
-            updateDoc.append("requestID", requestID);
-            updateDoc.append("status", status);
-
-            publishString = updateDoc.toJson();
-
-            Bson query = eq("clinic_id", payloadDoc.get("clinic_id"));
-            updateDoc.remove("requestID"); // REFACTORING IDEA: Create method in PayloadParser.java --> ReturnStatus() where the document's requestID among other generalities are performed
-            updateDoc.remove("status");
-            DatabaseManager.clinicsCollection.replaceOne(query, updateDoc);
-
-            String employeeOperation = operation.equals("add") ? "added to" : "removed from";
-            System.out.println("Employee successfully " + employeeOperation +  " clinic");
         } else {
             status = "404";
-            payloadDoc.append("status", status);
-            publishString = payloadDoc.toJson();
         }
     }
 
     // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
     private void publishMessage() {
-        if (publishString != "-1") {
-            MqttMain.publish(publishTopic, publishString);
+        if (publishMessage != "-1") {
+            MqttMain.publish(publishTopic, publishMessage);
         } else {
             System.out.println("Status 404 - Did not find DB-instance based on the given topic");
         }
@@ -365,6 +265,7 @@ public class DentalClinic implements Clinic {
     */
     private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
         String publishTopic = "-1";
+        status = "200";
 
         // TODO:
         // 1) Refactor away the if-statements below
@@ -398,6 +299,31 @@ public class DentalClinic implements Clinic {
             publishTopic = "grp20/dental/res/clinics/get/one";
         }
 
+        parsePublishMessage();
+        System.out.println(publishMessage);
+
         return publishTopic;
+    }
+
+    @Override
+    public void parsePublishMessage() { // IDEA: Create method in PayloadParser.java --> parsePublishMessage(boolean modifyJSONStructure), if bool true, add map<> new attributes
+        
+        if (clinicsData.equals("-1")) {
+
+            /*
+            // Add the expected attributes of the APIs
+            payloadDoc.append("requestID", requestID);
+            payloadDoc.append("status", status);
+            publishMessage = payloadDoc.toJson();
+            */
+
+            publishMessage = PayloadParser.parsePublishMessage(payloadDoc, requestID, status);
+        } else {
+            publishMessage = PayloadParser.parsePublishMessage(clinicsData, requestID, status);
+        }
+    }
+
+    private Document getClinicById(String clinicId) {
+        return DatabaseManager.clinicsCollection.find(eq("clinic_id", clinicId)).first();
     }
 }

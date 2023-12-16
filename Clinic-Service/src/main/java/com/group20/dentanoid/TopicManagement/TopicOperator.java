@@ -1,4 +1,5 @@
 package com.group20.dentanoid.TopicManagement;
+import org.bson.Document;
 
 // This interface is a 'super interface' of 'Clinic.java' and 'Query.java'
 // and is the general abstraction of all possible operations we can derive
@@ -7,4 +8,5 @@ package com.group20.dentanoid.TopicManagement;
 // Query operations: Query.java --> NearbyClinics.java
 public interface TopicOperator {
     public void executeRequestedOperation();
+    public void parsePublishMessage();
 }
