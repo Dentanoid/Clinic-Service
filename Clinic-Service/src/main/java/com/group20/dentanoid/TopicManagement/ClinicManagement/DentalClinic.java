@@ -306,17 +306,8 @@ public class DentalClinic implements Clinic {
     }
 
     @Override
-    public void parsePublishMessage() { // IDEA: Create method in PayloadParser.java --> parsePublishMessage(boolean modifyJSONStructure), if bool true, add map<> new attributes
-        
+    public void parsePublishMessage() {
         if (clinicsData.equals("-1")) {
-
-            /*
-            // Add the expected attributes of the APIs
-            payloadDoc.append("requestID", requestID);
-            payloadDoc.append("status", status);
-            publishMessage = payloadDoc.toJson();
-            */
-
             publishMessage = PayloadParser.parsePublishMessage(payloadDoc, requestID, status);
         } else {
             publishMessage = PayloadParser.parsePublishMessage(clinicsData, requestID, status);

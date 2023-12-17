@@ -63,3 +63,5 @@ deploy_job:
     
     script:
         - echo "Maven deploy started"
+        - cd "$SERVICE_PATH"
+        - "mvn clean compile assembly:single"
