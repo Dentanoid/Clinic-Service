@@ -1,6 +1,9 @@
 package com.group20.dentanoid.TopicManagement.ClinicManagement;
 
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import com.google.gson.Gson;
 import org.bson.Document;
@@ -13,11 +16,14 @@ import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.HashMap;
+import java.util.List;
 
+
+@TestMethodOrder(OrderAnnotation.class)
 class DentalClinicTest {
     @Test
+    @Order(1)
     void registerClinic() {
-   
         // Define data variables
         String topic = "grp20/req/dental/clinics/register";
         String expectedClinicName = "Happy Teeth - Unit Test Clinic";
@@ -32,13 +38,14 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
-        Document registeredClinic = PayloadParser.convertPayloadToDocumentGeneral(dentalClinic.getPublishMessage());
+        Document registeredClinic = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
         String actualClinicName = registeredClinic.getString("clinic_name");
 
         assertEquals(expectedClinicName, actualClinicName);
     }
 
     @Test
+    @Order(2)
     void getOneClinic() {
         String topic = "grp20/req/dental/clinics/get/one";
         DatabaseManager.initializeDatabaseConnection();
@@ -52,21 +59,87 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
-        Document retrievedClinic = PayloadParser.convertPayloadToDocumentGeneral(dentalClinic.getPublishMessage());
+        Document retrievedClinic = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
 
         assertNotNull(retrievedClinic);
     }
 
     @Test
+    @Order(3)
     void addEmployee() {
+        String topic = "grp20/req/dental/clinics/add";
+        String expectedDentistName = "Olof";
 
+        DatabaseManager.initializeDatabaseConnection();
+
+        Document clinic = PayloadParser.findDocumentByAttributeValue(DatabaseManager.clinicsCollection, "clinic_name", "Happy Teeth - Unit Test Clinic");
+        String clinicId = clinic.getString("clinic_id");
+
+        String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
+            put("clinic_id", clinicId);
+            put("dentist_name", expectedDentistName);
+            put("requestID", "requestID1253");
+        }});
+
+        DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        Document jsonResponse = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
+
+        String actualDentistName = jsonResponse.getString("dentist_name");
+        assertEquals(expectedDentistName, actualDentistName);
     }
 
     @Test
+    @Order(4)
+    /*
+        Since 'clinic_id' and 'dentist_id' are automatically generated in the previous tests,
+        we cannot predict their values. Instead, we use the name of the clinic and dentist to
+        access and test them.
+    */
     void removeEmployee() {
+        String topic = "grp20/req/dental/clinics/remove";
+        String expectedDentistName = "Olof";
+
+        DatabaseManager.initializeDatabaseConnection();
+
+        Document clinic = PayloadParser.findDocumentByAttributeValue(DatabaseManager.clinicsCollection, "clinic_name", "Happy Teeth - Unit Test Clinic");
+        String clinicId = clinic.getString("clinic_id");
+
+        int i = DatabaseManager.getIndexOfNestedInstanceList(clinic, "employees", "dentist_name", "Olof");
+        List<Document> employees = (List<Document>) clinic.get("employees");
+
+        String expectedDentistId = employees.get(i).getString("dentist_id");
+
+        String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
+            put("clinic_id", clinicId);
+            put("dentist_id", expectedDentistId);
+            put("requestID", "requestID1253");
+        }});
+
+        DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        Document jsonResponse = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
+        String actualDentistId = jsonResponse.getString("dentist_id");
+        
+        assertEquals(expectedDentistId, actualDentistId);
     }
 
     @Test
+    @Order(5)
     void deleteClinic() {
+        String topic = "grp20/req/dental/clinics/delete";
+        DatabaseManager.initializeDatabaseConnection();
+
+        Document clinic = PayloadParser.findDocumentByAttributeValue(DatabaseManager.clinicsCollection, "clinic_name", "Happy Teeth - Unit Test Clinic");
+        String expectedClinicId = clinic.getString("clinic_id");
+
+        String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
+            put("clinic_id", expectedClinicId);
+            put("requestID", "requestID1253");
+        }});
+
+        DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        Document jsonResponse = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
+        String actualClinicId = jsonResponse.getString("clinic_id");
+        
+        assertEquals(expectedClinicId, actualClinicId);
     }
 }

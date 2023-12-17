@@ -42,8 +42,9 @@ public class PayloadParser {
         return schemaClass.getDocument();
     }
 
-    public static Document convertPayloadToDocumentGeneral(String payload) { // TODO: Change name
-        Document doc = Document.parse(payload);
+    // Convert a json-formatted string to a document without any schema-bounds
+    public static Document convertJSONToDocument(String jsonString) {
+        Document doc = Document.parse(jsonString);
         return doc;
     }
 
