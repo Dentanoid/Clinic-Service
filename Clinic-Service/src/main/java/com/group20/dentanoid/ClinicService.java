@@ -33,14 +33,13 @@ public class ClinicService {
         // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "TestClinic23888");
     }
 
-    // Once this service has recieved the payload, it has to be managed
+    /*
+        This method is executed from MqttMain.java once the clinic service has recieved a payload
+        from one of the subscription topics. It takes two parameters 'topic' and 'payload' and
+        forwards it an instance of TopicManager.java which in turn directs the codeflow to the
+        correct '.java' class to perform the requested action.
+    */
     public static void manageRecievedPayload(String topic, String payload) {
-        System.out.println("**********************************************");
-        System.out.println("MANAGE RECIEVED PAYLOAD");
-        System.out.println(topic);
-        System.out.println(payload);
-        System.out.println("**********************************************");
-
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);
     }

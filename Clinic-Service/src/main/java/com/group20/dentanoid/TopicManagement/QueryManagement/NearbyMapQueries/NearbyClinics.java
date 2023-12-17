@@ -95,19 +95,12 @@ public class NearbyClinics extends NearbyQuery {
             System.out.println(e.getMessage());
         }
 
-        // Publish message to Patient API
-        Map<String, Object> map = new HashMap<>();
-        map.put("clinics", clinicsJson.toString());
-        map.put("requestID", requestId.toString());
-        map.put("status", Integer.parseInt(statusCode));
-
-        System.out.println(gson.toJson(map));
-        return gson.toJson(map);
+        return PayloadParser.parsePublishMessage(clinicsJson, requestId, statusCode);
     }
 
     @Override
-    public void executeRequestedOperation() { // TODO: Remove string-arguments from parameters and put them as class-attributes
-        String publishTopic = "grp20/req/map/nearby";
+    public void executeRequestedOperation() {
+        String publishTopic = "grp20/req/map/nearby"; // TODO: Change 'req' to 'res'
 
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue

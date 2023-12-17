@@ -27,10 +27,11 @@ import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
+    private static String publishTopicFormat = "grp20/res/dental/clinics/";
     private String publishTopic = "-1";
-    private Document payloadDoc = null;
     private String publishMessage = "-1";
 
+    private Document payloadDoc = null;
     private String topic;
     private String payload;
 
@@ -38,7 +39,9 @@ public class DentalClinic implements Clinic {
     private String requestID = "";
     private String clinicsData = "-1";
 
-    // TODO: Make 'topic' and 'payload' a private String attribute to avoid reduntant passing as a parameter across all methods
+    // Name of payload attributes
+    private String clinic_id = "clinic_id";
+    private String reqID = "requestID";
     
     public DentalClinic(String topic, String payload) {
         this.topic = topic;
@@ -53,7 +56,7 @@ public class DentalClinic implements Clinic {
 
     public void registerClinic() {
         payloadDoc = getClinicDocument("create", new ClinicSchema());
-        requestID = payloadDoc.remove("requestID").toString();
+        requestID = payloadDoc.remove(reqID).toString();
 
         try {
             DatabaseManager.clinicsCollection.insertOne(payloadDoc);
@@ -116,16 +119,17 @@ public class DentalClinic implements Clinic {
         // ------------------------------------------------------------
     }
 
+    // Delete a clinic by accessing corresponding 'clinic_id'
     public void deleteClinic() {
         payloadDoc = getClinicDocument("delete", new ClinicSchema());
-        requestID = payloadDoc.getString("requestID");
-        String clinicId = payloadDoc.get("clinic_id").toString();
+        requestID = payloadDoc.getString(reqID);
 
+        String clinicId = payloadDoc.get(clinic_id).toString();
         Document clinicToDelete = getClinicById(clinicId);
 
         if (clinicToDelete != null) {
             try {
-                payloadDoc = clinicToDelete; // TODO: Find a better code solution for this
+                DatabaseManager.replaceDocument(payloadDoc, clinicToDelete);
                 DatabaseManager.clinicsCollection.deleteOne(clinicToDelete);
             } catch (Exception exception) {
                 status = "500";
@@ -135,11 +139,12 @@ public class DentalClinic implements Clinic {
         }
     }
 
+    // Get a clinic by 'clinic_id'
     public void getOneClinic() {
         payloadDoc = getClinicDocument("getOne", new ClinicSchema());
-        requestID = payloadDoc.get("requestID").toString();
-        String clinicId = payloadDoc.get("clinic_id").toString();
+        requestID = payloadDoc.getString(reqID);
 
+        String clinicId = payloadDoc.get(clinic_id).toString();
         Document clinic = getClinicById(clinicId);
 
         if (clinic != null) {
@@ -156,11 +161,12 @@ public class DentalClinic implements Clinic {
         }
     }
 
+    // Get all existing clinics in 'clinicsCollection'
     public void getAllClinics() {
         Document retrievedPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
         FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find();
 
-        requestID = retrievedPayloadDoc.get("requestID").toString();
+        requestID = retrievedPayloadDoc.get(reqID).toString();
 
         try {
             Iterator<Document> it = allRegisteredClinics.iterator();
@@ -180,30 +186,32 @@ public class DentalClinic implements Clinic {
         }
     }
 
+    // Add a new object {dentist_name: "name", dentist_id: "id"} to 'employees' array for the specified clinic
     public void addEmployee() {
         updateClinicEmployees("add");
     }
 
+    // Remove the object inside of 'employees' that has the specified 'dentist_id'
     public void removeEmployee() {
         updateClinicEmployees("remove");
     }
 
     // Register or delete clinic from system
-    private Document getClinicDocument(String operation, CollectionSchema collectionSchema) { // TODO: Replace this method in the method below where we use EmploymentSchema
+    private Document getClinicDocument(String operation, CollectionSchema collectionSchema) {
         CollectionSchema clinicObject = new ClinicSchema();
         clinicObject.assignAttributesFromPayload(payload, operation);
         return clinicObject.getDocument();
     }
 
      // Accounts for addition and removal of dentists
-    private void updateClinicEmployees(String operation) { // TODO: Refactor further according to single responsibility principle
+    private void updateClinicEmployees(String operation) {
         EmploymentSchema employmentObject = new EmploymentSchema();
         employmentObject.assignAttributesFromPayload(payload, operation);
 
         payloadDoc = employmentObject.getDocument();
-        requestID = payloadDoc.remove("requestID").toString();
+        requestID = payloadDoc.remove(reqID).toString();
 
-        String clinicId = payloadDoc.get("clinic_id").toString();
+        String clinicId = payloadDoc.get(clinic_id).toString();
         
         Document clinic = getClinicById(clinicId);
         Document updateDoc = getClinicById(clinicId);
@@ -225,7 +233,7 @@ public class DentalClinic implements Clinic {
                 else {
                     int dentistIdx = DatabaseManager.getIndexOfNestedInstanceList(clinic, "employees", "dentist_id", dentistId);
 
-                    if (dentistIdx != -1) { // If the dentist to delete exists in database
+                    if (dentistIdx != -1) {
                         employees.remove(dentistIdx);
 
                     } else {
@@ -234,11 +242,7 @@ public class DentalClinic implements Clinic {
                 }
 
                 updateDoc.replace("employees", employees);
-
-                DatabaseManager.updateInstanceByAttributeFilter("clinic_id", clinicId, updateDoc);
-
-                String employeeOperation = operation.equals("add") ? "added to" : "removed from";
-                System.out.println("Employee successfully " + employeeOperation +  " clinic");
+                DatabaseManager.updateInstanceByAttributeFilter(clinic_id, clinicId, updateDoc);
             }
             catch (Exception exception) {
                 status = "500";
@@ -264,7 +268,7 @@ public class DentalClinic implements Clinic {
      based on the performed operation.
     */
     private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
-        String publishTopic = "-1";
+        String operation = "-1";
         status = "200";
 
         // TODO:
@@ -274,35 +278,33 @@ public class DentalClinic implements Clinic {
         // Register clinic
         if (topic.contains(MqttMain.clinicTopicKeywords[1])) {
             registerClinic();
-            publishTopic = "grp20/res/dental/clinics/register";
+            operation = "register";
         }
         // Add dentist to clinic
         else if (topic.contains(MqttMain.clinicTopicKeywords[3])) {
             addEmployee();
-            publishTopic = "grp20/res/dental/clinics/add";
+            operation = "add";
         }
         // Delete dentist from clinic
         else if (topic.contains(MqttMain.clinicTopicKeywords[4])) {
             removeEmployee();
-            publishTopic = "grp20/res/dental/clinics/remove";
+            operation = "remove";
         }
         else if (topic.contains(MqttMain.clinicTopicKeywords[5])) {
             deleteClinic();
-            publishTopic = "grp20/res/dental/clinics/delete";   
+            operation = "delete"; 
         }
         else if (topic.contains("all")) {
             getAllClinics();
-            publishTopic = "grp20/dental/res/clinics/get/all";
+            operation = "get/all";
         }
-        else if (topic.contains("get")) {
+        else if (topic.contains("one")) {
             getOneClinic();
-            publishTopic = "grp20/dental/res/clinics/get/one";
+            operation = "get/one";
         }
 
         parsePublishMessage();
-        System.out.println(publishMessage);
-
-        return publishTopic;
+        return publishTopicFormat + operation;
     }
 
     @Override
@@ -315,6 +317,6 @@ public class DentalClinic implements Clinic {
     }
 
     private Document getClinicById(String clinicId) {
-        return DatabaseManager.clinicsCollection.find(eq("clinic_id", clinicId)).first();
+        return DatabaseManager.clinicsCollection.find(eq(clinic_id, clinicId)).first();
     }
 }

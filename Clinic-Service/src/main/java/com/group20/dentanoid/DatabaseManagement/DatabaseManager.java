@@ -80,8 +80,17 @@ public class DatabaseManager {
         return currentId.equals(queryValue) ? i : -1;
     }
 
+    /*
+       Update instances in the database by first defining a query whose values matches the documents to be
+       updated, and then replacing their content with what's contained in the'newContent' parameter
+     */
     public static void updateInstanceByAttributeFilter(String attributeName, String filterValue, Document newContent) {
         Bson query = eq(attributeName, filterValue);
         DatabaseManager.clinicsCollection.replaceOne(query, newContent);
+    }
+
+    public static void replaceDocument(Document docA, Document docB) {
+        docA.clear();
+        docA.putAll(docB);
     }
 }
