@@ -8,6 +8,7 @@ stages:
     - test
     - package
     - deploy
+    - bucket
 
 cache:
     - build
@@ -65,3 +66,11 @@ deploy_job:
         - echo "Maven deploy started"
         - cd "$SERVICE_PATH"
         - "mvn clean compile assembly:single"
+
+deploy to s3:
+    stage: bucket
+    image:
+        name: amazon/aws-cli:2.15.2
+        entrypoint: [""]
+    script:
+        - aws --version
