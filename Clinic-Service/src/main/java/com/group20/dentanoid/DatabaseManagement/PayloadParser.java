@@ -31,8 +31,8 @@ public class PayloadParser {
     }
 
     public static Object getAttributeFromDatabaseInstance(String objectId, String attributeName, MongoCollection<Document> collection) {
-        Document docTest = findDocumentById(objectId, collection);
-        return docTest.get(attributeName);
+        Document doc = findDocumentByAttributeValue(collection, "_id", objectId);
+        return doc.get(attributeName);
     }
 
     // Convert the payload-string to a document that can be stored in the database
@@ -61,8 +61,8 @@ public class PayloadParser {
         return result;
     }
 
-    public static Document findDocumentById(String objectId, MongoCollection<Document> collection) {
-        return collection.find(eq("_id", new ObjectId(objectId))).first();
+    public static Document findDocumentByAttributeValue(MongoCollection<Document> collection, String attributeName, String attributeValue) {
+        return collection.find(eq(attributeName, attributeValue)).first();
     }
 
     public static Document savePayloadDocument(String payload, CollectionSchema collectionSchema, MongoCollection<Document> collection) {
