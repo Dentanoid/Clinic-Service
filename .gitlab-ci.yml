@@ -70,7 +70,7 @@ deploy_job:
 deploy to s3:
     stage: bucket
     image:
-        name: amazon/aws-cli:2.15.2
+        name: amazon/aws-cli:2.4.11
         entrypoint: [""]
     script:
         - aws --version
