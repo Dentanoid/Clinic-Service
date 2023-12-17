@@ -319,4 +319,8 @@ public class DentalClinic implements Clinic {
     private Document getClinicById(String clinicId) {
         return DatabaseManager.clinicsCollection.find(eq(clinic_id, clinicId)).first();
     }
+
+    public String getPublishMessage() {
+        return this.publishMessage;
+    }
 }

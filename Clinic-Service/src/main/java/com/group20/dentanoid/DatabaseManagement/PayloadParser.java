@@ -85,24 +85,6 @@ public class PayloadParser {
         return payload;
     }
 
-    // Return the expected format - IDEA: Clinic.java and Query.java has this method --> TopicOperator.java
-    public static String parseToAPI(TopicOperator topicOperator, Document payloadDoc, boolean addDBInstance) { // TODO: Rename later: Return publishMessage JSON string
-        String status = "200";
-        String requestID = payloadDoc.remove("requestID").toString();
-
-        try {
-            topicOperator.executeRequestedOperation(); // IDEA: Add 'status' as an attribute inside this method
-        } catch (Exception exception) {
-            status = "500";
-        }
-
-        // Add the expected attributes of the APIs
-        payloadDoc.append("requestID", requestID);
-        payloadDoc.append("status", status);
-
-        return payloadDoc.toJson();
-    }
-
     public static String parsePublishMessage(Document payloadDoc, String requestID, String status) {
         payloadDoc.append("requestID", requestID);
         payloadDoc.append("status", status);

@@ -28,7 +28,7 @@ class NearbyFixedTest {
         String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
             put("nearby_clinics_number", Long.toString(expectedQuantityOfClinics));
             put("reference_position", joinedCoordinates);
-            put("requestID", "requestId");
+            put("requestID", "requestID46");
         }});
 
         // Test code
