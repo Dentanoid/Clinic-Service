@@ -1,13 +1,5 @@
 package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.PriorityQueue;
-
-import org.bson.Document;
-
 import com.group20.dentanoid.MqttMain;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
@@ -18,6 +10,10 @@ import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.MqttUtils;
 import com.group20.dentanoid.Utils.Utils;
 
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.PriorityQueue;
+import org.bson.Document;
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
@@ -84,18 +80,17 @@ public class NearbyClinics extends NearbyQuery {
 
         // Payload attributes
         String statusCode = "-1";
-        String requestId = "-1";
+        String requestID = PayloadParser.getAttributeFromPayload(payload, "requestID", querySchema).toString();
         String clinicsJson = "-1";
 
         try {
             clinicsJson = gson.toJson(clinics);
-            requestId = PayloadParser.getAttributeFromPayload(payload, "requestID", querySchema).toString();
             statusCode = clinicsJson.length() > 0 ? "200" : "404";
         } catch (Exception e) {
             statusCode = "500";
         }
 
-        return PayloadParser.parsePublishMessage(clinicsJson, requestId, statusCode);
+        return PayloadParser.parsePublishMessage(clinicsJson, requestID, statusCode);
     }
 
     @Override

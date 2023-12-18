@@ -20,9 +20,8 @@ public class NearbyFixed extends NearbyClinics {
     }
 
     @Override
-        public void getReferencePosition() {
+    public void getReferencePosition() {
         Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyFixedQuerySchema());
-        System.out.println(user_position);
         referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 

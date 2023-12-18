@@ -5,32 +5,42 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
-import com.google.gson.Gson;
+import java.util.HashMap;
+import java.util.List;
 import org.bson.Document;
-import org.bson.conversions.Bson;
 
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
 
-import static com.mongodb.client.model.Filters.eq;
 import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.HashMap;
-import java.util.List;
 
 
 @TestMethodOrder(OrderAnnotation.class)
+
+/*
+    Test the DentalClinic.java class by running a sequence of
+    tests representing the lifetime of a clinic:
+    
+    1) Registering a clinic in the DB
+
+    2) Getting a clinic by its id
+
+    3) Adding a dentist to the clinic
+
+    4) Remvoing the dentist from the clinic
+
+    5) Deleting the clinic from the DB
+ */
+
 class DentalClinicTest {
     @Test
     @Order(1)
     void registerClinic() {
-        // Define data variables
         String topic = "grp20/req/dental/clinics/register";
         String expectedClinicName = "Happy Teeth - Unit Test Clinic";
 
         DatabaseManager.initializeDatabaseConnection();
 
-        // Create payload
         String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
             put("clinic_name", expectedClinicName);
             put("position", "50.22,79.8");

@@ -14,24 +14,19 @@ class NearbyRadiusTest {
     /*
       Ensures that the functionality for reading the gloobal coordinates
       defined in the JSON payload is behaving as expected.
-      (See 'reference_Position' in NearbyRadiusQuerySchema.java)
      */
     @Test
     void readReferenceCoordinatesUnitTest() {
-
-        // Define data variables
         String topic = "grp20/req/map/query/nearby/radius/get";
         String[] referenceCoordinatesExpected = new String[] { "50.17", "12.1" };
         String joinedCoordinates = String.join(",", referenceCoordinatesExpected);
 
-        // Create payload
         String payload = PayloadParser.createJSONPayload(new HashMap<>() {{ // NOTE: Refactor further - Input NearbyRadiusSchema in parameters
             put("radius", "20");
             put("reference_position", joinedCoordinates);
             put("requestID", "requestId");
         }});
 
-        // Test code
         DatabaseManager.initializeDatabaseConnection();
         NearbyClinics nearbyRadius = new NearbyRadius(topic, payload);
         nearbyRadius.queryDatabase();
@@ -39,6 +34,11 @@ class NearbyRadiusTest {
         assertEquals(Arrays.toString(referenceCoordinatesExpected), Arrays.toString(nearbyRadius.referenceCoordinates));
     }
 
+    /*
+        Sets the radius to the circumference of the Earth and compares
+        the retrieved number of clinics to the existing quantity in the DB
+        as well as the defined upper limit in NearbyRadius.java
+     */
     @Test
     void priorityQueMaxHeapRadiusUnitTest() {
         
@@ -52,14 +52,12 @@ class NearbyRadiusTest {
         long quantityLimit = NearbyRadius.getQueryLimit();
         long expectedNumberOfClinicsReturned = Math.min(quantityLimit, DatabaseManager.clinicsCollection.countDocuments());
 
-        // Create payload
         String payload = PayloadParser.createJSONPayload(new HashMap<>() {{
-            put("radius", Double.toString(Utils.earthCircumference)); // Set the radius to the size at which every clinic in the database is returned
+            put("radius", Double.toString(Utils.earthCircumference));
             put("reference_position", joinedCoordinates);
             put("requestID", "requestId");
         }});
 
-        // Test code
         NearbyClinics nearbyRadius = new NearbyRadius(topic, payload);
         nearbyRadius.queryDatabase();
 

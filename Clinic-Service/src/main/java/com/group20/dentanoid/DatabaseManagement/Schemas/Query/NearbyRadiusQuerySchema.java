@@ -19,7 +19,7 @@ public class NearbyRadiusQuerySchema implements CollectionSchema {
     public Document getDocument() {
         return new Document("radius", this.radius)
         .append("reference_position", this.reference_position)
-        .append("requestId", this.requestID);
+        .append("requestID", this.requestID);
     }
 
     public String getRequestId() {

@@ -47,7 +47,6 @@ public class DentalClinic implements Clinic {
     public DentalClinic(String topic, String payload) {
         this.topic = topic;
         this.payload = payload;
-        executeRequestedOperation();
     }
 
     public void executeRequestedOperation() {
@@ -280,10 +279,6 @@ public class DentalClinic implements Clinic {
     private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
         String operation = "-1";
         status = "200";
-
-        // TODO:
-        // 1) Refactor away the if-statements below
-        // 2) Each action below is defined as the last substring of the topic. Use a general pattern check in the if-statements
 
         // Register clinic
         if (topic.contains(MqttUtils.clinicOperations[0])) {

@@ -20,7 +20,7 @@ public class NearbyFixedQuerySchema implements CollectionSchema {
     public Document getDocument() {
         return new Document("number", this.number)
         .append("reference_position", this.reference_position)
-        .append("requestId", this.requestID);
+        .append("requestID", this.requestID);
     }
 
     public String getRequestId() {
