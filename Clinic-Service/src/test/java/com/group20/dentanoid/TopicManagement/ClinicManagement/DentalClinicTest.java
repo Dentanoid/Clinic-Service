@@ -48,6 +48,8 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        dentalClinic.executeRequestedOperation();
+
         Document registeredClinic = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
         String actualClinicName = registeredClinic.getString("clinic_name");
 
@@ -69,6 +71,8 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        dentalClinic.executeRequestedOperation();
+
         Document retrievedClinic = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
 
         assertNotNull(retrievedClinic);
@@ -92,6 +96,8 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        dentalClinic.executeRequestedOperation();
+
         Document jsonResponse = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
 
         String actualDentistName = jsonResponse.getString("dentist_name");
@@ -126,6 +132,8 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        dentalClinic.executeRequestedOperation();
+
         Document jsonResponse = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
         String actualDentistId = jsonResponse.getString("dentist_id");
         
@@ -147,6 +155,8 @@ class DentalClinicTest {
         }});
 
         DentalClinic dentalClinic = new DentalClinic(topic, payload);
+        dentalClinic.executeRequestedOperation();
+
         Document jsonResponse = PayloadParser.convertJSONToDocument(dentalClinic.getPublishMessage());
         String actualClinicId = jsonResponse.getString("clinic_id");
         
