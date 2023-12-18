@@ -15,6 +15,7 @@ import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Query.NearbyFixedQuerySchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Query.NearbyRadiusQuerySchema;
 import com.group20.dentanoid.Utils.Entry;
+import com.group20.dentanoid.Utils.MqttUtils;
 import com.group20.dentanoid.Utils.Utils;
 
 import com.google.gson.Gson;
@@ -24,12 +25,12 @@ public class NearbyClinics extends NearbyQuery {
     public PriorityQueue<Entry> pq; // Max heap priority que with key-value pairs contained in customized class 'Entry'
     
     /*
-     Represents user's current position if the selected map mode in Patient Client is 'Nearby'
-     Represents the searched position if the selected map mode is 'Search'
+     This variable has two use cases:
+        * Represents user's current position if the selected map mode in Patient Client is 'Nearby'
+        * Represents the searched position if the selected map mode is 'Search'
      */
     public double[] referenceCoordinates;
 
-    // TODO: Refactor these variable to avoid redundant parameters
     public String topic;
     public String payload;
 
@@ -82,17 +83,16 @@ public class NearbyClinics extends NearbyQuery {
         Gson gson = new Gson();
 
         // Payload attributes
-        String statusCode = "500";
+        String statusCode = "-1";
         String requestId = "-1";
         String clinicsJson = "-1";
 
         try {
             clinicsJson = gson.toJson(clinics);
-            requestId = PayloadParser.getAttributeFromPayload(payload, "requestId", querySchema).toString();
-            statusCode = requestId.length() > 0 ? "200" : "404";
-
+            requestId = PayloadParser.getAttributeFromPayload(payload, "requestID", querySchema).toString();
+            statusCode = clinicsJson.length() > 0 ? "200" : "404";
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            statusCode = "500";
         }
 
         return PayloadParser.parsePublishMessage(clinicsJson, requestId, statusCode);
@@ -100,26 +100,24 @@ public class NearbyClinics extends NearbyQuery {
 
     @Override
     public void executeRequestedOperation() {
-        String publishTopic = "grp20/req/map/nearby"; // TODO: Change 'req' to 'res'
-
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        if (topic.contains(MqttMain.queryTopicKeywords[2])) {
-            queryKey = new NearbyFixed(publishTopic, payload);  
+        if (topic.contains(MqttUtils.queryOperations[1])) {
+            queryKey = new NearbyFixed(MqttUtils.queryPublishFormat, payload);  
             publishSchema = new NearbyFixedQuerySchema(); 
         }
         else {
-            queryKey = new NearbyRadius(publishTopic, payload);
+            queryKey = new NearbyRadius(MqttUtils.queryPublishFormat, payload);
             publishSchema = new NearbyRadiusQuerySchema();
         }
 
         queryKey.queryDatabase();
 
-        Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey);
+        Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey); // Pass the key containing its own priority que
         String publishMessage = formatRetrievedClinics(clinicsToDisplay, publishSchema);
 
-        MqttMain.publish(publishTopic, publishMessage);
+        MqttMain.publish(MqttUtils.queryPublishFormat, publishMessage);
     }
 
     @Override

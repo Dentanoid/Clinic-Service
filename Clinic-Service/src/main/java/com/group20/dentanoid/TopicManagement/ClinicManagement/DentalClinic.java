@@ -17,6 +17,7 @@ import static com.mongodb.client.model.Filters.eq;
 
 import com.group20.dentanoid.GoogleAPI.ValidatedClinic;
 import com.group20.dentanoid.Utils.Entry;
+import com.group20.dentanoid.Utils.MqttUtils;
 import com.group20.dentanoid.Utils.Utils;
 import com.group20.dentanoid.ClinicService;
 import com.group20.dentanoid.MqttMain;
@@ -27,7 +28,6 @@ import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
-    private static String publishTopicFormat = "grp20/res/dental/clinics/";
     private String publishTopic = "-1";
     private String publishMessage = "-1";
 
@@ -286,21 +286,21 @@ public class DentalClinic implements Clinic {
         // 2) Each action below is defined as the last substring of the topic. Use a general pattern check in the if-statements
 
         // Register clinic
-        if (topic.contains(MqttMain.clinicTopicKeywords[1])) {
+        if (topic.contains(MqttUtils.clinicOperations[0])) {
             registerClinic();
             operation = "register";
         }
         // Add dentist to clinic
-        else if (topic.contains(MqttMain.clinicTopicKeywords[3])) {
+        else if (topic.contains(MqttUtils.clinicOperations[2])) {
             addEmployee();
             operation = "add";
         }
         // Delete dentist from clinic
-        else if (topic.contains(MqttMain.clinicTopicKeywords[4])) {
+        else if (topic.contains(MqttUtils.clinicOperations[3])) {
             removeEmployee();
             operation = "remove";
         }
-        else if (topic.contains(MqttMain.clinicTopicKeywords[5])) {
+        else if (topic.contains(MqttUtils.clinicOperations[4])) {
             deleteClinic();
             operation = "delete"; 
         }
@@ -310,7 +310,7 @@ public class DentalClinic implements Clinic {
         }
 
         parsePublishMessage();
-        return publishTopicFormat + operation;
+        return MqttUtils.clinicsPublishFormat + operation;
     }
 
     @Override

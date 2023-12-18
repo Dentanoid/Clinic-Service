@@ -1,5 +1,9 @@
 package com.group20.dentanoid.Utils;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class Utils {
   // Physical measures of the Earth in KM
@@ -34,5 +38,10 @@ public class Utils {
         return Arrays.stream(input)
                 .mapToDouble(Double::parseDouble)
                 .toArray();
+    }
+
+    public static String[] concatTwoArrays(String[] arrA, String[] arrB) {
+      return Stream.concat(Arrays.stream(arrA), Arrays.stream(arrB))
+                      .toArray(String[]::new);
     }
 }
