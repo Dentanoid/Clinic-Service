@@ -93,8 +93,7 @@ public class MqttMain {
             "grp20/req/dental/clinics/delete",
 
             // Clinics: GET
-            "grp20/req/dental/clinics/get/one",
-            "grp20/req/dental/clinics/get/all",
+            "grp20/req/dental/clinics/get",
 
             // Queries: GET
             "grp20/req/map/query/nearby/fixed/get",

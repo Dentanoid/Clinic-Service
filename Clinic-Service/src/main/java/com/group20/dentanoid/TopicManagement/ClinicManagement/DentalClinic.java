@@ -35,6 +35,7 @@ public class DentalClinic implements Clinic {
     private String topic;
     private String payload;
 
+    // Actual payload response values
     private String status = "";
     private String requestID = "";
     private String clinicsData = "-1";
@@ -139,6 +140,17 @@ public class DentalClinic implements Clinic {
         }
     }
 
+    public void getClinics() {
+        Document doc = PayloadParser.convertJSONToDocument(payload);
+
+        // If 'clinic_id' is specified in the GET request, return one clinic
+        if (doc.get("clinic_id") != null) {
+            getOneClinic();
+        } else {
+            getAllClinics();
+        }
+    }
+
     // Get a clinic by 'clinic_id'
     public void getOneClinic() {
         payloadDoc = getClinicDocument("getOne", new ClinicSchema());
@@ -153,7 +165,6 @@ public class DentalClinic implements Clinic {
                 clinicsData = gson.toJson(clinic);
             }
             catch (Exception e) {
-                System.out.println(e.getMessage());
                 status = "500";
             }
         } else {
@@ -181,7 +192,6 @@ public class DentalClinic implements Clinic {
             clinicsData = gson.toJson(clinics);
         }
         catch (Exception e) {
-            System.out.println(e.getMessage());
             status = "500";
         }
     }
@@ -294,13 +304,9 @@ public class DentalClinic implements Clinic {
             deleteClinic();
             operation = "delete"; 
         }
-        else if (topic.contains("all")) {
-            getAllClinics();
-            operation = "get/all";
-        }
-        else if (topic.contains("one")) {
-            getOneClinic();
-            operation = "get/one";
+        else if (topic.contains("get")) {
+            getClinics();
+            operation = "get";
         }
 
         parsePublishMessage();

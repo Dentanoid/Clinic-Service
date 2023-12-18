@@ -40,6 +40,8 @@ public class ClinicService {
         correct '.java' class to perform the requested action.
     */
     public static void manageRecievedPayload(String topic, String payload) {
+        System.out.println(payload);
+
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);
     }
