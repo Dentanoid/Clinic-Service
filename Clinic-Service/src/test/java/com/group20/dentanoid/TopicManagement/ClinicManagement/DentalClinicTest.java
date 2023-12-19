@@ -113,8 +113,6 @@ class DentalClinicTest {
     */
     void removeEmployee() {
         String topic = "grp20/req/dental/clinics/remove";
-        String expectedDentistName = "Olof";
-
         DatabaseManager.initializeDatabaseConnection();
 
         Document clinic = PayloadParser.findDocumentByAttributeValue(DatabaseManager.clinicsCollection, "clinic_name", "Happy Teeth - Unit Test Clinic");
