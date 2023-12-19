@@ -92,7 +92,7 @@ public class PayloadParser {
         return payloadDoc.toJson();
     }
 
-    public static String parsePublishMessage(String payloadData, String requestID, String status) {
+    public static String restructurePublishMessage(String payloadData, String requestID, String status) {
         Map<String, Object> map = new HashMap<>();
         map.put("clinics", payloadData.toString());
         map.put("requestID", requestID.toString());

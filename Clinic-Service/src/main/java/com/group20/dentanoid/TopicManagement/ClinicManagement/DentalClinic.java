@@ -28,7 +28,6 @@ import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
-    private String publishTopic = "-1";
     private String publishMessage = "-1";
 
     private Document payloadDoc = null;
@@ -49,13 +48,8 @@ public class DentalClinic implements Clinic {
         this.payload = payload;
     }
 
-    public void executeRequestedOperation() {
-        publishTopic = runRequestedMethod();
-        publishMessage();
-    }
-
     public void registerClinic() {
-        payloadDoc = getClinicDocument("create", new ClinicSchema());
+        payloadDoc = getClinicDocument("create");
         requestID = payloadDoc.remove(reqID).toString();
 
         try {
@@ -121,7 +115,7 @@ public class DentalClinic implements Clinic {
 
     // Delete a clinic by accessing corresponding 'clinic_id'
     public void deleteClinic() {
-        payloadDoc = getClinicDocument("delete", new ClinicSchema());
+        payloadDoc = getClinicDocument("delete");
         requestID = payloadDoc.getString(reqID);
 
         String clinicId = payloadDoc.get(clinic_id).toString();
@@ -152,7 +146,7 @@ public class DentalClinic implements Clinic {
 
     // Get a clinic by 'clinic_id'
     public void getOneClinic() {
-        payloadDoc = getClinicDocument("getOne", new ClinicSchema());
+        payloadDoc = getClinicDocument("getOne");
         requestID = payloadDoc.getString(reqID);
 
         String clinicId = payloadDoc.get(clinic_id).toString();
@@ -173,7 +167,7 @@ public class DentalClinic implements Clinic {
 
     // Get all existing clinics in 'clinicsCollection'
     public void getAllClinics() {
-        Document retrievedPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
+        Document retrievedPayloadDoc = getClinicDocument("getAll");
         FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find();
 
         requestID = retrievedPayloadDoc.get(reqID).toString();
@@ -206,8 +200,8 @@ public class DentalClinic implements Clinic {
     }
 
     // Register or delete clinic from system
-    private Document getClinicDocument(String operation, CollectionSchema collectionSchema) {
-        CollectionSchema clinicObject = new ClinicSchema();
+    private Document getClinicDocument(String operation) {
+        ClinicSchema clinicObject = new ClinicSchema();
         clinicObject.assignAttributesFromPayload(payload, operation);
         return clinicObject.getDocument();
     }
@@ -261,24 +255,15 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
-    private void publishMessage() {
-        if (publishMessage != "-1") {
-            MqttMain.publish(publishTopic, publishMessage);
-        } else {
-            System.out.println("Status 404 - Did not find DB-instance based on the given topic");
-        }
-    }
-
     /*
      Direct the codeflow to the method that deals with the
      requested operation specified in the mqtt subscription-topic.
      This method returns the corresponding topic to publish to,
      based on the performed operation.
     */
-    private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
-        String operation = "-1";
+    public void executeRequestedOperation() {
         status = "200";
+        String operation = "-1";
 
         // Register clinic
         if (topic.contains(MqttUtils.clinicOperations[0])) {
@@ -290,31 +275,38 @@ public class DentalClinic implements Clinic {
             addEmployee();
             operation = "add";
         }
-        // Delete dentist from clinic
+        // Remove dentist from clinic
         else if (topic.contains(MqttUtils.clinicOperations[3])) {
             removeEmployee();
             operation = "remove";
         }
+        // Delete clinic
         else if (topic.contains(MqttUtils.clinicOperations[4])) {
             deleteClinic();
             operation = "delete"; 
         }
+        // Get a clinic by its id or get all clinics
         else if (topic.contains("get")) {
             getClinics();
             operation = "get";
         }
 
         parsePublishMessage();
-        return MqttUtils.clinicsPublishFormat + operation;
+        publishMessage((MqttUtils.clinicsPublishFormat + operation));
     }
 
-    @Override
-    public void parsePublishMessage() {
-        if (clinicsData.equals("-1")) {
-            publishMessage = PayloadParser.parsePublishMessage(payloadDoc, requestID, status);
+    // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
+    private void publishMessage(String publishTopic) {
+        if (publishMessage != "-1") {
+            MqttMain.publish(publishTopic, publishMessage);
         } else {
-            publishMessage = PayloadParser.parsePublishMessage(clinicsData, requestID, status);
+            System.out.println("Status 404 - Did not find DB-instance based on the given topic");
         }
+    }
+
+    private void parsePublishMessage() {
+        publishMessage = clinicsData.equals("-1") ?
+            PayloadParser.parsePublishMessage(payloadDoc, requestID, status) : PayloadParser.restructurePublishMessage(clinicsData, requestID, status);
     }
 
     private Document getClinicById(String clinicId) {

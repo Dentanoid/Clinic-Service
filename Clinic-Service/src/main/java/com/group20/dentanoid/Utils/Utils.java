@@ -1,4 +1,8 @@
 package com.group20.dentanoid.Utils;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,4 +48,21 @@ public class Utils {
       return Stream.concat(Arrays.stream(arrA), Arrays.stream(arrB))
                       .toArray(String[]::new);
     }
+
+
+  /*
+    Deep clone an object, Credits to 'Padma Lochan Panda': https://www.quora.com/What-is-the-right-way-to-deep-copy-an-object-in-Java-How-do-you-do-it-in-your-code
+  */
+   public static Object deepClone(Object object) {
+    try { 
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
+      ObjectOutputStream oos = new ObjectOutputStream(baos); 
+      oos.writeObject(object); 
+      ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray())); 
+      return ois.readObject(); 
+    } catch (Exception e) {
+      e.printStackTrace(); 
+      return null;
+    }
+  } 
 }

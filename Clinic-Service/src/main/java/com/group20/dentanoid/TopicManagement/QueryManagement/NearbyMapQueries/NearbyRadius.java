@@ -8,9 +8,9 @@ import com.group20.dentanoid.Utils.Utils;
 public class NearbyRadius extends NearbyClinics {
     /*
       Since we cannot predict the quantity of clinics that are within
-      the specifed range, an upper limit is defined.
+      the specifed range, an upper limit is defined by the developers.
      */
-    private static Integer maximumClinicsInQuery = 1000;
+    private static Integer maximumClinicsInQuery = 2000;
 
     private Double radius;
     private Integer numberOfFoundClinics;

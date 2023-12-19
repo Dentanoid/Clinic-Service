@@ -25,12 +25,4 @@ public class NearbyRadiusQuerySchema implements CollectionSchema {
     public String getRequestId() {
         return this.requestID;
     }
-
-    @Override
-    public void assignAttributesFromPayload(String payload) {
-    }
-
-    @Override
-    public void assignAttributesFromPayload(String payload, String operation) {
-    }
 }
