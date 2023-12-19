@@ -2,7 +2,7 @@ package com.group20.dentanoid.GoogleAPI;
 
 import java.util.ArrayList;
 
-public class ValidatedClinic { // TODO: Override ClinicCreateSchema.java with this class - Refactor
+public class ValidatedClinic {
     // Regular clinic attributes
     private String clinic_name;
     private String clinic_id;

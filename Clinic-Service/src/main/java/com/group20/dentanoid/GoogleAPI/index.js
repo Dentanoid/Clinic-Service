@@ -1,5 +1,5 @@
 const express = require('express')
-const app = express(); // TODO: Rename to 'childProcess
+const app = express();
 
 const path = require('path')
 
@@ -10,6 +10,5 @@ app.listen(3000, () => {
     console.log("App listening on port 3000")
 })
 
-// PREVIOUS:
 const clinics = require("./clinics.js")
 clinics.executeGoogleAPIValidationQuery()

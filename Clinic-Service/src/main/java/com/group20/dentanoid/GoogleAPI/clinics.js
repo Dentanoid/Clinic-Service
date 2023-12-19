@@ -8,10 +8,8 @@
 var fs = require('fs');
 var validatedClinic = require('./validatedClinic.json')
 
-console.log('A - In clinic.js launch')
-
 function executeGoogleAPIValidationQuery() {
-    console.log('API Performs query here')
+    console.log('In clinic.js launch')
 
     // READ payload clinic values
     console.log('---------------------------------')
