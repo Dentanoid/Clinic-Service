@@ -10,6 +10,8 @@ import java.util.Map;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.json.simple.JSONObject;
+
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
@@ -60,7 +62,6 @@ public class DentalClinic implements Clinic {
         }
 
         // Note for developers: This code is in development
-        /*
         JSONObject jsonObject = new JSONObject();
         ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
 
@@ -74,24 +75,18 @@ public class DentalClinic implements Clinic {
         jsonObject.put("photoURL", "-1");
 
         try {
-            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com.group20.dentanoid\\GoogleAPI\\validatedClinic.json");
+            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
             file.write(jsonObject.toJSONString());
             file.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        System.out.println("JSON file created: "+ jsonObject);
         
         // ------------------------------------------------------------
         try {
-            // Write to validatedClinic.json - Change attributes 'clinic_name' and 'position'
-
-
             // TODO: Account for bin and mac os - cmd.exe = windows
-            Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash bash-api.sh");
+            Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
 
-            // TODO: Refactor further
             new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -109,7 +104,6 @@ public class DentalClinic implements Clinic {
         catch (Exception e){
            System.out.println("Error: " + e);
         }
-        */
         // ------------------------------------------------------------
     }
 

@@ -30,7 +30,7 @@ public class ClinicService {
             helps speed up the testing process for the developers.
         */
         // DatabaseManager.deleteClinicCollectionInstances();
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "TestClinic23888");
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "TestClinic");
     }
 
     /*
@@ -48,16 +48,15 @@ public class ClinicService {
     // ------------------------ WILL BE REFACTORED SOON ----------------------------
 
     public static void readValidatedClinic() throws Exception {
-        System.out.println("readValidatedClinic()");
+        String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
 
-        String file = "Clinic-Service\\src\\main\\java\\com.group20.dentanoid\\GoogleAPI\\validatedClinic.json";
-        String jsonString = readFileAsString(file);
-
-        System.out.println("jsonString:");
+        System.out.println("*******************************************************************");
         System.out.println(jsonString);
+        System.out.println("*******************************************************************");
 
-        // TODO: Refactor further
+        // Convert JSON into a Java object:
         ValidatedClinic validatedClinic = (ValidatedClinic) PayloadParser.getObjectFromPayload(jsonString, ValidatedClinic.class);
+        System.out.println(validatedClinic.getClinicName());
         System.out.println(validatedClinic.getRatings());
         System.out.println(validatedClinic.getTotalUserRatings());
         System.out.println(validatedClinic.getPhotoURL());
