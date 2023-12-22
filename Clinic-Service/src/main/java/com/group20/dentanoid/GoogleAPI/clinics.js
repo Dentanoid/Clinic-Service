@@ -1,7 +1,21 @@
 var fs = require('fs');
 var validatedClinic = require('./public/validatedClinic.json')
 
+// var apiQuery = require('./public/apiQuery.js')
+
+console.log('in clinics.js')
+
+
+// SOLUTION (BAD):
+// 1) Setinterval(x) --> check is attributes in validatedClinic.json has changed --> Either check existing attributes '-1' or 'ratings = 4.6', or create a new attribute: 'clinicQuried: true/false'
+// 2) If attribute value indicates that apiQuery.js has completed its query, then fs.write() to validatedClinic.json
+
+// SOLUTION (GOOD):
+// Run async/await method to wait for the clinic's response
+
 function executeGoogleAPIValidationQuery() {
+
+    // IDEA: Async & await - Run apiQuery.js from here
 
     // READ payload clinic values
     /*

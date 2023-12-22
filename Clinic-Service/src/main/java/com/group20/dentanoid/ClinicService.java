@@ -50,9 +50,9 @@ public class ClinicService {
     public static void readValidatedClinic() throws Exception {
         String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
 
-        System.out.println("*******************************************************************");
+        System.out.println("******************************");
         System.out.println(jsonString);
-        System.out.println("*******************************************************************");
+        System.out.println("******************************");
 
         // Convert JSON into a Java object:
         ValidatedClinic validatedClinic = (ValidatedClinic) PayloadParser.getObjectFromPayload(jsonString, ValidatedClinic.class);

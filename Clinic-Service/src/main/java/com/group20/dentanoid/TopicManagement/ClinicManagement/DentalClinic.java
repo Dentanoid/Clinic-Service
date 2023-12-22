@@ -104,6 +104,9 @@ public class DentalClinic implements Clinic {
         catch (Exception e){
            System.out.println("Error: " + e);
         }
+
+        // IDEA:
+        // axios.get('http://localhost:3000/childprocess') --> 
         // ------------------------------------------------------------
     }
 
