@@ -1,6 +1,9 @@
 echo "API Childprocess launched!"
 cd Clinic-Service/src/main/java/com/group20/dentanoid
-node GoogleAPI
+# node GoogleAPI
+cd GoogleAPI
+node nodejsTest
+
 
 ( sleep 20 ) & pid=$!
 ( sleep 8 && kill -HUP $pid ) 2>/dev/null & watcher=$!
