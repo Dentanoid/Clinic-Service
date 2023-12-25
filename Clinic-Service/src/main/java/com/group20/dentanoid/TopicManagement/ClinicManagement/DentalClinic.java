@@ -75,7 +75,8 @@ public class DentalClinic implements Clinic {
         jsonObject.put("photoURL", "-1");
 
         try {
-            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
+            // FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
+            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
             file.write(jsonObject.toJSONString());
             file.close();
         } catch (IOException e) {
