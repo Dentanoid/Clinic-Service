@@ -58,16 +58,7 @@ public class DentalClinic implements Clinic {
 
     public void registerClinic() {
         payloadDoc = getClinicDocument("create");
-        requestID = payloadDoc.remove(reqID).toString();
-
-        /*
-        try {
-            DatabaseManager.clinicsCollection.insertOne(payloadDoc);
-        }
-        catch (Exception exception) {
-            status = "500";
-        }
-        */
+        // requestID = payloadDoc.remove(reqID).toString();
 
         // Note for developers: This code is in development
         JSONObject jsonObject = new JSONObject();
@@ -121,27 +112,15 @@ public class DentalClinic implements Clinic {
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable helloRunnable = new Runnable() {
         public void run() {
-            System.out.println("Check clinic status");
-
             Integer currentStatus;
             try {
                 currentStatus = getClinicStatus();
 
                 if (currentStatus == 200 || currentStatus == 404) {
-                    System.out.println("********************");
-                    System.out.println(clinicValidationJSON);
-
                 try {
-                    System.out.println(payloadDoc);
-                    System.out.println("********************");
-
                     // TODO: Refactor with existing method in PayloadParser.java
                     Gson gson = new Gson();
                     ValidatedClinic clinicObj = gson.fromJson(clinicValidationJSON, ValidatedClinic.class);
-
-
-                    // IDEA: Surround this is 'status 200' to only assign the validated clinic with attributes --> Attributes inconsistency
-                    // Adding attributes to all clinics would result in atttributes redundancy
 
                     if (currentStatus == 200) {
                         payloadDoc.append("ratings", clinicObj.getRatings());
@@ -149,16 +128,15 @@ public class DentalClinic implements Clinic {
                         payloadDoc.append("photoURL", clinicObj.getPhotoURL());
                     }
 
-                    System.out.println("NEW IN DB");
-                    System.out.println(payloadDoc);
-                    System.out.println("NEW IN DB");
+                    requestID = payloadDoc.remove(reqID).toString();
+                    payloadDoc.remove("status");
 
                     DatabaseManager.clinicsCollection.insertOne(payloadDoc);
+                    publishToExternalComponent("register");
                 }
                  catch (Exception exception) {
                   status = "500";
                 }
-                    
                     executor.shutdown();
                 }
             } catch (Exception e) {
@@ -350,10 +328,10 @@ public class DentalClinic implements Clinic {
         // Register clinic
         if (topic.contains(MqttUtils.clinicOperations[0])) {
             registerClinic();
-            operation = "register";
         }
+        else {
         // Add dentist to clinic
-        else if (topic.contains(MqttUtils.clinicOperations[2])) {
+        if (topic.contains(MqttUtils.clinicOperations[2])) {
             addEmployee();
             operation = "add";
         }
@@ -373,6 +351,11 @@ public class DentalClinic implements Clinic {
             operation = "get";
         }
 
+        publishToExternalComponent(operation);
+        }
+    }
+
+    private void publishToExternalComponent(String operation) {
         parsePublishMessage();
         publishMessage((MqttUtils.clinicsPublishFormat + operation));
     }
@@ -380,6 +363,7 @@ public class DentalClinic implements Clinic {
     // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
     private void publishMessage(String publishTopic) {
         if (publishMessage != "-1") {
+            System.out.println(publishMessage);
             MqttMain.publish(publishTopic, publishMessage);
         } else {
             System.out.println("Status 404 - Did not find DB-instance based on the given topic");

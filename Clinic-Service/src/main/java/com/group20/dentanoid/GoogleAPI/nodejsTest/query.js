@@ -31,9 +31,7 @@ const { writeFile } = require('fs') // Necessary?
 
       r.data.results.forEach((currentClinic) => {
           if (currentClinic.name === payloadObject.clinic_name) {
-              var roundedRatings = parseFloat(currentClinic.rating.toFixed(2))
-
-              payloadObject["ratings"] = roundedRatings // PREVIOUS: currentClinic.rating
+              payloadObject["ratings"] = currentClinic.rating.toString() // PREVIOUS: currentClinic.rating
               payloadObject["total_user_ratings"] = currentClinic.user_ratings_total
               // payloadObject["photoURL"] = getPhotoUrl(currentClinic.photos[0]) // TODO
               payloadObject["status"] = 200

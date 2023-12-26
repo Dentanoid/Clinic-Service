@@ -10,7 +10,7 @@ public class ValidatedClinic {
     private ArrayList<String> employees;
 
     // Google API validation attributes
-    private float ratings;
+    private String ratings;
     private Integer total_user_ratings;
     private String photoURL;
     private Integer status;
@@ -34,7 +34,7 @@ public class ValidatedClinic {
         return this.employees;
     }
 
-    public float getRatings() {
+    public String getRatings() {
         return this.ratings;
     }
 
