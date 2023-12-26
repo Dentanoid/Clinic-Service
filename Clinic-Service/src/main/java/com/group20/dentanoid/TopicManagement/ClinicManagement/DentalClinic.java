@@ -49,6 +49,7 @@ public class DentalClinic implements Clinic {
     // Name of payload attributes
     private String clinic_id = "clinic_id";
     private String reqID = "requestID";
+    private String clinicValidationJSON;
     
     public DentalClinic(String topic, String payload) {
         this.topic = topic;
@@ -59,12 +60,14 @@ public class DentalClinic implements Clinic {
         payloadDoc = getClinicDocument("create");
         requestID = payloadDoc.remove(reqID).toString();
 
+        /*
         try {
             DatabaseManager.clinicsCollection.insertOne(payloadDoc);
         }
         catch (Exception exception) {
             status = "500";
         }
+        */
 
         // Note for developers: This code is in development
         JSONObject jsonObject = new JSONObject();
@@ -108,7 +111,13 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    private void parallelTest() {
+    /*
+       IDEA: Add rationale in README: We don't want to use the main thread for this particular task,
+       since it is directly dependent on the nodejs childprocess, which none of the other .java methods are.
+       Using the main-thread for this implementation would be a setback for the developers, if they in the future
+       want to add additional functionality in this method.
+     */
+    private void parallelTest() { // TODO: Refactor parallelTest() and childProcess in ParallelUtils.java
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable helloRunnable = new Runnable() {
         public void run() {
@@ -119,8 +128,38 @@ public class DentalClinic implements Clinic {
                 currentStatus = getClinicStatus();
 
                 if (currentStatus == 200 || currentStatus == 404) {
-                    System.out.println(readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json"));
-                   executor.shutdown();
+                    System.out.println("********************");
+                    System.out.println(clinicValidationJSON);
+
+                try {
+                    System.out.println(payloadDoc);
+                    System.out.println("********************");
+
+                    // TODO: Refactor with existing method in PayloadParser.java
+                    Gson gson = new Gson();
+                    ValidatedClinic clinicObj = gson.fromJson(clinicValidationJSON, ValidatedClinic.class);
+
+
+                    // IDEA: Surround this is 'status 200' to only assign the validated clinic with attributes --> Attributes inconsistency
+                    // Adding attributes to all clinics would result in atttributes redundancy
+
+                    if (currentStatus == 200) {
+                        payloadDoc.append("ratings", clinicObj.getRatings());
+                        payloadDoc.append("total_user_ratings", clinicObj.getTotalUserRatings());
+                        payloadDoc.append("photoURL", clinicObj.getPhotoURL());
+                    }
+
+                    System.out.println("NEW IN DB");
+                    System.out.println(payloadDoc);
+                    System.out.println("NEW IN DB");
+
+                    DatabaseManager.clinicsCollection.insertOne(payloadDoc);
+                }
+                 catch (Exception exception) {
+                  status = "500";
+                }
+                    
+                    executor.shutdown();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -135,11 +174,15 @@ public class DentalClinic implements Clinic {
 
     // ---------------------------------------------------------------
 
+    // REFACTOR TO Utils.java or PayloadParser.java
+
     private Integer getClinicStatus() throws Exception {
-        String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
+        // String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
+        clinicValidationJSON = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
 
         Gson gson = new Gson();
-        ValidatedClinic retrievedClinic = gson.fromJson(jsonString, ValidatedClinic.class);
+        // ValidatedClinic retrievedClinic = gson.fromJson(jsonString, ValidatedClinic.class);
+        ValidatedClinic retrievedClinic = gson.fromJson(clinicValidationJSON, ValidatedClinic.class);
         return retrievedClinic.getStatus();
     }
 
