@@ -13,6 +13,7 @@ public class ValidatedClinic {
     private float ratings;
     private Integer total_user_ratings;
     private String photoURL;
+    private Integer status;
 
     public ValidatedClinic() {
     }
@@ -43,5 +44,9 @@ public class ValidatedClinic {
 
     public String getPhotoURL() {
         return this.photoURL;
+    }
+
+    public Integer getStatus() {
+        return this.status;
     }
 }

@@ -1,9 +1,10 @@
 {
   "photoURL": "-1",
-  "total_user_ratings": 11,
-  "ratings": 4.6,
-  "clinic_name": "Embraces",
+  "total_user_ratings": "-1",
+  "ratings": "-1",
+  "clinic_name": "Embracesh",
   "position": "57.708870,11.974560",
   "employees": null,
-  "clinic_id": null
+  "clinic_id": null,
+  "status": 404
 }

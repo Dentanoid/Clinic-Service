@@ -5,6 +5,7 @@ cd GoogleAPI
 node nodejsTest
 
 
+<<comment
 ( sleep 40 ) & pid=$!
 ( sleep 20 && kill -HUP $pid ) 2>/dev/null & watcher=$!
 if wait $pid 2>/dev/null; then
@@ -14,3 +15,4 @@ if wait $pid 2>/dev/null; then
 else
     echo "your_command interrupted"
 fi
+comment

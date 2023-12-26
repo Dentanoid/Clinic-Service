@@ -43,26 +43,4 @@ public class ClinicService {
         TopicManager topicManager = new TopicManager();
         topicManager.manageTopic(topic, payload);
     }
-
-
-    // ------------------------ WILL BE REFACTORED SOON ----------------------------
-
-    public static void readValidatedClinic() throws Exception {
-        String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
-
-        System.out.println("******************************");
-        System.out.println(jsonString);
-        System.out.println("******************************");
-
-        // Convert JSON into a Java object:
-        ValidatedClinic validatedClinic = (ValidatedClinic) PayloadParser.getObjectFromPayload(jsonString, ValidatedClinic.class);
-        System.out.println(validatedClinic.getClinicName());
-        System.out.println(validatedClinic.getRatings());
-        System.out.println(validatedClinic.getTotalUserRatings());
-        System.out.println(validatedClinic.getPhotoURL());
-    }
-
-    public static String readFileAsString(String file)throws Exception {
-        return new String(Files.readAllBytes(Paths.get(file)));
-    }
 }

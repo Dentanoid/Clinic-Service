@@ -2,11 +2,16 @@ package com.group20.dentanoid.TopicManagement.ClinicManagement;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -65,7 +70,7 @@ public class DentalClinic implements Clinic {
         JSONObject jsonObject = new JSONObject();
         ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
 
-        // TOOD: Refactor this
+        // TOOD: Refactor this - PayloadParser.createJSONObject()
         jsonObject.put("clinic_name", clinicRequestObj.getClinicName());
         jsonObject.put("clinic_id", clinicRequestObj.getClinicId());
         jsonObject.put("position", clinicRequestObj.getPosition());
@@ -73,9 +78,9 @@ public class DentalClinic implements Clinic {
         jsonObject.put("ratings", "-1");
         jsonObject.put("total_user_ratings", "-1");
         jsonObject.put("photoURL", "-1");
+        jsonObject.put("status", "-1");
 
         try {
-            // FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\public\\validatedClinic.json");
             FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
             file.write(jsonObject.toJSONString());
             file.close();
@@ -85,31 +90,67 @@ public class DentalClinic implements Clinic {
         
         // ------------------------------------------------------------
         try {
+
+            // TODO: Wait for nodejs response with status codes
+            /*
+               Add an attribute in clinic.json 'status' --> 200 if validated clinic, 404 if no such clinic found and 500 if server error.
+               In README, motivate the choice of not including 'requestID' for scalability: The user has already reaped the benefits of requestID
+               in registerClinic() that returns it to the Patient API. The nodejs environenment is triggered for the specific client with the
+               specific requestID.
+             */
+
             // TODO: Account for bin and mac os - cmd.exe = windows
             Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
-
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            ClinicService.readValidatedClinic();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                1000 
-            );
+            parallelTest();
         }
         catch (Exception e){
            System.out.println("Error: " + e);
         }
-
-        // IDEA:
-        // axios.get('http://localhost:3000/childprocess') --> 
-        // ------------------------------------------------------------
     }
+
+    private void parallelTest() {
+        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+        Runnable helloRunnable = new Runnable() {
+        public void run() {
+            System.out.println("Check clinic status");
+
+            Integer currentStatus;
+            try {
+                currentStatus = getClinicStatus();
+
+                if (currentStatus == 200 || currentStatus == 404) {
+                    System.out.println(readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json"));
+                   executor.shutdown();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        };
+
+        executor.scheduleAtFixedRate(helloRunnable, 0, 100, TimeUnit.MILLISECONDS);
+    }
+
+
+
+    // ---------------------------------------------------------------
+
+    private Integer getClinicStatus() throws Exception {
+        String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
+
+        Gson gson = new Gson();
+        ValidatedClinic retrievedClinic = gson.fromJson(jsonString, ValidatedClinic.class);
+        return retrievedClinic.getStatus();
+    }
+
+    private String readFileAsString(String file)throws Exception {
+        return new String(Files.readAllBytes(Paths.get(file)));
+    }
+
+    // ---------------------------------------------------------------
+
+
+
 
     // Delete a clinic by accessing corresponding 'clinic_id'
     public void deleteClinic() {
