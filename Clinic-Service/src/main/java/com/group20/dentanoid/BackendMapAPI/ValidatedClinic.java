@@ -1,5 +1,4 @@
-package com.group20.dentanoid.GoogleAPI;
-
+package com.group20.dentanoid.BackendMapAPI;
 import java.util.ArrayList;
 
 public class ValidatedClinic {

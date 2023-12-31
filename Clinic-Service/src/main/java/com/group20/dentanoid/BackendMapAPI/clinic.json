@@ -1,0 +1,10 @@
+{
+  "photoURL": "https://maps.googleapis.com/maps/api/place/photo?photoreference=AWU5eFiV-c2xClmbLWwCY_eOwYao-xvSUGDSIUgKjRwf4mhQirkCHpmlXFRQvyZjcsocgtv2a1fA-Dqs8CrgaSEu1BnTgKY2wwrZppN1XSv55FAvL9RaWfyuRYIIsykuXkfN97hXJxK1y4vXTS4bCIjIQQvcI3StfQyFy88U_3ky9PMjI6Ed&sensor=false&maxheight=80&maxwidth=120&key=AIzaSyAddMO3fsDTHWzDI0uEG-ZFobf8NY7teBA",
+  "address": "Suite 18/32 Arnold Street, Box Hill",
+  "ratings": "4.9",
+  "clinic_name": "Australian Dentists Clinic Box Hill",
+  "position": "-37.813667218469796,145.1163569871146",
+  "employees": null,
+  "clinic_id": null,
+  "status": 200
+}

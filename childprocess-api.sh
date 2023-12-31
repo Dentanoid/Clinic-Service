@@ -1,10 +1,8 @@
 echo "API Childprocess launched!"
 cd Clinic-Service/src/main/java/com/group20/dentanoid
-# node GoogleAPI
-cd GoogleAPI
-node nodejsTest
+node BackendMapAPI
 
-
+# For developers: Uncomment the block below if you wish to see the output in query.js
 <<comment
 ( sleep 40 ) & pid=$!
 ( sleep 20 && kill -HUP $pid ) 2>/dev/null & watcher=$!

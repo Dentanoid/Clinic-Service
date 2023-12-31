@@ -22,12 +22,12 @@ import com.mongodb.client.FindIterable;
 
 import static com.mongodb.client.model.Filters.eq;
 
-import com.group20.dentanoid.GoogleAPI.ValidatedClinic;
 import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.MqttUtils;
 import com.group20.dentanoid.Utils.Utils;
 import com.group20.dentanoid.ClinicService;
 import com.group20.dentanoid.MqttMain;
+import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
@@ -75,7 +75,7 @@ public class DentalClinic implements Clinic {
         jsonObject.put("status", "-1");
 
         try {
-            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
+            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json");
             file.write(jsonObject.toJSONString());
             file.close();
         } catch (IOException e) {
@@ -140,8 +140,7 @@ public class DentalClinic implements Clinic {
     // REFACTOR TO Utils.java or PayloadParser.java
 
     private Integer getClinicStatus() throws Exception {
-        // String jsonString = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
-        clinicValidationJSON = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\GoogleAPI\\nodejsTest\\clinic.json");
+        clinicValidationJSON = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json");
 
         Gson gson = new Gson();
         // ValidatedClinic retrievedClinic = gson.fromJson(jsonString, ValidatedClinic.class);
