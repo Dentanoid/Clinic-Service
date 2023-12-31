@@ -1,10 +1,10 @@
 {
-  "photoURL": "-1",
-  "total_user_ratings": "-1",
-  "ratings": "-1",
-  "clinic_name": "EmbracesA",
-  "position": "57.708870,11.974560",
+  "photoURL": "https://maps.googleapis.com/maps/api/place/photo?photoreference=AWU5eFizz8PnEhC14jOHf0gfMPaDtbvAn3HLcsIrUCmKLotkVvx4ks9Yond_V90Dr5DT1JsaiRJrdKEXfPpcrSLsHb8nFRBXcUjyqfRVwHxE2IB80uMBioC2yd4DF4XR3_z8ZMVBan1AwPU4T1-tpuvmt_AnoAZAedWsmEhB2v_lI2WfA-W-&sensor=false&maxheight=80&maxwidth=120&key=AIzaSyAddMO3fsDTHWzDI0uEG-ZFobf8NY7teBA",
+  "address": "1 Hanson Place #702, Brooklyn",
+  "ratings": "4.7",
+  "clinic_name": "Hanson Place Orthodontics",
+  "position": "40.685730473625405,-73.97788744104459",
   "employees": null,
   "clinic_id": null,
-  "status": 404
+  "status": 200
 }

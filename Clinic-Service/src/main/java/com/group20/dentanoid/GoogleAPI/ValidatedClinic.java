@@ -11,9 +11,9 @@ public class ValidatedClinic {
 
     // Google API validation attributes
     private String ratings;
-    private Integer total_user_ratings;
     private String photoURL;
     private Integer status;
+    private String address;
 
     public ValidatedClinic() {
     }
@@ -38,15 +38,15 @@ public class ValidatedClinic {
         return this.ratings;
     }
 
-    public Integer getTotalUserRatings() {
-        return this.total_user_ratings;
-    }
-
     public String getPhotoURL() {
         return this.photoURL;
     }
 
     public Integer getStatus() {
         return this.status;
+    }
+
+    public String getAddress() {
+        return this.address;
     }
 }

@@ -70,8 +70,8 @@ public class DentalClinic implements Clinic {
         jsonObject.put("position", clinicRequestObj.getPosition());
         jsonObject.put("employees", clinicRequestObj.getEmployees());
         jsonObject.put("ratings", "-1");
-        jsonObject.put("total_user_ratings", "-1");
         jsonObject.put("photoURL", "-1");
+        jsonObject.put("address", "-1");
         jsonObject.put("status", "-1");
 
         try {
@@ -84,15 +84,6 @@ public class DentalClinic implements Clinic {
         
         // ------------------------------------------------------------
         try {
-
-            // TODO: Wait for nodejs response with status codes
-            /*
-               Add an attribute in clinic.json 'status' --> 200 if validated clinic, 404 if no such clinic found and 500 if server error.
-               In README, motivate the choice of not including 'requestID' for scalability: The user has already reaped the benefits of requestID
-               in registerClinic() that returns it to the Patient API. The nodejs environenment is triggered for the specific client with the
-               specific requestID.
-             */
-
             // TODO: Account for bin and mac os - cmd.exe = windows
             Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
             parallelTest();
@@ -102,12 +93,6 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    /*
-       IDEA: Add rationale in README: We don't want to use the main thread for this particular task,
-       since it is directly dependent on the nodejs childprocess, which none of the other .java methods are.
-       Using the main-thread for this implementation would be a setback for the developers, if they in the future
-       want to add additional functionality in this method.
-     */
     private void parallelTest() { // TODO: Refactor parallelTest() and childProcess in ParallelUtils.java
         ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
         Runnable helloRunnable = new Runnable() {
@@ -124,8 +109,8 @@ public class DentalClinic implements Clinic {
 
                     if (currentStatus == 200) {
                         payloadDoc.append("ratings", clinicObj.getRatings());
-                        payloadDoc.append("total_user_ratings", clinicObj.getTotalUserRatings());
                         payloadDoc.append("photoURL", clinicObj.getPhotoURL());
+                        payloadDoc.append("address", clinicObj.getAddress());
                     }
 
                     requestID = payloadDoc.remove(reqID).toString();

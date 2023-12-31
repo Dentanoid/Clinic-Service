@@ -30,7 +30,7 @@ public class ClinicService {
             helps speed up the testing process for the developers.
         */
         // DatabaseManager.deleteClinicCollectionInstances();
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "Embraces");
+        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "SmileSpace");
     }
 
     /*

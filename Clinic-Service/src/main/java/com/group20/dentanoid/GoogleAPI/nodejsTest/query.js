@@ -30,11 +30,13 @@ const { writeFile } = require('fs') // Necessary?
       payloadObject["status"] = 404
 
       r.data.results.forEach((currentClinic) => {
-          if (currentClinic.name === payloadObject.clinic_name) {
-              payloadObject["ratings"] = currentClinic.rating.toString() // PREVIOUS: currentClinic.rating
-              payloadObject["total_user_ratings"] = currentClinic.user_ratings_total
-              // payloadObject["photoURL"] = getPhotoUrl(currentClinic.photos[0]) // TODO
+        // console.log(currentClinic.name)
+          if (currentClinic.name === payloadObject.clinic_name) { // Clinic found
+              payloadObject["ratings"] = currentClinic.rating.toString()
+              payloadObject["photoURL"] = getPhotoUrl(currentClinic.photos[0].photo_reference)
+              payloadObject["address"] = currentClinic.vicinity
               payloadObject["status"] = 200
+            // assignAttributes(payloadObject)
           }
       })
 
@@ -51,10 +53,14 @@ const { writeFile } = require('fs') // Necessary?
     });
   });
 
+function assignAttributes(obj) {
+    obj["ratings"] = currentClinic.rating.toString()
+    obj["photoURL"] = getPhotoUrl(currentClinic.photos[0].photo_reference)
+    obj["address"] = currentClinic.vicinity
+    obj["status"] = 200
+}
 
-
-function getPhotoUrl(photo) { // TODO
-    /*
-    https://maps.googleapis.com/maps/api/place/photo?photoreference=PHOTO_REFERENCE&sensor=false&maxheight=MAX_HEIGHT&maxwidth=MAX_WIDTH&key=YOUR_API_KEY
-    */
+function getPhotoUrl(photoReference) {
+    const apiKey = 'AIzaSyAddMO3fsDTHWzDI0uEG-ZFobf8NY7teBA'
+    return `https://maps.googleapis.com/maps/api/place/photo?photoreference=${photoReference}&sensor=false&maxheight=${80}&maxwidth=${120}&key=${apiKey}`
 }
