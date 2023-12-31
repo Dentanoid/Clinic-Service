@@ -74,6 +74,8 @@ public class DentalClinic implements Clinic {
         jsonObject.put("address", "-1");
         jsonObject.put("status", "-1");
 
+        payloadDoc.replace("position", jsonObject.get("position").toString());
+
         try {
             FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json");
             file.write(jsonObject.toJSONString());

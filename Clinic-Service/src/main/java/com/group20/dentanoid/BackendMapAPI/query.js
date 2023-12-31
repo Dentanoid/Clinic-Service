@@ -1,9 +1,8 @@
+require('dotenv').config()
 const { Client } = require("@googlemaps/google-maps-services-js");
 const client = new Client({});
-
 const fs = require('fs')
 const { writeFile } = require('fs')
-let payloadObject
 
 /*
 // Assuming the dental clinic owner doesn't include all the decimals when inputting the clinic's location,
@@ -11,48 +10,47 @@ the value below measured in KM serves as the margin of error
 */
 const radiusRange = '300'
 
-// TODO: Make .env file with variable work and replace it with key-string below --> process.env.GOOGLE_MAPS_API_KEY
+// Measured in pixels
+const photoHeight = 80
+const photoWidth = 120
 
-  fs.readFile("./BackendMapAPI/clinic.json", "utf8", (error, data) => {
+let payloadObject
+
+  fs.readFile("./clinic.json", "utf8", (error, data) => {
     if (error) {
       console.log(error);
     }
 
-    // const payloadObject = JSON.parse(data)
     payloadObject = JSON.parse(data)
 
-    // TODO: Make function 'readCoordinates()'
-    const convertedCoordinates = payloadObject.position.split(',')
-    const payloadCoordinates = { lat: convertedCoordinates[0], lng: convertedCoordinates[1] }
-
     client
-    .placesNearby({
+    .placesNearby({ // Define parameters to use in the request
       params: {
-          location: payloadCoordinates,
+          location: getClinicCoordinates(),
           radius: radiusRange,
           type: ['dentist'],
-          key: 'AIzaSyAddMO3fsDTHWzDI0uEG-ZFobf8NY7teBA'
+          key: process.env.GOOGLE_MAPS_API_KEY
         },
         timeout: 1000,
     })
-    .then((r) => {
+    .then((r) => { // If a response was successfully recieved
 
       payloadObject["status"] = 404
 
-      r.data.results.forEach((currentClinic) => {
+      r.data.results.forEach((currentClinic) => { // Iterate through each clinic that was returned in the response
         printOutputForDevelopers(currentClinic)
 
-          if (currentClinic.name === payloadObject.clinic_name) { // Clinic found
+          if (currentClinic.name === payloadObject.clinic_name) { // If the specified clinic was found, we fetch its data
             fetchData(currentClinic)
           }
       })
 
-      writeFile("./BackendMapAPI/clinic.json", JSON.stringify(payloadObject, null, 2), (err) => {
+      // Write to the JSON file as a way of communicating with DentalClinic.java on the state of the query
+      writeFile("./clinic.json", JSON.stringify(payloadObject, null, 2), (err) => {
         if (err) {
-          console.log('Failed to write updated data to file');
-          return;
+          console.log('Failed to write updated data to file')
         }
-        console.log('Updated file successfully');
+        console.log('Updated file successfully')
       });
     })
     .catch((e) => {
@@ -68,8 +66,7 @@ function fetchData(clinic) {
 }
 
 function getPhotoUrl(photoReference) {
-    const apiKey = 'AIzaSyAddMO3fsDTHWzDI0uEG-ZFobf8NY7teBA'
-    return `https://maps.googleapis.com/maps/api/place/photo?photoreference=${photoReference}&sensor=false&maxheight=${80}&maxwidth=${120}&key=${apiKey}`
+  return `https://maps.googleapis.com/maps/api/place/photo?photoreference=${photoReference}&sensor=false&maxheight=${photoHeight}&maxwidth=${photoWidth}&key=${process.env.GOOGLE_MAPS_API_KEY}`
 }
 
 /*
@@ -86,4 +83,10 @@ function printOutputForDevelopers(clinic) {
   console.log('--------------------------')
   console.log(clinic.name)
   console.log('--------------------------')
+}
+
+// Return the inputted clinic's global coordinates from payload
+function getClinicCoordinates() {
+  const convertedCoordinates = payloadObject.position.split(',')
+  return { lat: convertedCoordinates[0], lng: convertedCoordinates[1] }
 }

@@ -26,7 +26,20 @@ public class ValidatedClinic {
     }
 
     public String getPosition() {
+        checkPositionFormat();
         return this.position;
+    }
+
+    private void checkPositionFormat() { // Catch the case where dental clinic owner is oblivious and seperated lat,lng with an extra space
+        String[] coordinates = this.position.split(",");
+        String latitudeStartCharacter = String.valueOf(coordinates[1].charAt(0));
+
+        if (latitudeStartCharacter.equals(" ")) {
+            coordinates[1] = coordinates[1].substring(1);
+        }
+
+        this.position = String.join(",", coordinates);
+        System.out.println(this.position);
     }
 
     public ArrayList<String> getEmployees() {

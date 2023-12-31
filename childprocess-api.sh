@@ -1,6 +1,6 @@
 echo "API Childprocess launched!"
-cd Clinic-Service/src/main/java/com/group20/dentanoid
-node BackendMapAPI
+cd Clinic-Service/src/main/java/com/group20/dentanoid/BackendMapAPI
+node query.js
 
 # For developers: Uncomment the block below if you wish to see the output in query.js
 <<comment
