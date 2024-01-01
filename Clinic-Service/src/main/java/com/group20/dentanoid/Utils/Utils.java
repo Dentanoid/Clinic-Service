@@ -1,13 +1,17 @@
 package com.group20.dentanoid.Utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.stream.Stream;
+
+import com.google.gson.Gson;
+import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 
 public class Utils {
   // Physical measures of the Earth in KM
@@ -49,20 +53,17 @@ public class Utils {
                       .toArray(String[]::new);
     }
 
-
-  /*
-    Deep clone an object, Credits to 'Padma Lochan Panda': https://www.quora.com/What-is-the-right-way-to-deep-copy-an-object-in-Java-How-do-you-do-it-in-your-code
-  */
-   public static Object deepClone(Object object) {
-    try { 
-      ByteArrayOutputStream baos = new ByteArrayOutputStream(); 
-      ObjectOutputStream oos = new ObjectOutputStream(baos); 
-      oos.writeObject(object); 
-      ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray())); 
-      return ois.readObject(); 
-    } catch (Exception e) {
-      e.printStackTrace(); 
-      return null;
+  public static void writeToFile(String path, String content) {
+    try {
+      FileWriter file = new FileWriter(path);
+      file.write(content);
+      file.close();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
-  } 
+  }
+
+  public static String readFile(String path) throws IOException {
+    return new String(Files.readAllBytes(Paths.get(path)));
+  }
 }

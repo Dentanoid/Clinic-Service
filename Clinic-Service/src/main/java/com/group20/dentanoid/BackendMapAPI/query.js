@@ -16,52 +16,62 @@ const photoWidth = 120
 
 let payloadObject
 
-  fs.readFile("./clinic.json", "utf8", (error, data) => {
-    if (error) {
-      console.log(error);
-    }
+fs.readFile("./clinic.json", "utf8", (error, data) => {
+  if (error) {
+    console.log(error);
+  }
 
-    payloadObject = JSON.parse(data)
+  payloadObject = JSON.parse(data)
 
-    client
-    .placesNearby({ // Define parameters to use in the request
-      params: {
-          location: getClinicCoordinates(),
-          radius: radiusRange,
-          type: ['dentist'],
-          key: process.env.GOOGLE_MAPS_API_KEY
-        },
-        timeout: 1000,
-    })
-    .then((r) => { // If a response was successfully recieved
+  client
+  .placesNearby({ // Define parameters to use in the request
+    params: {
+        location: getClinicCoordinates(),
+        radius: radiusRange,
+        type: ['dentist'],
+        key: process.env.GOOGLE_MAPS_API_KEY
+      },
+      timeout: 1000,
+  })
+  .then((r) => { // If a response was successfully recieved
 
-      payloadObject["status"] = 404
+    payloadObject["status"] = 404
 
-      r.data.results.forEach((currentClinic) => { // Iterate through each clinic that was returned in the response
-        printOutputForDevelopers(currentClinic)
+    r.data.results.forEach((currentClinic) => { // Iterate through each clinic that was returned in the response
+      printOutputForDevelopers(currentClinic)
 
-          if (currentClinic.name === payloadObject.clinic_name) { // If the specified clinic was found, we fetch its data
-            fetchData(currentClinic)
-          }
-      })
-
-      // Write to the JSON file as a way of communicating with DentalClinic.java on the state of the query
-      writeFile("./clinic.json", JSON.stringify(payloadObject, null, 2), (err) => {
-        if (err) {
-          console.log('Failed to write updated data to file')
+        if (currentClinic.name === payloadObject.clinic_name) { // If the specified clinic was found, we fetch its data
+          fetchData(currentClinic)
         }
-        console.log('Updated file successfully')
-      });
     })
-    .catch((e) => {
-      console.log(e.response.data.error_message);
-    });
-  });
 
+    // Write to the JSON file as a way of communicating with DentalClinic.java on the state of the query
+    writeFile("./clinic.json", JSON.stringify(payloadObject, null, 2), (err) => {
+      if (err) {
+        console.log('Failed to write updated data to file')
+      }
+      console.log('Updated file successfully')
+    });
+  })
+  .catch((e) => {
+    console.log(e.response.data.error_message);
+  });
+});
+
+// Fetch data in an object that will be sent as a response in a seperate JSON file.
 function fetchData(clinic) {
-  payloadObject["ratings"] = clinic.rating.toString()
-  payloadObject["photoURL"] = getPhotoUrl(clinic.photos[0].photo_reference)
-  payloadObject["address"] = clinic.vicinity
+  if (clinic.rating) {
+    payloadObject["ratings"] = clinic.rating.toString()
+  }
+
+  if (clinic.photos) {
+    payloadObject["photoURL"] = getPhotoUrl(clinic.photos[0].photo_reference)
+  }
+
+  if (clinic.vicinity) {
+    payloadObject["address"] = clinic.vicinity
+  }
+
   payloadObject["status"] = 200
 }
 

@@ -1,18 +1,21 @@
 package com.group20.dentanoid.BackendMapAPI;
 import java.util.ArrayList;
 
-public class ValidatedClinic {
+import org.bson.Document;
+
+public class ValidatedClinic { // TODO: Rename to ValidatedClinicManager.java?
     // Regular clinic attributes
     private String clinic_name;
     private String clinic_id;
     private String position;
     private ArrayList<String> employees;
 
-    // Google API validation attributes
+    // Additional data for existing clinics
     private String ratings;
     private String photoURL;
-    private Integer status;
     private String address;
+
+    private Integer status;
 
     public ValidatedClinic() {
     }
@@ -30,7 +33,8 @@ public class ValidatedClinic {
         return this.position;
     }
 
-    private void checkPositionFormat() { // Catch the case where dental clinic owner is oblivious and seperated lat,lng with an extra space
+    // Catch the case where dental clinic owner is oblivious and seperated lat,lng with an extra space
+    private void checkPositionFormat() {
         String[] coordinates = this.position.split(",");
         String latitudeStartCharacter = String.valueOf(coordinates[1].charAt(0));
 
@@ -39,7 +43,6 @@ public class ValidatedClinic {
         }
 
         this.position = String.join(",", coordinates);
-        System.out.println(this.position);
     }
 
     public ArrayList<String> getEmployees() {
@@ -60,5 +63,21 @@ public class ValidatedClinic {
 
     public String getAddress() {
         return this.address;
+    }
+
+    public void assignDataAttributes(Document payloadDoc, boolean initialize) {
+        String ratingsValue = initialize ? "-1" : this.getRatings();
+        String photoValue = initialize ? "-1" : this.getPhotoURL();
+        String addressValue = initialize ? "-1" : this.getAddress();
+
+        payloadDoc.append("ratings", ratingsValue);
+        payloadDoc.append("photoURL", photoValue);
+        payloadDoc.append("address", addressValue);
+    }
+
+    public void removeDataAttributes(Document payloadDoc) {
+        payloadDoc.remove("ratings");
+        payloadDoc.remove("photoURL");
+        payloadDoc.remove("address");
     }
 }

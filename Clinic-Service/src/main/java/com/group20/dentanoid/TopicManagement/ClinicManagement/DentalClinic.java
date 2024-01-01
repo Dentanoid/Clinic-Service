@@ -1,55 +1,38 @@
 package com.group20.dentanoid.TopicManagement.ClinicManagement;
+import static com.mongodb.client.model.Filters.eq;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import org.bson.Document;
-import org.bson.conversions.Bson;
-import org.json.simple.JSONObject;
-
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
-import static com.mongodb.client.model.Filters.eq;
-
-import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.MqttUtils;
-import com.group20.dentanoid.Utils.Utils;
-import com.group20.dentanoid.ClinicService;
+import com.group20.dentanoid.Utils.ParallelUtils;
 import com.group20.dentanoid.MqttMain;
 import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
-    private String publishMessage = "-1";
+    private static String communicationFilePath = "Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json";
+    private static String publishMessage = "-1";
+    private static Document payloadDoc = null;
 
-    private Document payloadDoc = null;
+    // Payload response values
+    private static String status = "";
+    private static String requestID = "";
+    private static String clinicsData = "-1";
+
     private String topic;
     private String payload;
 
-    // Actual payload response values
-    private String status = "";
-    private String requestID = "";
-    private String clinicsData = "-1";
-
-    // Name of payload attributes
+    // Name of payload response attributes
     private String clinic_id = "clinic_id";
     private String reqID = "requestID";
-    private String clinicValidationJSON;
     
     public DentalClinic(String topic, String payload) {
         this.topic = topic;
@@ -58,106 +41,16 @@ public class DentalClinic implements Clinic {
 
     public void registerClinic() {
         payloadDoc = getClinicDocument("create");
-        // requestID = payloadDoc.remove(reqID).toString();
+        requestID = payloadDoc.remove(reqID).toString();
 
-        // Note for developers: This code is in development
-        JSONObject jsonObject = new JSONObject();
         ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
+        clinicRequestObj.assignDataAttributes(payloadDoc, true);
 
-        // TOOD: Refactor this - PayloadParser.createJSONObject()
-        jsonObject.put("clinic_name", clinicRequestObj.getClinicName());
-        jsonObject.put("clinic_id", clinicRequestObj.getClinicId());
-        jsonObject.put("position", clinicRequestObj.getPosition());
-        jsonObject.put("employees", clinicRequestObj.getEmployees());
-        jsonObject.put("ratings", "-1");
-        jsonObject.put("photoURL", "-1");
-        jsonObject.put("address", "-1");
-        jsonObject.put("status", "-1");
+        payloadDoc.append("status", "-1");
+        payloadDoc.replace("position", clinicRequestObj.getPosition());
 
-        payloadDoc.replace("position", jsonObject.get("position").toString());
-
-        try {
-            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json");
-            file.write(jsonObject.toJSONString());
-            file.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        // ------------------------------------------------------------
-        try {
-            // TODO: Account for bin and mac os - cmd.exe = windows
-            Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
-            parallelTest();
-        }
-        catch (Exception e){
-           System.out.println("Error: " + e);
-        }
+        ParallelUtils.instantiateChildProcess(payloadDoc, communicationFilePath);
     }
-
-    private void parallelTest() { // TODO: Refactor parallelTest() and childProcess in ParallelUtils.java
-        ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-        Runnable helloRunnable = new Runnable() {
-        public void run() {
-            Integer currentStatus;
-            try {
-                currentStatus = getClinicStatus();
-
-                if (currentStatus == 200 || currentStatus == 404) {
-                try {
-                    // TODO: Refactor with existing method in PayloadParser.java
-                    Gson gson = new Gson();
-                    ValidatedClinic clinicObj = gson.fromJson(clinicValidationJSON, ValidatedClinic.class);
-
-                    if (currentStatus == 200) {
-                        payloadDoc.append("ratings", clinicObj.getRatings());
-                        payloadDoc.append("photoURL", clinicObj.getPhotoURL());
-                        payloadDoc.append("address", clinicObj.getAddress());
-                    }
-
-                    requestID = payloadDoc.remove(reqID).toString();
-                    payloadDoc.remove("status");
-
-                    DatabaseManager.clinicsCollection.insertOne(payloadDoc);
-                    publishToExternalComponent("register");
-                }
-                 catch (Exception exception) {
-                  status = "500";
-                }
-                    executor.shutdown();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        };
-
-        executor.scheduleAtFixedRate(helloRunnable, 0, 100, TimeUnit.MILLISECONDS);
-    }
-
-
-
-    // ---------------------------------------------------------------
-
-    // REFACTOR TO Utils.java or PayloadParser.java
-
-    private Integer getClinicStatus() throws Exception {
-        clinicValidationJSON = readFileAsString("Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json");
-
-        Gson gson = new Gson();
-        // ValidatedClinic retrievedClinic = gson.fromJson(jsonString, ValidatedClinic.class);
-        ValidatedClinic retrievedClinic = gson.fromJson(clinicValidationJSON, ValidatedClinic.class);
-        return retrievedClinic.getStatus();
-    }
-
-    private String readFileAsString(String file)throws Exception {
-        return new String(Files.readAllBytes(Paths.get(file)));
-    }
-
-    // ---------------------------------------------------------------
-
-
-
 
     // Delete a clinic by accessing corresponding 'clinic_id'
     public void deleteClinic() {
@@ -316,47 +209,45 @@ public class DentalClinic implements Clinic {
             registerClinic();
         }
         else {
-        // Add dentist to clinic
-        if (topic.contains(MqttUtils.clinicOperations[2])) {
-            addEmployee();
-            operation = "add";
-        }
-        // Remove dentist from clinic
-        else if (topic.contains(MqttUtils.clinicOperations[3])) {
-            removeEmployee();
-            operation = "remove";
-        }
-        // Delete clinic
-        else if (topic.contains(MqttUtils.clinicOperations[4])) {
-            deleteClinic();
-            operation = "delete"; 
-        }
-        // Get a clinic by its id or get all clinics
-        else if (topic.contains("get")) {
-            getClinics();
-            operation = "get";
-        }
+            // Add dentist to clinic
+            if (topic.contains(MqttUtils.clinicOperations[2])) {
+                addEmployee();
+                operation = "add";
+            }
+            // Remove dentist from clinic
+            else if (topic.contains(MqttUtils.clinicOperations[3])) {
+                removeEmployee();
+                operation = "remove";
+            }
+            // Delete clinic
+            else if (topic.contains(MqttUtils.clinicOperations[4])) {
+                deleteClinic();
+                operation = "delete"; 
+            }
+            // Get a clinic by its id or get all clinics
+            else if (topic.contains("get")) {
+                getClinics();
+                operation = "get";
+            }
 
-        publishToExternalComponent(operation);
+            publishToExternalComponent(operation);
         }
     }
 
-    private void publishToExternalComponent(String operation) {
-        parsePublishMessage();
-        publishMessage((MqttUtils.clinicsPublishFormat + operation));
+    public static void publishToExternalComponent(String operation) {
+        defineParsingOperation();
+        publishClinicMessage((MqttUtils.clinicsPublishFormat + operation));
     }
 
-    // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
-    private void publishMessage(String publishTopic) {
+    private static void publishClinicMessage(String publishTopic) {
         if (publishMessage != "-1") {
-            System.out.println(publishMessage);
             MqttMain.publish(publishTopic, publishMessage);
         } else {
             System.out.println("Status 404 - Did not find DB-instance based on the given topic");
         }
     }
 
-    private void parsePublishMessage() {
+    private static void defineParsingOperation() {
         publishMessage = clinicsData.equals("-1") ?
             PayloadParser.parsePublishMessage(payloadDoc, requestID, status) : PayloadParser.restructurePublishMessage(clinicsData, requestID, status);
     }
@@ -366,6 +257,6 @@ public class DentalClinic implements Clinic {
     }
 
     public String getPublishMessage() {
-        return this.publishMessage;
+        return publishMessage;
     }
 }

@@ -2,7 +2,7 @@ package com.group20.dentanoid.Utils;
 
 public class MqttUtils {
     /*
-        Represents all the general types (or keywords) that the codeflow is dependent upon. Each
+        The arrays below represent all the general types (or keywords) that the codeflow is dependent upon. Each
         keyword forwards the codeflow to the desired method of operation, and these keywords
         are found inside the subscription topics.
     */
