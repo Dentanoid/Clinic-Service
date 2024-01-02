@@ -1,5 +1,4 @@
 package com.group20.dentanoid.DatabaseManagement.Schemas.Query;
-import com.google.gson.JsonObject;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 import org.bson.Document;

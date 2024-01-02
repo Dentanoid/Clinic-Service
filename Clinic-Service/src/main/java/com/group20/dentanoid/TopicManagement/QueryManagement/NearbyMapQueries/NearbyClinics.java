@@ -50,10 +50,16 @@ public class NearbyClinics extends NearbyQuery {
 
         while (it.hasNext()) {
             Document currentClinic = it.next();
-            double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
 
-            double distanceInKm = Utils.haversineFormula(referenceCoordinates, currentClinicCoordinates);
-            addPQElement(new Entry(distanceInKm, currentClinic));
+            try {
+                double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
+
+                double distanceInKm = Utils.haversineFormula(referenceCoordinates, currentClinicCoordinates);
+                addPQElement(new Entry(distanceInKm, currentClinic));
+            }
+            catch (Exception e) {
+                System.out.println(String.format("The 'position' attribute of clinic '%s' has the wrong format", currentClinic.get("clinic_name")));
+            }
         }
     }
 
