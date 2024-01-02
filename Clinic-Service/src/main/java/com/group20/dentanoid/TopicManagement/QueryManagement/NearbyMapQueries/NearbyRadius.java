@@ -6,7 +6,12 @@ import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.Utils;
 
 public class NearbyRadius extends NearbyClinics {
+    /*
+      Since we cannot predict the quantity of clinics that are within
+      the specifed range, an upper limit is defined.
+     */
     private static Integer maximumClinicsInQuery = 1000;
+
     private Double radius;
     private Integer numberOfFoundClinics;
 
@@ -21,8 +26,8 @@ public class NearbyRadius extends NearbyClinics {
     }
 
     @Override
-    public void readPayloadAttributes(String payload) {
-        getReferencePosition(payload);
+    public void readPayloadAttributes() {
+        getReferencePosition();
         getRadius(payload);
     }
 
@@ -34,6 +39,16 @@ public class NearbyRadius extends NearbyClinics {
         if (clinicsExceedsQuantityBoundary()) {
             pq.poll();
         }
+    }
+
+    @Override
+    public void getReferencePosition() {
+        Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyRadiusQuerySchema());
+        referenceCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
+    }
+
+    public static Integer getQueryLimit() {
+        return maximumClinicsInQuery;
     }
 
     // Display clinic if it is within the requested radius
@@ -52,12 +67,6 @@ public class NearbyRadius extends NearbyClinics {
         if (numberOfFoundClinics < maximumClinicsInQuery) {
             numberOfFoundClinics++;
         }
-    }
-
-    @Override
-    public void getReferencePosition(String payload) {
-        Object user_position = PayloadParser.getAttributeFromPayload(payload, "reference_position", new NearbyRadiusQuerySchema());
-        userCoordinates = Utils.convertStringToDoubleArray(user_position.toString().split(","));
     }
 
     private void getRadius(String payload) {

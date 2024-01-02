@@ -1,14 +1,22 @@
 package com.group20.dentanoid.DatabaseManagement;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.TopicManagement.TopicOperator;
+import com.group20.dentanoid.TopicManagement.ClinicManagement.Clinic;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
 
-import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.print.Doc;
 
 public class PayloadParser {
     public static Object getAttributeFromPayload(String payload, String attributeName, CollectionSchema classSchema) {
@@ -17,9 +25,14 @@ public class PayloadParser {
         return schemaObject.getDocument().get(attributeName);
     }
 
+    public static Object getObjectFromPayload(String payload, Class<?> classType) {
+        Gson gson = new Gson();
+        return gson.fromJson(payload, classType);
+    }
+
     public static Object getAttributeFromDatabaseInstance(String objectId, String attributeName, MongoCollection<Document> collection) {
-        Document docTest = findDocumentById(objectId, collection);
-        return docTest.get(attributeName);
+        Document doc = findDocumentByAttributeValue(collection, "_id", objectId);
+        return doc.get(attributeName);
     }
 
     // Convert the payload-string to a document that can be stored in the database
@@ -27,6 +40,12 @@ public class PayloadParser {
         Gson gson = new Gson();
         CollectionSchema schemaClass = gson.fromJson(payload, classSchema.getClass());
         return schemaClass.getDocument();
+    }
+
+    // Convert a json-formatted string to a document without any schema-bounds
+    public static Document convertJSONToDocument(String jsonString) {
+        Document doc = Document.parse(jsonString);
+        return doc;
     }
 
     // Get ObjectId of already existing DB-instance that has content identical to the payload
@@ -43,8 +62,8 @@ public class PayloadParser {
         return result;
     }
 
-    public static Document findDocumentById(String objectId, MongoCollection<Document> collection) {
-        return collection.find(eq("_id", new ObjectId(objectId))).first();
+    public static Document findDocumentByAttributeValue(MongoCollection<Document> collection, String attributeName, String attributeValue) {
+        return collection.find(eq(attributeName, attributeValue)).first();
     }
 
     public static Document savePayloadDocument(String payload, CollectionSchema collectionSchema, MongoCollection<Document> collection) {
@@ -52,5 +71,34 @@ public class PayloadParser {
 
         collection.insertOne(payloadDoc);
         return payloadDoc;
+    }
+
+    public static String createJSONPayload(HashMap<String, String> map) {
+        JsonObject jsonObject = new JsonObject();
+        
+        for (String key : map.keySet()) {
+            jsonObject.addProperty(key, map.get(key));
+        }
+
+        Gson gson = new Gson();
+        String payload = gson.toJson(jsonObject);
+
+        return payload;
+    }
+
+    public static String parsePublishMessage(Document payloadDoc, String requestID, String status) {
+        payloadDoc.append("requestID", requestID);
+        payloadDoc.append("status", status);
+        return payloadDoc.toJson();
+    }
+
+    public static String parsePublishMessage(String payloadData, String requestID, String status) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("clinics", payloadData.toString());
+        map.put("requestID", requestID.toString());
+        map.put("status", Integer.parseInt(status));
+
+        Gson gson = new Gson();
+        return gson.toJson(map);
     }
 }
