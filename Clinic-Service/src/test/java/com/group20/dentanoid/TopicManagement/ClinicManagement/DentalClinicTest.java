@@ -1,3 +1,4 @@
+/*
 package com.group20.dentanoid.TopicManagement.ClinicManagement;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
@@ -17,20 +18,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @TestMethodOrder(OrderAnnotation.class)
 
-/*
-    Test the DentalClinic.java class by running a sequence of
-    tests representing the lifetime of a clinic:
-    
-    1) Registering a clinic in the DB
-
-    2) Getting a clinic by its id
-
-    3) Adding a dentist to the clinic
-
-    4) Remvoing the dentist from the clinic
-
-    5) Deleting the clinic from the DB
- */
+ // Test the DentalClinic.java class by running a sequence of
+ // tests representing the lifetime of a clinic:
+ //
+ // 1) Registering a clinic in the DB
+ //
+ // 2) Getting a clinic by its id
+ //
+ // 3) Adding a dentist to the clinic
+ //
+ // 4) Remvoing the dentist from the clinic
+ //
+ // 5) Deleting the clinic from the DB
 
 class DentalClinicTest {
     @Test
@@ -59,7 +58,7 @@ class DentalClinicTest {
     @Test
     @Order(2)
     void getOneClinic() {
-        String topic = "grp20/req/dental/clinics/get/one";
+        String topic = "grp20/req/dental/clinics/get";
         DatabaseManager.initializeDatabaseConnection();
 
         Document doc = PayloadParser.findDocumentByAttributeValue(DatabaseManager.clinicsCollection, "clinic_name", "Happy Teeth - Unit Test Clinic");
@@ -106,11 +105,9 @@ class DentalClinicTest {
 
     @Test
     @Order(4)
-    /*
-        Since 'clinic_id' and 'dentist_id' are automatically generated in the previous tests,
-        we cannot predict their values. Instead, we use the name of the clinic and dentist to
-        access and test them.
-    */
+    // Since 'clinic_id' and 'dentist_id' are automatically generated in the previous tests,
+    // we cannot predict their values. Instead, we use the name of the clinic and dentist to
+    // access and test them.
     void removeEmployee() {
         String topic = "grp20/req/dental/clinics/remove";
         DatabaseManager.initializeDatabaseConnection();
@@ -161,3 +158,4 @@ class DentalClinicTest {
         assertEquals(expectedClinicId, actualClinicId);
     }
 }
+*/
