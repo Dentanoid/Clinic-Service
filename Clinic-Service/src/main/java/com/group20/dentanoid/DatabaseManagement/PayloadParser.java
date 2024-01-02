@@ -1,22 +1,14 @@
 package com.group20.dentanoid.DatabaseManagement;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
-import com.group20.dentanoid.TopicManagement.TopicOperator;
-import com.group20.dentanoid.TopicManagement.ClinicManagement.Clinic;
-
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.bson.types.ObjectId;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.print.Doc;
 
 public class PayloadParser {
     public static Object getAttributeFromPayload(String payload, String attributeName, CollectionSchema classSchema) {
@@ -86,13 +78,15 @@ public class PayloadParser {
         return payload;
     }
 
+    // Append the attributes that are used in every MQTT request
     public static String parsePublishMessage(Document payloadDoc, String requestID, String status) {
         payloadDoc.append("requestID", requestID);
         payloadDoc.append("status", status);
         return payloadDoc.toJson();
     }
 
-    public static String parsePublishMessage(String payloadData, String requestID, String status) {
+    // Change the structure of the JSON by adding parent attributes
+    public static String restructurePublishMessage(String payloadData, String requestID, String status) {
         Map<String, Object> map = new HashMap<>();
         map.put("clinics", payloadData.toString());
         map.put("requestID", requestID.toString());

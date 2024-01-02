@@ -1,13 +1,11 @@
 package com.group20.dentanoid.DatabaseManagement.Schemas.Clinic;
+import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
 import org.bson.Document;
-
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 public class ClinicSchema implements CollectionSchema {
     private String clinic_name;
@@ -16,7 +14,7 @@ public class ClinicSchema implements CollectionSchema {
     private ArrayList<String> employees;
     private String requestID;
 
-    public ClinicSchema() { // IDEA: Run 'assignAttributesFromPayload()' in constructor
+    public ClinicSchema() {
         this.clinic_name = " ";
         this.clinic_id = " ";
         this.position = " ";
@@ -52,23 +50,30 @@ public class ClinicSchema implements CollectionSchema {
         this.requestID = requestID;
     }
 
-    // Assign values to the attributes of the schema based on the specified clinic operation
-    @Override
-    public void assignAttributesFromPayload(String payload, String operation) { // String operation = ["create", "delete", "getOne", "getAll"]
-        Gson gson = new Gson();
-        ClinicSchema myObjTest = gson.fromJson(payload, getClass());
+    /*
+        Assign values to the attributes of the schema based on the specified clinic operation.
 
-        // TODO: Refactor if-statements - IDEA: Interface or Abstract class 'DataRegisterer.java'
-        if (operation.equals("create")) { // IDEA: Refactor register-data-parameters into ArrayList<String>, add them in the operation-if-statements and register(ArrayList<String> attributes) becomes a general method
+        PARAMETERS:
+        * payload: The JSON string sent from an external component via MQTT.
+        * operation:
+            - The type of operation to perform that is specified in the corresponding
+              method in DentalClinic.java.
+            - Potential values: ["create", "delete", "getOne", "getAll"]
+    */
+    public void assignAttributesFromPayload(String payload, String operation) {
+        Gson gson = new Gson();
+        ClinicSchema payloadObject = gson.fromJson(payload, getClass());
+
+        if (operation.equals("create")) {
             registerCreateClinicData(
                 // Data included in payload:
-                myObjTest.clinic_name,
-                myObjTest.position,
+                payloadObject.clinic_name,
+                payloadObject.position,
 
                 // Data automatically defined:
                 UUID.randomUUID().toString(),
                 new ArrayList<>(),
-                myObjTest.requestID
+                payloadObject.requestID
             );
         }
         /*
@@ -77,30 +82,12 @@ public class ClinicSchema implements CollectionSchema {
         */
         else if (operation.equals("delete") || operation.equals("getOne")) {
             registerClinicIdentifier(
-                myObjTest.clinic_id,
-                myObjTest.requestID
+                payloadObject.clinic_id,
+                payloadObject.requestID
                 );
         }
         else if (operation.equals("getAll")) {
-            registerRequestID(myObjTest.requestID);
+            registerRequestID(payloadObject.requestID);
         }
-    }
-
-    @Override
-    public void assignAttributesFromPayload(String payload) {
-        /*
-        Gson gson = new Gson();
-        ClinicCreateSchema myObjTest = gson.fromJson(payload, getClass());
-
-        registerData(
-            // Data in payload
-            myObjTest.clinic_name,
-            myObjTest.position,
-
-            // Data not in payload
-            clinic_id, // TODO: Remove constructor and do UUID.random() on here instead
-            new ArrayList<>()
-        );
-        */
     }
 }

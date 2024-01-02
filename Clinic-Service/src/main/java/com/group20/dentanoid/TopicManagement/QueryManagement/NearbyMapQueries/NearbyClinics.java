@@ -50,10 +50,16 @@ public class NearbyClinics extends NearbyQuery {
 
         while (it.hasNext()) {
             Document currentClinic = it.next();
-            double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
 
-            double distanceInKm = Utils.haversineFormula(referenceCoordinates, currentClinicCoordinates);
-            addPQElement(new Entry(distanceInKm, currentClinic));
+            try {
+                double[] currentClinicCoordinates = Utils.convertStringToDoubleArray(currentClinic.get("position").toString().split(","));
+
+                double distanceInKm = Utils.haversineFormula(referenceCoordinates, currentClinicCoordinates);
+                addPQElement(new Entry(distanceInKm, currentClinic));
+            }
+            catch (Exception e) {
+                System.out.println(String.format("The 'position' attribute of clinic '%s' has the wrong format", currentClinic.get("clinic_name")));
+            }
         }
     }
 
@@ -90,22 +96,19 @@ public class NearbyClinics extends NearbyQuery {
             statusCode = "500";
         }
 
-        return PayloadParser.parsePublishMessage(clinicsJson, requestID, statusCode);
+        return PayloadParser.restructurePublishMessage(clinicsJson, requestID, statusCode);
     }
 
+    // Directs the codeflow to either 'radius' or 'fixed number' query of clinics
     @Override
     public void executeRequestedOperation() {
         CollectionSchema publishSchema;
         NearbyClinics queryKey; // Current query is used as a key to access the object's corresponding priority queue
 
-        if (topic.contains(MqttUtils.queryOperations[1])) {
-            queryKey = new NearbyFixed(MqttUtils.queryPublishFormat, payload);  
-            publishSchema = new NearbyFixedQuerySchema(); 
-        }
-        else {
-            queryKey = new NearbyRadius(MqttUtils.queryPublishFormat, payload);
-            publishSchema = new NearbyRadiusQuerySchema();
-        }
+        Object[] definedQuerySettings = defineQueryType();
+
+        queryKey = (NearbyClinics) definedQuerySettings[0];
+        publishSchema = (CollectionSchema) definedQuerySettings[1];
 
         queryKey.queryDatabase();
 
@@ -115,15 +118,27 @@ public class NearbyClinics extends NearbyQuery {
         MqttMain.publish(MqttUtils.queryPublishFormat, publishMessage);
     }
 
-    @Override
-    public String parsePublishMessage(Document payloadDoc, String operation) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parsePublishMessage'");
-    }
+    /*
+        The query type is distinguished by two settings:
 
-    @Override
-    public void parsePublishMessage() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'parsePublishMessage'");
+        1) queryKey: The object and the functionality in its class (either NearbyRadius or NearbyFixed)
+        2) publishSchema: The schema and its contained payload parameters (RadiusQuerySchema or FixedQuerySchema)
+     */
+    private Object[] defineQueryType() {
+        NearbyClinics queryKey;
+        CollectionSchema publishSchema;
+
+        // Patient API tells this service to run a 'fixed number' query
+        if (topic.contains(MqttUtils.queryOperations[1])) {
+            queryKey = new NearbyFixed(MqttUtils.queryPublishFormat, payload);  
+            publishSchema = new NearbyFixedQuerySchema(); 
+        }
+        // Patient API tells this service to run a 'radius' query
+        else {
+            queryKey = new NearbyRadius(MqttUtils.queryPublishFormat, payload);
+            publishSchema = new NearbyRadiusQuerySchema();
+        }
+
+        return new Object[] { queryKey, publishSchema };
     }
 }

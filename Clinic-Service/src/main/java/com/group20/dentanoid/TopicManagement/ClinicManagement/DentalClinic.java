@@ -1,46 +1,36 @@
 package com.group20.dentanoid.TopicManagement.ClinicManagement;
+import static com.mongodb.client.model.Filters.eq;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
-import static com.mongodb.client.model.Filters.eq;
-
-import com.group20.dentanoid.GoogleAPI.ValidatedClinic;
-import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.MqttUtils;
-import com.group20.dentanoid.Utils.Utils;
-import com.group20.dentanoid.ClinicService;
+import com.group20.dentanoid.Utils.ParallelUtils;
 import com.group20.dentanoid.MqttMain;
+import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.ClinicSchema;
 import com.group20.dentanoid.DatabaseManagement.Schemas.Clinic.EmploymentSchema;
 
 public class DentalClinic implements Clinic {
-    private String publishTopic = "-1";
-    private String publishMessage = "-1";
+    private static String communicationFilePath = "Clinic-Service\\src\\main\\java\\com\\group20\\dentanoid\\BackendMapAPI\\clinic.json";
+    private static String publishMessage = "-1";
+    private static Document payloadDoc = null;
 
-    private Document payloadDoc = null;
+    // Payload response values
+    private static String status = "";
+    private static String requestID = "";
+    private static String clinicsData = "-1";
+
     private String topic;
     private String payload;
 
-    // Actual payload response values
-    private String status = "";
-    private String requestID = "";
-    private String clinicsData = "-1";
-
-    // Name of payload attributes
+    // Name of payload response attributes
     private String clinic_id = "clinic_id";
     private String reqID = "requestID";
     
@@ -49,79 +39,22 @@ public class DentalClinic implements Clinic {
         this.payload = payload;
     }
 
-    public void executeRequestedOperation() {
-        publishTopic = runRequestedMethod();
-        publishMessage();
-    }
-
     public void registerClinic() {
-        payloadDoc = getClinicDocument("create", new ClinicSchema());
+        payloadDoc = getClinicDocument("create");
         requestID = payloadDoc.remove(reqID).toString();
 
-        try {
-            DatabaseManager.clinicsCollection.insertOne(payloadDoc);
-        }
-        catch (Exception exception) {
-            status = "500";
-        }
-
-        // Note for developers: This code is in development
-        /*
-        JSONObject jsonObject = new JSONObject();
         ValidatedClinic clinicRequestObj = (ValidatedClinic) PayloadParser.getObjectFromPayload(payload, ValidatedClinic.class);
+        clinicRequestObj.assignDataAttributes(payloadDoc, true);
 
-        // TOOD: Refactor this
-        jsonObject.put("clinic_name", clinicRequestObj.getClinicName());
-        jsonObject.put("clinic_id", clinicRequestObj.getClinicId());
-        jsonObject.put("position", clinicRequestObj.getPosition());
-        jsonObject.put("employees", clinicRequestObj.getEmployees());
-        jsonObject.put("ratings", "-1");
-        jsonObject.put("total_user_ratings", "-1");
-        jsonObject.put("photoURL", "-1");
+        payloadDoc.append("status", "-1");
+        payloadDoc.replace("position", clinicRequestObj.getPosition());
 
-        try {
-            FileWriter file = new FileWriter("Clinic-Service\\src\\main\\java\\com.group20.dentanoid\\GoogleAPI\\validatedClinic.json");
-            file.write(jsonObject.toJSONString());
-            file.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        System.out.println("JSON file created: "+ jsonObject);
-        
-        // ------------------------------------------------------------
-        try {
-            // Write to validatedClinic.json - Change attributes 'clinic_name' and 'position'
-
-
-            // TODO: Account for bin and mac os - cmd.exe = windows
-            Process myChildProcess = Runtime.getRuntime().exec("cmd.exe /c start bash bash-api.sh");
-
-            // TODO: Refactor further
-            new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            ClinicService.readValidatedClinic();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                1000 
-            );
-        }
-        catch (Exception e){
-           System.out.println("Error: " + e);
-        }
-        */
-        // ------------------------------------------------------------
+        ParallelUtils.instantiateChildProcess(payloadDoc, communicationFilePath);
     }
 
     // Delete a clinic by accessing corresponding 'clinic_id'
     public void deleteClinic() {
-        payloadDoc = getClinicDocument("delete", new ClinicSchema());
+        payloadDoc = getClinicDocument("delete");
         requestID = payloadDoc.getString(reqID);
 
         String clinicId = payloadDoc.get(clinic_id).toString();
@@ -152,7 +85,7 @@ public class DentalClinic implements Clinic {
 
     // Get a clinic by 'clinic_id'
     public void getOneClinic() {
-        payloadDoc = getClinicDocument("getOne", new ClinicSchema());
+        payloadDoc = getClinicDocument("getOne");
         requestID = payloadDoc.getString(reqID);
 
         String clinicId = payloadDoc.get(clinic_id).toString();
@@ -173,7 +106,7 @@ public class DentalClinic implements Clinic {
 
     // Get all existing clinics in 'clinicsCollection'
     public void getAllClinics() {
-        Document retrievedPayloadDoc = getClinicDocument("getAll", new ClinicSchema());
+        Document retrievedPayloadDoc = getClinicDocument("getAll");
         FindIterable<Document> allRegisteredClinics = DatabaseManager.clinicsCollection.find();
 
         requestID = retrievedPayloadDoc.get(reqID).toString();
@@ -206,8 +139,8 @@ public class DentalClinic implements Clinic {
     }
 
     // Register or delete clinic from system
-    private Document getClinicDocument(String operation, CollectionSchema collectionSchema) {
-        CollectionSchema clinicObject = new ClinicSchema();
+    private Document getClinicDocument(String operation) {
+        ClinicSchema clinicObject = new ClinicSchema();
         clinicObject.assignAttributesFromPayload(payload, operation);
         return clinicObject.getDocument();
     }
@@ -261,8 +194,52 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    // Publishes a JSON message to an external component ('Dentist API' or 'Patient API')
-    private void publishMessage() {
+    /*
+     Direct the codeflow to the method that deals with the
+     requested operation specified in the mqtt subscription-topic.
+     This method returns the corresponding topic to publish to,
+     based on the performed operation.
+    */
+    public void executeRequestedOperation() {
+        status = "200";
+        String operation = "-1";
+
+        // Register clinic
+        if (topic.contains(MqttUtils.clinicOperations[0])) {
+            registerClinic();
+        }
+        else {
+            // Add dentist to clinic
+            if (topic.contains(MqttUtils.clinicOperations[2])) {
+                addEmployee();
+                operation = "add";
+            }
+            // Remove dentist from clinic
+            else if (topic.contains(MqttUtils.clinicOperations[3])) {
+                removeEmployee();
+                operation = "remove";
+            }
+            // Delete clinic
+            else if (topic.contains(MqttUtils.clinicOperations[4])) {
+                deleteClinic();
+                operation = "delete"; 
+            }
+            // Get a clinic by its id or get all clinics
+            else if (topic.contains("get")) {
+                getClinics();
+                operation = "get";
+            }
+
+            publishToExternalComponent(operation);
+        }
+    }
+
+    public static void publishToExternalComponent(String operation) {
+        defineParsingOperation();
+        publishClinicMessage((MqttUtils.clinicsPublishFormat + operation));
+    }
+
+    private static void publishClinicMessage(String publishTopic) {
         if (publishMessage != "-1") {
             MqttMain.publish(publishTopic, publishMessage);
         } else {
@@ -270,51 +247,9 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    /*
-     Direct the codeflow to the method that deals with the
-     requested operation specified in the mqtt subscription-topic.
-     This method returns the corresponding topic to publish to,
-     based on the performed operation.
-    */
-    private String runRequestedMethod() { // TODO: Impose a more strict structure of the topics such that we don't have to manually assign 'publishTopic' in each if-statement, but rather adding substring with a StringBuilder
-        String operation = "-1";
-        status = "200";
-
-        // Register clinic
-        if (topic.contains(MqttUtils.clinicOperations[0])) {
-            registerClinic();
-            operation = "register";
-        }
-        // Add dentist to clinic
-        else if (topic.contains(MqttUtils.clinicOperations[2])) {
-            addEmployee();
-            operation = "add";
-        }
-        // Delete dentist from clinic
-        else if (topic.contains(MqttUtils.clinicOperations[3])) {
-            removeEmployee();
-            operation = "remove";
-        }
-        else if (topic.contains(MqttUtils.clinicOperations[4])) {
-            deleteClinic();
-            operation = "delete"; 
-        }
-        else if (topic.contains("get")) {
-            getClinics();
-            operation = "get";
-        }
-
-        parsePublishMessage();
-        return MqttUtils.clinicsPublishFormat + operation;
-    }
-
-    @Override
-    public void parsePublishMessage() {
-        if (clinicsData.equals("-1")) {
-            publishMessage = PayloadParser.parsePublishMessage(payloadDoc, requestID, status);
-        } else {
-            publishMessage = PayloadParser.parsePublishMessage(clinicsData, requestID, status);
-        }
+    private static void defineParsingOperation() {
+        publishMessage = clinicsData.equals("-1") ?
+            PayloadParser.parsePublishMessage(payloadDoc, requestID, status) : PayloadParser.restructurePublishMessage(clinicsData, requestID, status);
     }
 
     private Document getClinicById(String clinicId) {
@@ -322,6 +257,6 @@ public class DentalClinic implements Clinic {
     }
 
     public String getPublishMessage() {
-        return this.publishMessage;
+        return publishMessage;
     }
 }

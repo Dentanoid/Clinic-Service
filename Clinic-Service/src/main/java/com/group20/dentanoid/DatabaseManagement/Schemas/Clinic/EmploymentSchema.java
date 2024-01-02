@@ -44,31 +44,33 @@ public class EmploymentSchema implements CollectionSchema {
         this.requestID = requestID;
     }
     
-    @Override
-    public void assignAttributesFromPayload(String payload, String operation) { // Potential values for 'operation' = ["add", "remove"]
+    /*
+        Since all values in the payload doesn't cover all attributes in this schema,
+        this function retrieves the remaining attributes' values.
+
+        PARAMETERS:
+        * payload: The JSON string sent from an external component via MQTT.
+        * operation: The type of operation to perform that is specified in the corresponding
+                     method in DentalClinic.java. It's potential values are ["add", "remove"].
+    */
+    public void assignAttributesFromPayload(String payload, String operation) {
         Gson gson = new Gson();
-        EmploymentSchema myObjTest = gson.fromJson(payload, getClass());
-        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : myObjTest.dentist_id;
+        EmploymentSchema payloadObject = gson.fromJson(payload, getClass());
+        String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : payloadObject.dentist_id;
 
         if (operation.equals("add")) {
             registerAddData(
-                myObjTest.clinic_id,
+                payloadObject.clinic_id,
                 dentistId,
-                myObjTest.dentist_name,
-                myObjTest.requestID
+                payloadObject.dentist_name,
+                payloadObject.requestID
             );
         } else {
             registerRemoveData(
-                myObjTest.clinic_id,
+                payloadObject.clinic_id,
                 dentistId,
-                myObjTest.requestID
+                payloadObject.requestID
             );
         }
-    }
-
-    @Override
-    public void assignAttributesFromPayload(String payload) { // TODO: Refactor soon
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'assignAttributesFromPayload'");
     }
 }

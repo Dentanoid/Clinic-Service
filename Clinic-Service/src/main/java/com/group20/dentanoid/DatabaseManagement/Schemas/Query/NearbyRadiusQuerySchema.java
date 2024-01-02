@@ -1,5 +1,4 @@
 package com.group20.dentanoid.DatabaseManagement.Schemas.Query;
-import com.google.gson.JsonObject;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
 
 import org.bson.Document;
@@ -24,13 +23,5 @@ public class NearbyRadiusQuerySchema implements CollectionSchema {
 
     public String getRequestId() {
         return this.requestID;
-    }
-
-    @Override
-    public void assignAttributesFromPayload(String payload) {
-    }
-
-    @Override
-    public void assignAttributesFromPayload(String payload, String operation) {
     }
 }
