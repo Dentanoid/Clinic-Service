@@ -85,7 +85,40 @@ GOOGLE_MAPS_API_KEY={key here}
 
 
 Congratulations! You are now running the Clinic service.
- 
+
+## Code documentation
+
+Foreword text here
+
+### Folder structure - Scalability and extension
+
+Table here
+Red-black tree of extensions here
+![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
+
+
+### Code flow
+
+Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
+
+#### Code flow: Folders
+
+Folder code flow picture here
+![Folder Code flow tree](https://i.ibb.co/6n09TGn/Code-Flow-Folder-Tree.png)
+
+
+#### Code flow: Classes
+
+Classes code flow picture here
+![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
+
+
+### BackendMapAPI folder: Self-contained nodejs runtime environment
+
+Text here
+
+![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
+
 
 ## Roadmap
 This service will not get updated in the future, due to project being considered as closed when GU course DIT356 is finished.
