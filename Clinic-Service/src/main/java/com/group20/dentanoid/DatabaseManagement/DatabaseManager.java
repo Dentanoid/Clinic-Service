@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
@@ -82,7 +83,7 @@ public class DatabaseManager {
        updated, and then replacing their content with what's contained in the'newContent' parameter
      */
     public static void updateInstanceByAttributeFilter(String attributeName, String filterValue, Document newContent) {
-        Bson query = eq(attributeName, filterValue);
+        Bson query = eq(attributeName, new ObjectId(filterValue));
         DatabaseManager.clinicsCollection.replaceOne(query, newContent);
     }
 

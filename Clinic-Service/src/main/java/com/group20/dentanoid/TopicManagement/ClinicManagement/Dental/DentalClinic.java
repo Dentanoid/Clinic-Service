@@ -150,7 +150,7 @@ public class DentalClinic implements Clinic {
 
      // Accounts for addition and removal of dentists
     private void updateClinicEmployees(String operation) {
-        EmploymentSchema employmentObject = new EmploymentSchema();
+        EmploymentSchema employmentObject = new EmploymentSchema(); // TODO: Either refactor to private method like the one above or into PayloadParser.java
         employmentObject.assignAttributesFromPayload(payload, operation);
 
         payloadDoc = employmentObject.getDocument();
@@ -187,7 +187,7 @@ public class DentalClinic implements Clinic {
                 }
 
                 updateDoc.replace("employees", employees);
-                DatabaseManager.updateInstanceByAttributeFilter(clinic_id, clinicId, updateDoc);
+                DatabaseManager.updateInstanceByAttributeFilter("_id", clinicId, updateDoc);
             }
             catch (Exception exception) {
                 status = "500";

@@ -7,10 +7,12 @@ import com.google.gson.Gson;
 
 // This schema covers the payload-cases where an employee is to be added or removed from the clinic.
 public class EmploymentSchema implements CollectionSchema {
-    private String clinic_id;
+    // private String clinic_id;
     private String dentist_id;
     private String dentist_name;
     private String requestID;
+
+    private String clinic_id;
 
     public EmploymentSchema() {
         this.clinic_id = " ";
@@ -31,7 +33,7 @@ public class EmploymentSchema implements CollectionSchema {
         .append("requestID", this.requestID);
     }
 
-    public void registerAddData(String clinic_id, String dentist_id, String dentist_name, String requestID) {
+    public void registerAddData(String clinic_id, String dentist_id, String dentist_name, String requestID) { // String clinic_id
         this.clinic_id = clinic_id;
         this.dentist_id = dentist_id;
         this.dentist_name = dentist_name;
@@ -56,7 +58,12 @@ public class EmploymentSchema implements CollectionSchema {
     public void assignAttributesFromPayload(String payload, String operation) {
         Gson gson = new Gson();
         EmploymentSchema payloadObject = gson.fromJson(payload, getClass());
+
         String dentistId = operation.equals("add") ? UUID.randomUUID().toString() : payloadObject.dentist_id;
+
+        if (operation.equals("remove")) {
+            dentistId = payloadObject.dentist_id;
+        }
 
         if (operation.equals("add")) {
             registerAddData(
