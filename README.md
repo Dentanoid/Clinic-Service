@@ -33,6 +33,29 @@ brew install Java
 brew install maven
 ``````
 
+### Google API Key
+Due to the usage of Google Maps API, a key is needed to run the service:
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/welcome?project=clinicservice3) website
+
+2. Login with your Google account
+
+3. Create a project
+
+4. Click on ‘Navigation menu’ on the top left corner
+[Picture 1](https://i.ibb.co/GH7x5vw/apikey1.png)
+
+5. Click “APIs & Services” and “Credentials”
+[Picture 2](https://i.ibb.co/gS5hrtX/apikey2.png)
+
+6. Click “Create credentials” → API Key”
+
+7. Click “Show key” and "Copy"
+
+8. Enable Places API
+
+9. Done! You now have a valid API key that will be used in the section below
+
 
 ### Run Clinic service
 In order to build and run the Clinic service you need to type these commands in your terminal:
@@ -44,10 +67,6 @@ In order to build and run the Clinic service you need to type these commands in 
 2. Install node modules
 
 ```npm install```
-
-3. Create Google API key
-
-Text
 
 4. Configure environment variables
 
