@@ -1,6 +1,7 @@
 package com.group20.dentanoid.TopicManagement.ClinicManagement.Dental;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -141,19 +142,9 @@ public class DentalClinic implements Clinic {
         updateClinicEmployees("remove");
     }
 
-    // Register or delete clinic from system
-    private Document getClinicDocument(String operation) {
-        ClinicSchema clinicObject = new ClinicSchema();
-        clinicObject.assignAttributesFromPayload(payload, operation);
-        return clinicObject.getDocument();
-    }
-
      // Accounts for addition and removal of dentists
     private void updateClinicEmployees(String operation) {
-        EmploymentSchema employmentObject = new EmploymentSchema(); // TODO: Either refactor to private method like the one above or into PayloadParser.java
-        employmentObject.assignAttributesFromPayload(payload, operation);
-
-        payloadDoc = employmentObject.getDocument();
+        payloadDoc = getDentistDocument(operation);
         requestID = payloadDoc.remove(reqID).toString();
 
         String clinicId = payloadDoc.get(clinic_id).toString();
@@ -184,9 +175,11 @@ public class DentalClinic implements Clinic {
                     } else {
                         status = "404";
                     }
+
+                    payloadDoc.remove("dentist_name");
                 }
 
-                updateDoc.replace("employees", employees);
+                updateDoc.replace("employees", employees);                
                 DatabaseManager.updateInstanceByAttributeFilter("_id", clinicId, updateDoc);
             }
             catch (Exception exception) {
@@ -261,5 +254,19 @@ public class DentalClinic implements Clinic {
 
     public String getPublishMessage() {
         return publishMessage;
+    }
+
+    // Register or delete clinic from system
+    private Document getClinicDocument(String operation) {
+        ClinicSchema clinicObject = new ClinicSchema();
+        clinicObject.assignAttributesFromPayload(payload, operation);
+        return clinicObject.getDocument();
+    }
+
+    // Add or remove dentist from clinic
+    private Document getDentistDocument(String operation) {
+        EmploymentSchema employmentObject = new EmploymentSchema();
+        employmentObject.assignAttributesFromPayload(payload, operation);
+        return employmentObject.getDocument();
     }
 }

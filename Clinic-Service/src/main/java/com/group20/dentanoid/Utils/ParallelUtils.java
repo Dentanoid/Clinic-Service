@@ -1,5 +1,7 @@
 package com.group20.dentanoid.Utils;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,9 +18,8 @@ public class ParallelUtils {
     private static String communicationData;
 
     public static void instantiateChildProcess(Document communicationDoc, String communicationFilePath) {
-        Utils.writeToFile(communicationFilePath, communicationDoc.toJson());
-
         try {
+            Utils.writeToFile(communicationFilePath, communicationDoc.toJson());
             // TODO: Account for bin and mac os - cmd.exe = windows
             Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh"); // Start child process
             responseHandler(communicationDoc, communicationFilePath);
@@ -80,9 +81,14 @@ public class ParallelUtils {
         between the two entities.
      */
     private static Integer getChildProcessStatus(String communicationFilePath) throws Exception {
-        communicationData = Utils.readFile(communicationFilePath);
 
-        ValidatedClinic clinicQueryResult = (ValidatedClinic)PayloadParser.getObjectFromPayload(communicationData, ValidatedClinic.class);
-        return clinicQueryResult.getStatus();
+        try {
+            communicationData = Utils.readFile(communicationFilePath);
+            ValidatedClinic clinicQueryResult = (ValidatedClinic)PayloadParser.getObjectFromPayload(communicationData, ValidatedClinic.class);
+            return clinicQueryResult.getStatus();
+        } catch (Exception e) {
+            System.out.println("Could not read file");
+            return 404;
+        }
     }
 }

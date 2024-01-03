@@ -10,13 +10,6 @@ public class ClinicService {
     public static void main(String[] args) throws IOException, InterruptedException, MqttException {
         DatabaseManager.initializeDatabaseConnection();
         MqttMain.initializeMqttConnection();
-
-        /*
-            The two methods below are temporarily used in this script and
-            helps speed up the testing process for the developers.
-        */
-        // DatabaseManager.deleteClinicCollectionInstances();
-        // DatabaseManager.deleteInstancesByAttribute(DatabaseManager.clinicsCollection, "clinic_name", "SmileSpace");
     }
 
     /*
