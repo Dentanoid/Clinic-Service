@@ -1,10 +1,9 @@
 {
-  "clinic_name": "Docteur Myriam Yousfi",
-  "clinic_id": "c394ffbd-598a-4a8c-8838-1510282b2a7d",
-  "position": "48.86755076634884,2.362575612146891",
+  "clinic_name": "My Clinic Test",
+  "position": "50.85,12.10",
   "employees": [],
-  "ratings": "4.5",
+  "ratings": "-1",
   "photoURL": "-1",
-  "address": "17 Place de la République, Paris",
-  "status": 200
+  "address": "-1",
+  "status": 404
 }
