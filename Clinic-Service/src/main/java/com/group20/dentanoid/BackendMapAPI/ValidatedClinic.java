@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 import org.bson.Document;
 
-public class ValidatedClinic { // TODO: Rename to ValidatedClinicManager.java?
+public class ValidatedClinic {
     // Regular clinic attributes
     private String clinic_name;
     private String clinic_id;

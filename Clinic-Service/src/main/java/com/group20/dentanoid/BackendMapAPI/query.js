@@ -16,6 +16,8 @@ const photoWidth = 120
 
 let payloadObject
 
+console.log(process.env.GOOGLE_MAPS_API_KEY)
+
 fs.readFile("./clinic.json", "utf8", (error, data) => {
   if (error) {
     console.log(error);

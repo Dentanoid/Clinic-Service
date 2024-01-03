@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.TopicManagement.MapManagement.Nearby.NearbyClinics;
+import com.group20.dentanoid.TopicManagement.MapManagement.Nearby.NearbyFixed;
 
 import static org.junit.jupiter.api.Assertions.*;
 

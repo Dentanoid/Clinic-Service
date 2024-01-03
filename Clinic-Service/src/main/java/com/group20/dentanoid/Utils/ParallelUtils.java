@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.TopicManagement.ClinicManagement.DentalClinic;
+import com.group20.dentanoid.TopicManagement.ClinicManagement.Dental.DentalClinic;
 
 public class ParallelUtils {
     private static String communicationData;

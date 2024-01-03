@@ -14,9 +14,6 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import com.group20.dentanoid.Utils.Entry;
-import com.group20.dentanoid.Utils.Utils;
-
 public class DatabaseManager {
     public static MongoClient client;
     public static MongoDatabase clinicDatabase;    
