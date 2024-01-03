@@ -91,8 +91,11 @@ Congratulations! You are now running the Clinic service.
 Foreword text here
 
 ### Folder structure - Scalability and extension
+A comprehensive folder structure that accounts for generalizations and abstractions is necessary for scalability and maintainability. The relations of the folders were designed with the motive to facilitate extensions of the code in the future and to accommodate room for unpredictable changes whereas the self-contained environment adheres to the single responsibility principle.
+
 
 Table here
+
 Red-black tree of extensions here
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
 
@@ -111,6 +114,13 @@ Folder code flow picture here
 
 Classes code flow picture here
 ![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
+
+
+### Code relations - Generalities
+
+Inheritence diagram here
+
+Interface abstractions here
 
 
 ### BackendMapAPI folder: Self-contained nodejs runtime environment
