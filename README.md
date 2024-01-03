@@ -36,25 +36,22 @@ brew install maven
 ### Google API Key
 Due to the usage of Google Maps API, a key is needed to run the service:
 
-1. Open [Google Cloud Console](https://console.cloud.google.com/welcome?project=clinicservice3) website
+1. Open [Google Cloud Console](https://console.cloud.google.com/projectcreate?utm_source=Docs_NewProject&utm_content=Docs_places-backend&_gl=1*1f1gepp*_ga*MzMzOTMzNDk3LjE3MDIwNTU2ODQ.*_ga_NRWSTWS78N*MTcwNDMyMTU1Mi4zNC4xLjE3MDQzMjE1NjIuMC4wLjA.) website and create a project
 
-2. Login with your Google account
+2. Click on ‘Navigation menu’ on the top left corner
+![Picture 1](https://i.ibb.co/GH7x5vw/apikey1.png)
 
-3. Create a project
+3. Click “APIs & Services” and “Credentials”
+![Picture 2](https://i.ibb.co/gS5hrtX/apikey2.png)
 
-4. Click on ‘Navigation menu’ on the top left corner
-[Picture 1](https://i.ibb.co/GH7x5vw/apikey1.png)
+4. Click “Create credentials” → API Key”
 
-5. Click “APIs & Services” and “Credentials”
-[Picture 2](https://i.ibb.co/gS5hrtX/apikey2.png)
+5. Click “Show key” and "Copy"
 
-6. Click “Create credentials” → API Key”
+6. Search for "Places API" and enable it
+![Picture 3](https://i.ibb.co/4FdX0S1/apikey3.png)
 
-7. Click “Show key” and "Copy"
-
-8. Enable Places API
-
-9. Done! You now have a valid API key that will be used in the section below
+7. Done! You now have a valid API key that will be used in the section below
 
 
 ### Run Clinic service
