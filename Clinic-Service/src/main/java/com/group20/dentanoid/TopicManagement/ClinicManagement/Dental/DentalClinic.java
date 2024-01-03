@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.bson.Document;
+import org.bson.types.ObjectId;
+
 import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
@@ -254,7 +256,7 @@ public class DentalClinic implements Clinic {
     }
 
     private Document getClinicById(String clinicId) {
-        return DatabaseManager.clinicsCollection.find(eq(clinic_id, clinicId)).first();
+        return DatabaseManager.clinicsCollection.find(eq("_id", new ObjectId(clinicId))).first();
     }
 
     public String getPublishMessage() {
