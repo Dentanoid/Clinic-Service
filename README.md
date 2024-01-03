@@ -1,8 +1,17 @@
 # Clinic service
-Welcome to the Clinic service! This service handles request for publishing, updating and deleing Clinics. Apart from name and location, clinics also contains references to Dentists. 
-## Getting started
+Welcome to the Clinic service! This service handles request for:
 
-This service is written in Java. [Check this link for more information about Java.](https://www.java.com/en/)
+* Registering clinics
+* Deleting clinics
+* Adding dentist to clinic
+* Removing dentist from clinic
+* Retrieving a specific clinic
+* Retrieving all clinics
+* Retrieving clinics within radius
+* Retrieving N cloest clinics
+
+ 
+## Getting started
 
 To run this service you need to follow the steps described below:
 
@@ -26,18 +35,35 @@ brew install maven
 
 
 ### Run Clinic service
-In order to build and run the Clinic service you need to type these commands in to your terminal:
-
+In order to build and run the Clinic service you need to type these commands in your terminal:
 
 1. Navigate to the root project directory
 
-```cd Clinic-Service```
+```cd Clinic-Service/src/main/java/com/group20/dentanoid /BackendMapAPI```
 
-2. Compile the project into a binary (including deps)
+2. Install node modules
+
+```npm install```
+
+3. Create Google API key
+
+Text
+
+4. Configure environment variables
+
+Create a `.env` file
+
+```
+GOOGLE_MAPS_API_KEY={key here}
+``````
+
+
+3. Navigate to `Clinic-Service` folder and compile the project into a binary (including deps)
+
 
 ```mvn clean compile assembly:single```
 
-3. Run the compiled JAR file
+4. Run the compiled JAR file
 
  ```java -jar target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar``` 
 
