@@ -102,6 +102,14 @@ First, a table that illustrates and discusses in-depth how changes are accommoda
 
 Table here
 
+
+| DEFINITION | DESCRIPTION | CODE USAGE | FOLDER USAGE | POTENTIAL FUTURE EXTENSIONS |
+| ------ | ------ | ------ | ------ | ------ |
+|   Artifacts     |    A general type in which responses and requests in the code are handled    |    **Clinic:**<br>Register Clinic<br>Delete Clinic<br>Add Dentist<br>Delete Dentist    |        |        |
+|        |        |        |        |        |
+|        |        |        |        |        |
+|        |        |        |        |        |
+
 Red-black tree of extensions here
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
 
