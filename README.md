@@ -1,4 +1,4 @@
-# Clinic service
+# ![Title-Picture](https://i.ibb.co/CVrvbBk/Clincic-Service-Title.png)
 Welcome to the Clinic service! This service handles request for:
 
 * Registering clinics
@@ -150,9 +150,20 @@ The picture above expressed in `.java` classes rather than folders looks like th
 ![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
 
 
-### BackendMapAPI folder: Self-contained nodejs runtime environment
+### BackendMapAPI folder
 
-Text here
+
+* A self-contained nodejs runtime environment
+![nodejs-logo](https://i.ibb.co/NVw6RZQ/Clinic-Service-Nodejs.png)
+
+This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system.
+
+
+TODO - Write cohesive text:
+* Checks content of `clinic.json`
+* `clinic.json` is intended to forward payload data `dentist_name` and `position` to a nodejs runtime environment
+* Try to fetch data (ratings, photoURL, address)
+* Return via clinic.json
 
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
