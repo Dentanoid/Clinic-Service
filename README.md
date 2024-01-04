@@ -113,6 +113,15 @@ Table here
 Red-black tree of extensions here
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
 
+### Class diagram: `Topic Management` Extensions
+Green --> Already existing classes
+
+Yellow --> Demonstrations of further extensions of abstract classes that weren't mentioned in the tree above
+
+Red --> The red nodes in the tree above
+
+![Class extensions](https://i.ibb.co/n126s1v/Class-Extension.png)
+
 
 ### Code flow
 
