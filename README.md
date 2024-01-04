@@ -168,6 +168,18 @@ TODO - Write cohesive text:
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
 
+BackendMapAPI found clinic and assigned fetched data:
+![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
+
+BackendMapAPI did not find clinic and could not assign additional data:
+![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
+
+
+#### Security
+TODO: Write section here
+* This adds an additional layer of security to the system --> Clinic must be an established well-known coorporation to be registered as an official establishment in the Google API --> These clinics gets additional UI when selecting them on the map (ratings, photo and address) which give them a competitive advantage because they are trust worthy
+
+
 ## Roadmap
 This service will not get updated in the future, due to project being considered as closed when GU course DIT356 is finished.
 
