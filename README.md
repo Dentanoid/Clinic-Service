@@ -104,7 +104,6 @@ First, a table that illustrates and discusses in-depth how changes are accommoda
 | ------ | ------ | ------ | ------ | ------ |
 |   Topic Artifacts     |    A general type in which responses and requests in the code are handled    |    **Clinic:**<br>Register Clinic<br>Delete Clinic<br>Add Dentist<br>Delete Dentist <br><br> **Map:** Radius range (return clinics within range) <br> Fixed number (return N closest clinics)   |   ![folder pict1](https://i.ibb.co/g9RK18m/folder2.png) <br> ![folder pic2](https://i.ibb.co/ZKmZrbK/folder3.png)     |    **Appointments folder:** A relevant domain that could be added in the future: <br><br> Display appointment information inside infowindow when clicking a clinic marker on the map    |
 |    Artifact Subtypes    |    A specific type of an artifact    |    **Dental:** <br> A specific type of _Clinic_ artifact: Clinics with dentists as employees <br><br> **Nearby:** <br> A specific type of _Map_ artifact: Queries returning data-points nearest to a position   |   ![folder pic3](https://i.ibb.co/fY5YvTm/folder4.png)     |    **Clinic subtype:** <br> Adding more sub-types of Clinic artifact implies creating a folder containing the related classes. At the moment we have the folder `Dental`. An example of an extension that supports health clinics would imply creating a folder called `Health` <br><br> **Map subtype:** <br> Other operations that are directly related to returning nearby clinics to the user’s positions are: <br> - A* algorithm <br> - Breadth First Search <br> - Depth First Search <br><br> In the folder structure,we would have to create a new sub-folder `Multiplicity` (returns multiple graph paths) in `MapManagement`, since it's a map operation but distinguished from the functionality of solely returning clinics sorted by one dimension (range from reference position) in its peer folder `Nearby`
-   |
 
 
 ### Extending the code
@@ -121,7 +120,7 @@ Adding new features would imply that the developer strictly follows the laid out
 ### Class diagram extensions
 This diagram provides further details on what was adressed in the children nodes of `TopicManagement` in the tree above:
 
-Green --> Already existing classes
+* Green --> Already existing classes
 * Yellow --> Demonstrations of further extensions of abstract classes that weren't mentioned in the tree above
 * Red --> The red nodes in the tree above
 
@@ -132,25 +131,23 @@ Green --> Already existing classes
 
 Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
 
-**NOTE:** Only the most significant classes and methods to the codeflow is included in the diagram
+**NOTE:** Only the most significant classes and methods to the codeflow is included in the diagrams
+
+The colors in the 2 diagrams below represent the following operational levels:
+* Red = Microservice
+* Orange = Segment of service
+* Yellow = Artifact
+* Green = Artifact subtypes → Where the requested operation occurs and generates a response
+
 
 #### Code flow: Folders
-
-Folder code flow picture here
+Keywords of the mqtt topic defines the codeflow trajectory which has its end in the green area
 ![Folder Code flow tree](https://i.ibb.co/6n09TGn/Code-Flow-Folder-Tree.png)
 
 
 #### Code flow: Classes
-
-Classes code flow picture here
+The picture above expressed in `.java` classes rather than folders looks like this:
 ![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
-
-
-### Code relations - Generalities
-
-Inheritence diagram here
-
-Interface abstractions here
 
 
 ### BackendMapAPI folder: Self-contained nodejs runtime environment
