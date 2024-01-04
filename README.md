@@ -1,8 +1,17 @@
 # Clinic service
-Welcome to the Clinic service! This service handles request for publishing, updating and deleing Clinics. Apart from name and location, clinics also contains references to Dentists. 
-## Getting started
+Welcome to the Clinic service! This service handles request for:
 
-This service is written in Java. [Check this link for more information about Java.](https://www.java.com/en/)
+* Registering clinics
+* Deleting clinics
+* Adding dentist to clinic
+* Removing dentist from clinic
+* Retrieving a specific clinic
+* Retrieving all clinics
+* Retrieving clinics within radius
+* Retrieving N cloest clinics
+
+ 
+## Getting started
 
 To run this service you need to follow the steps described below:
 
@@ -24,26 +33,116 @@ brew install Java
 brew install maven
 ``````
 
+### Google API Key
+Due to the usage of Google Maps API, a key is needed to run the service:
+
+1. Open [Google Cloud Console](https://console.cloud.google.com/projectcreate?utm_source=Docs_NewProject&utm_content=Docs_places-backend&_gl=1*1f1gepp*_ga*MzMzOTMzNDk3LjE3MDIwNTU2ODQ.*_ga_NRWSTWS78N*MTcwNDMyMTU1Mi4zNC4xLjE3MDQzMjE1NjIuMC4wLjA.) website and create a project
+
+2. Click on ‘Navigation menu’ on the top left corner
+![Picture 1](https://i.ibb.co/GH7x5vw/apikey1.png)
+
+3. Click “APIs & Services” and “Credentials”
+![Picture 2](https://i.ibb.co/gS5hrtX/apikey2.png)
+
+4. Click “Create credentials” → API Key”
+
+5. Click “Show key” and "Copy"
+
+6. Search for "Places API" and enable it
+![Picture 3](https://i.ibb.co/4FdX0S1/apikey3.png)
+
+7. Done! You now have a valid API key that will be used in the section below
+
 
 ### Run Clinic service
-In order to build and run the Clinic service you need to type these commands in to your terminal:
-
+In order to build and run the Clinic service you need to type these commands in your terminal:
 
 1. Navigate to the root project directory
 
-```cd Clinic-Service```
+```cd Clinic-Service/src/main/java/com/group20/dentanoid /BackendMapAPI```
 
-2. Compile the project into a binary (including deps)
+2. Install node modules
+
+```npm install```
+
+4. Configure environment variables
+
+Create a `.env` file
+
+```
+GOOGLE_MAPS_API_KEY={key here}
+``````
+
+
+3. Navigate to `Clinic-Service` folder and compile the project into a binary (including deps)
+
 
 ```mvn clean compile assembly:single```
 
-3. Run the compiled JAR file
+4. Run the compiled JAR file
 
  ```java -jar target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar``` 
 
 
 Congratulations! You are now running the Clinic service.
- 
+
+## Code documentation
+
+### Scalability
+A comprehensive folder structure that accounts for generalizations and abstractions is necessary for scalability and maintainability. The relations of the folders were designed with the motive to facilitate extensions of the code in the future and to accommodate room for unpredictable changes whereas the self-contained environment adheres to the single responsibility principle.
+
+
+Below, the microservice will be presented with respect to its three main folders:
+
+![3 main folders](https://i.ibb.co/yRPrzzQ/folder1.png)
+
+First, a table that illustrates and discusses in-depth how changes are accommodated in `TopicManagement` folder is presented. This table also touches on imperative concepts that are similar in its peer folder `DataManagement`. Afterwards, a multitude of trees with nodes brings more light on the existing similarities to highlight a general pattern of sub-folders that is strictly followed as a result of obtaining maintainable code. Lastly, `BackendMapAPI’s` involvement in the microservice and and how its behaviour deviates from its two peer folders is briefly discussed.
+
+
+
+Table here
+
+
+| DEFINITION | DESCRIPTION | CODE USAGE | FOLDER USAGE | POTENTIAL FUTURE EXTENSIONS |
+| ------ | ------ | ------ | ------ | ------ |
+|   Artifacts     |    A general type in which responses and requests in the code are handled    |    **Clinic:**<br>Register Clinic<br>Delete Clinic<br>Add Dentist<br>Delete Dentist    |        |        |
+|        |        |        |        |        |
+|        |        |        |        |        |
+|        |        |        |        |        |
+
+Red-black tree of extensions here
+![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
+
+
+### Code flow
+
+Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
+
+#### Code flow: Folders
+
+Folder code flow picture here
+![Folder Code flow tree](https://i.ibb.co/6n09TGn/Code-Flow-Folder-Tree.png)
+
+
+#### Code flow: Classes
+
+Classes code flow picture here
+![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
+
+
+### Code relations - Generalities
+
+Inheritence diagram here
+
+Interface abstractions here
+
+
+### BackendMapAPI folder: Self-contained nodejs runtime environment
+
+Text here
+
+![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
+
 
 ## Roadmap
 This service will not get updated in the future, due to project being considered as closed when GU course DIT356 is finished.
