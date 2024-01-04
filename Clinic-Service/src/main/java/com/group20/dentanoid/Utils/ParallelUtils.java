@@ -1,12 +1,9 @@
 package com.group20.dentanoid.Utils;
+import org.bson.Document;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;

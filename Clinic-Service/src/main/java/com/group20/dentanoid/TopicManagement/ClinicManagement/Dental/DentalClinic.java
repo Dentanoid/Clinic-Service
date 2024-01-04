@@ -89,7 +89,9 @@ public class DentalClinic implements Clinic {
 
     // Get a clinic by 'clinic_id'
     public void getOneClinic() {
-        payloadDoc = getClinicDocument("getOne");
+
+        payloadDoc = PayloadParser.convertJSONToDocument(payload);
+        // payloadDoc = getClinicDocument("getOne");
         requestID = payloadDoc.getString(reqID);
 
         String clinicId = payloadDoc.get(clinic_id).toString();

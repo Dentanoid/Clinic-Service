@@ -1,17 +1,10 @@
 package com.group20.dentanoid.Utils;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.stream.Stream;
-
-import com.google.gson.Gson;
-import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 
 public class Utils {
   // Physical measures of the Earth in KM
