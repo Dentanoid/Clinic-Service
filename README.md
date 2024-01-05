@@ -1,5 +1,5 @@
 # ![Title-Picture](https://i.ibb.co/CVrvbBk/Clincic-Service-Title.png)
-Welcome to the Clinic service! This service handles request for:
+Welcome to the Clinic service! This service handles requests for:
 
 * Registering clinics
 * Deleting clinics
@@ -8,7 +8,9 @@ Welcome to the Clinic service! This service handles request for:
 * Retrieving a specific clinic
 * Retrieving all clinics
 * Retrieving clinics within radius
-* Retrieving N cloest clinics
+* Retrieving N closest clinics
+
+![Clinic-Service-Connection](https://i.ibb.co/1RMrTbR/Clinic-Connection.png)
 
  
 ## Getting started
