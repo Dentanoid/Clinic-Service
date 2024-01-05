@@ -173,6 +173,9 @@ TODO - Write cohesive text:
 BackendMapAPI found clinic and assigned fetched data:
 ![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
 
+
+![validated-clinic-2](https://i.ibb.co/Px5xYY1/Ratings-Clinic2.png)
+
 BackendMapAPI did not find clinic and could not assign additional data:
 ![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
 
@@ -180,6 +183,70 @@ BackendMapAPI did not find clinic and could not assign additional data:
 #### Security
 TODO: Write section here
 * This adds an additional layer of security to the system --> Clinic must be an established well-known coorporation to be registered as an official establishment in the Google API --> These clinics gets additional UI when selecting them on the map (ratings, photo and address) which give them a competitive advantage because they are trust worthy
+
+
+#### Registering a clinic to the system
+TODO: Make this section cohesive
+
+1 out of 2 cases happen:
+
+1. Clinic was found and data fetched
+
+
+2. Clinic was not found and only employees are displayed on the infowindow
+
+A status code is used (between `TopicManagement` and `BackendMapAPI`)
+200 = Existing clinic found
+404 = Clinic not found → Fictitious clinic
+This status code is used in the conditions deciding the lifecycle of a thread that is listening for a response from the BackendMapAPI nodejs environment
+Lastly, whether or not the BackendMapAPI return 200 or 404, the operation was successful in registering a clinic. Hence, the status code returned in the payload to the Patient API is 200.
+
+
+
+TODO: Write this into a cohesive text:
+
+Due to naming inconsistencies between Google Maps and Google Maps API
+Not identical strings → clinic names,
+The following procedure must be followed:
+Find the identical string of clinic name that the API checks for:
+Use ‘SEARCH’ mode in Patient Client and check the box ‘establishment’ and search for the desired clinic (already existing corporation that wants to use this system)
+Find the global coordinates of the clinic as an identifier:
+Use Google Maps and search for the clinic
+Right click on the marker and copy the lat,lng values
+Delete the space character
+
+Recommendation: Select clinics with more than 20 ratings/reviews to ensure that it’s an official establishment registered in Google API’s database
+If you did any mistake in these steps, the code will not find the existing clinic and return a ‘fictitious’ one without ratings and pictures
+
+
+#### Inconsistencies
+
+TODO: Make this section clear and cohesive
+
+Clinic naming inconsistencies between Backend Nodejs API and the public Google Maps API
+Places API vs Places API (New) → Free and unlimited usage but has its deficiencies in places available (100m places vs its newer but expensive option with 200m global places)
+
+**Find the identical string that the system checks for:**
+Go to ‘SEARCH’ mode and check the ‘establishment’ box
+Search for the clinic you want
+The autocomplete search-bar generates a string consisting of the establishment’s name and address. Copy paste the name and input it in dentist client
+Global coordinates → Google Maps → Right click → Past ein dentist client
+
+**What to do if a clinic owner's clinic isn't found:**
+In some cases - The string may be tricky → Contact the customer support (one of the developers) that can find the clinic for you → In the code → bash-api.sh, query.js, printOutputForDevelopers() → Prints the exact strings that the API is validating to fetch data from (in Google API DB)
+
+
+Developer printing: A way of navigating in the registration of existing clinics
+
+![Developer Printing](https://i.ibb.co/3NHy1S1/Developer-Printing.png)
+
+
+## Global constraints on clinics displayed
+
+TODO:
+* Haversine formula
+* Priority queue
+* Max heap
 
 
 ## Roadmap
