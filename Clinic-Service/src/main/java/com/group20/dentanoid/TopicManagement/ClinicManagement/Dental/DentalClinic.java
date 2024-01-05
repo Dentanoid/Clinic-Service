@@ -91,7 +91,6 @@ public class DentalClinic implements Clinic {
     public void getOneClinic() {
 
         payloadDoc = PayloadParser.convertJSONToDocument(payload);
-        // payloadDoc = getClinicDocument("getOne");
         requestID = payloadDoc.getString(reqID);
 
         String clinicId = payloadDoc.get(clinic_id).toString();
@@ -99,8 +98,7 @@ public class DentalClinic implements Clinic {
 
         if (clinic != null) {
             try {
-                Gson gson = new Gson();
-                clinicsData = gson.toJson(clinic);
+                DatabaseManager.replaceDocument(payloadDoc, clinic);
             }
             catch (Exception e) {
                 status = "500";

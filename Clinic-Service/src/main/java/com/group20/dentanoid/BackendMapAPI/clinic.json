@@ -1,9 +1,9 @@
 {
-  "clinic_name": "Altima Dental Centre at First Canadian Place",
-  "position": "43.64928533468972,-79.38225247971043",
+  "clinic_name": "My Clinic Test222",
+  "position": "50.85,12.10",
   "employees": [],
-  "ratings": "4.6",
-  "photoURL": "https://maps.googleapis.com/maps/api/place/photo?photoreference=AWU5eFg0Fcb0JUwUeU9XLJXL26p8Z_o4mzuI4AB9LlKEgezZtKsBzlIf3jTHWJvOFPifkGSlFErtvtBT8bdJPLFbzLfRDxSQ-fcxpK9nyTjnS3i0dNExEWYuVBhroIOm6sqUVybUCAHvZi7_8K9V3cdL-TkIF6Sa-5-IKj9sdG4ND7whRUM&sensor=false&maxheight=80&maxwidth=120&key=AIzaSyDcW3egIXVLOm4B2uPlxK_YVjsc8dIROio",
-  "address": "100 King Street West Unit C13, Toronto",
-  "status": 200
+  "ratings": "-1",
+  "photoURL": "-1",
+  "address": "-1",
+  "status": 404
 }

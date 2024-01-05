@@ -90,7 +90,10 @@ public class NearbyClinics extends NearbyQuery {
         String clinicsJson = "-1";
 
         try {
-            clinicsJson = gson.toJson(clinics);
+            // clinicsJson = PayloadParser.convertDocumentsToJSON(clinics);
+            // clinicsJson = PayloadParser.convertDocumentToJSON(clinics[0]);
+            clinicsJson = PayloadParser.convertDocsToJSON(clinics, "clinics");
+            // clinicsJson = gson.toJson(clinics); // gson.toJson() --> generates weird string
             statusCode = clinicsJson.length() > 0 ? "200" : "404";
         } catch (Exception e) {
             statusCode = "500";
@@ -114,6 +117,9 @@ public class NearbyClinics extends NearbyQuery {
 
         Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey); // Pass the key containing its own priority que
         String publishMessage = formatRetrievedClinics(clinicsToDisplay, publishSchema);
+
+        System.out.println(clinicsToDisplay);
+        System.out.println(publishMessage);
 
         MqttMain.publish(MqttUtils.mapPublishFormat, publishMessage);
     }

@@ -4,11 +4,15 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import static com.mongodb.client.model.Filters.eq;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 public class PayloadParser {
     public static Object getAttributeFromPayload(String payload, String attributeName, CollectionSchema classSchema) {
@@ -73,7 +77,7 @@ public class PayloadParser {
         }
 
         Gson gson = new Gson();
-        String payload = gson.toJson(jsonObject);
+        String payload = gson.toJson(jsonObject); // 
 
         return payload;
     }
@@ -94,5 +98,76 @@ public class PayloadParser {
 
         Gson gson = new Gson();
         return gson.toJson(map);
+    }
+
+    // ------------------------------------------------------------------------------------
+
+    public static String convertDocsToJSON(Document[] docs, String attributeName) {
+
+        /*
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty(attributeName, docs.toString());
+
+        String finalString = "";
+        System.out.println(docs[0].toJson());
+
+        FindIterable<Document> collectionInstances = docs;
+        Iterator<Document> it = collectionInstances.iterator();
+        docs.to
+
+        collectionInstances.toString()
+
+        while (it.hasNext()) {
+            Document currentInstance = it.next();
+            finalString += currentInstance.toJson();
+        }
+        return jsonObject.toString();
+        */
+
+        System.out.println(Arrays.toString(docs));
+        return Arrays.toString(docs);
+    }
+
+    public static String convertDocumentToJSON(Document doc) {
+        Set<String> keys = doc.keySet();
+        Iterator<String> keysIterator = keys.iterator();
+
+        HashMap<String, Object> map = new HashMap<>();
+        JsonObject jsonObject = new JsonObject();
+
+        while(keysIterator.hasNext()) {
+            String currentKey = keysIterator.next();
+            // map.put(currentKey, doc.get(currentKey));
+            jsonObject.addProperty(currentKey, doc.get(currentKey).toString());
+        }
+
+        /*
+        System.out.println(jsonObject);
+        System.out.println(jsonObject.toString());
+        */
+
+        return jsonObject.toString();
+    }
+
+    public static String convertDocumentsToJSON(Document[] docs) {
+        JsonObject jsonObject = new JsonObject();
+        System.out.println(docs.length);
+
+        for (int i = 0; i < docs.length; i++) {
+            Set<String> keys = docs[i].keySet();
+            Iterator<String> keysIterator = keys.iterator();
+            
+            while(keysIterator.hasNext()) {
+                String currentKey = keysIterator.next();
+                jsonObject.addProperty(currentKey, docs[i].get(currentKey).toString());
+            }
+        }
+
+        System.out.println(jsonObject);
+        System.out.println(jsonObject.toString());
+
+        return createJSONPayload( new HashMap<>() {{
+            put("gg", "g");
+        }});
     }
 }

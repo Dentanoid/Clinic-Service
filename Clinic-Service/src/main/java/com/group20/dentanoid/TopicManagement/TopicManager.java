@@ -7,10 +7,10 @@ import com.group20.dentanoid.TopicManagement.MapManagement.Nearby.NearbyClinics;
 import com.group20.dentanoid.Utils.MqttUtils;
 
 public class TopicManager {
-    private TopicOperator topicOperator;
+    private TopicArtifact topicOperator;
 
     // Return the topic artifact (clinic or map) to perform operations on
-    public TopicOperator getTopicOperator(String topic, String payload) {
+    public TopicArtifact getTopicOperator(String topic, String payload) {
         if (topic.contains(MqttUtils.topicArtifacts[0])) {
             return getClinic(topic, payload);
         }

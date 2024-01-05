@@ -6,6 +6,6 @@ package com.group20.dentanoid.TopicManagement;
     i.e any form of action that is performed when an external component publishes a request to this microservice
  */
 
-public interface TopicOperator {
+public interface TopicArtifact {
     public void executeRequestedOperation();
 }
