@@ -83,14 +83,14 @@ public class PayloadParser {
     }
 
     // Append the attributes that are used in every MQTT request
-    public static String parsePublishMessage(Document payloadDoc, String requestID, String status) {
+    public static String parsePublishMessage(Document payloadDoc, String requestID, Integer status) {
         payloadDoc.append("requestID", requestID);
         payloadDoc.append("status", status);
         return payloadDoc.toJson();
     }
 
     // Change the structure of the JSON by adding parent attributes
-    public static String restructurePublishMessage(String payloadData, String requestID, String status) {
+    public static String restructurePublishMessage(String payloadData, String requestID, Integer status) {
 
         System.out.println(payloadData);
 
@@ -105,22 +105,12 @@ public class PayloadParser {
         String statusQuoted = "\"" + statusTest + "\"";
 
         Map<String, Object> map = new HashMap<>();
-        /*
-        map.put("clinics", payloadData.toString());
-        map.put("requestID", requestID.toString());
-        map.put("status", Integer.parseInt(status));
-        */
 
         map.put(clinicsQuoted + ": ", payloadData.toString());
         map.put(reqQuoted + ": ", requestID.toString());
-        map.put(statusQuoted + ": ", Integer.parseInt(status));
+        map.put(statusQuoted + ": ", status);
 
         return map.toString();
-
-        /*
-        Gson gson = new Gson();
-        return gson.toJson(map);
-        */
     }
 
     // ------------------------------------------------------------------------------------

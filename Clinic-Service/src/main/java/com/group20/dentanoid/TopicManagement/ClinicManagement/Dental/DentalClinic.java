@@ -1,15 +1,11 @@
 package com.group20.dentanoid.TopicManagement.ClinicManagement.Dental;
 import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.FindIterable;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
-import com.google.gson.Gson;
-import com.mongodb.client.FindIterable;
 
 import com.group20.dentanoid.Utils.MqttUtils;
 import com.group20.dentanoid.Utils.ParallelUtils;
@@ -27,7 +23,7 @@ public class DentalClinic implements Clinic {
     private static Document payloadDoc = null;
 
     // Payload response values
-    private static String status = "";
+    private static Integer status = -1;
     private static String requestID = "";
     private static String clinicsData = "-1";
 
@@ -69,10 +65,10 @@ public class DentalClinic implements Clinic {
                 DatabaseManager.replaceDocument(payloadDoc, clinicToDelete);
                 DatabaseManager.clinicsCollection.deleteOne(clinicToDelete);
             } catch (Exception exception) {
-                status = "500";
+                status = 500;
             }
         } else {
-            status = "404";
+            status = 404;
         }
     }
 
@@ -101,10 +97,10 @@ public class DentalClinic implements Clinic {
                 DatabaseManager.replaceDocument(payloadDoc, clinic);
             }
             catch (Exception e) {
-                status = "500";
+                status = 500;
             }
         } else {
-            status = "404";
+            status = 404;
         }
     }
 
@@ -117,24 +113,20 @@ public class DentalClinic implements Clinic {
 
         try {
             Iterator<Document> it = allRegisteredClinics.iterator();
-            // ArrayList<Document> clinics = new ArrayList<>();
             Integer numberOfClinics = DatabaseManager.getNumberOfClinics();
             Document[] clinics = new Document[numberOfClinics];
 
             Integer i = 0;
             while (it.hasNext()) {
                 Document currentClinic = it.next();
-                // clinics.add(currentClinic);
                 clinics[i] = currentClinic;
                 i++;
             }
 
-            Gson gson = new Gson();
-            // clinicsData = gson.toJson(clinics);
             clinicsData = PayloadParser.convertDocArrToJSON(clinics);
         }
         catch (Exception e) {
-            status = "500";
+            status = 500;
         }
     }
 
@@ -179,7 +171,7 @@ public class DentalClinic implements Clinic {
                         employees.remove(dentistIdx);
 
                     } else {
-                        status = "404";
+                        status = 404;
                     }
 
                     payloadDoc.remove("dentist_name");
@@ -189,10 +181,10 @@ public class DentalClinic implements Clinic {
                 DatabaseManager.updateInstanceByAttributeFilter("_id", clinicId, updateDoc);
             }
             catch (Exception exception) {
-                status = "500";
+                status = 500;
             }
         } else {
-            status = "404";
+            status = 404;
         }
     }
 
@@ -203,7 +195,7 @@ public class DentalClinic implements Clinic {
      based on the performed operation.
     */
     public void executeRequestedOperation() {
-        status = "200";
+        status = 200;
         String operation = "-1";
 
         // Register clinic
@@ -253,7 +245,6 @@ public class DentalClinic implements Clinic {
         publishMessage = clinicsData.equals("-1") ?
             PayloadParser.parsePublishMessage(payloadDoc, requestID, status) : PayloadParser.restructurePublishMessage(clinicsData, requestID, status);
         
-        System.out.println(publishMessage);
         publishMessage = publishMessage.replaceAll("=", "");
         publishMessage.replaceAll("=", "");
     }

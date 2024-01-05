@@ -15,7 +15,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import org.bson.Document;
-import com.google.gson.Gson;
 import com.mongodb.client.FindIterable;
 
 public class NearbyClinics extends NearbyQuery {
@@ -83,15 +82,12 @@ public class NearbyClinics extends NearbyQuery {
 
     // Format the document-data of the clinics to display into a JSON-String that will be published to Patient API
     private String formatRetrievedClinics(Document[] clinics, CollectionSchema querySchema) {
-        Gson gson = new Gson();
-
         // Payload attributes
-        String statusCode = "-1";
+        Integer statusCode = -1;
         String requestID = PayloadParser.getAttributeFromPayload(payload, "requestID", querySchema).toString();
         String clinicsJson = "-1";
 
         try {
-            // clinicsJson = gson.toJson(clinics); // gson.toJson() --> generates weird string
             clinicsJson = Arrays.toString(clinics);
             System.out.println(clinicsJson);
             
@@ -102,9 +98,9 @@ public class NearbyClinics extends NearbyQuery {
             clinicsJson = PayloadParser.convertDocArrToJSON(clinics);
             System.out.println(clinicsJson);
 
-            statusCode = clinicsJson.length() > 0 ? "200" : "404";
+            statusCode = clinicsJson.length() > 0 ? 200 : 404;
         } catch (Exception e) {
-            statusCode = "500";
+            statusCode = 500;
         }
 
         return PayloadParser.restructurePublishMessage(clinicsJson, requestID, statusCode);
