@@ -104,10 +104,12 @@ public class PayloadParser {
         String statusTest = "status";
         String statusQuoted = "\"" + statusTest + "\"";
 
+        String reqIdString = "\"" + requestID + "\"";
+
         Map<String, Object> map = new HashMap<>();
 
         map.put(clinicsQuoted + ": ", payloadData.toString());
-        map.put(reqQuoted + ": ", requestID.toString());
+        map.put(reqQuoted + ": ", reqIdString);
         map.put(statusQuoted + ": ", status);
 
         return map.toString();

@@ -89,15 +89,7 @@ public class NearbyClinics extends NearbyQuery {
 
         try {
             clinicsJson = Arrays.toString(clinics);
-            System.out.println(clinicsJson);
-            
-            System.out.println(" ");
-            System.out.println("-----------------------------------------------");
-            System.out.println(" ");
-
             clinicsJson = PayloadParser.convertDocArrToJSON(clinics);
-            System.out.println(clinicsJson);
-
             statusCode = clinicsJson.length() > 0 ? 200 : 404;
         } catch (Exception e) {
             statusCode = 500;
