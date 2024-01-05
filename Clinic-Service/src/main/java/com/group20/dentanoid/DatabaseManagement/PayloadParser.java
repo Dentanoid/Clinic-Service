@@ -1,5 +1,7 @@
 package com.group20.dentanoid.DatabaseManagement;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.Utils.Utils;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import com.google.gson.Gson;
@@ -91,37 +93,19 @@ public class PayloadParser {
 
     // Change the structure of the JSON by adding parent attributes
     public static String restructurePublishMessage(String payloadData, String requestID, Integer status) {
-
-        System.out.println(payloadData);
-
-        // TODO: Refactor in Utils.js
-        String clinicsTest = "clinics";
-        String clinicsQuoted = "\"" + clinicsTest + "\"";
-
-        String requestIdTest = "requestID";
-        String reqQuoted = "\"" + requestIdTest + "\"";
-
-        String statusTest = "status";
-        String statusQuoted = "\"" + statusTest + "\"";
-
-        String reqIdString = "\"" + requestID + "\"";
-
         Map<String, Object> map = new HashMap<>();
 
-        map.put(clinicsQuoted + ": ", payloadData.toString());
-        map.put(reqQuoted + ": ", reqIdString);
-        map.put(statusQuoted + ": ", status);
+        map.put(Utils.quoteString("clinics") + ": ", payloadData);
+        map.put(Utils.quoteString("requestID") + ": ", Utils.quoteString(requestID));
+        map.put(Utils.quoteString("status") + ": ", status);
 
         return map.toString();
     }
 
-    // ------------------------------------------------------------------------------------
-
+    // Parse an array of Documents to JSON
     public static String convertDocArrToJSON(Document[] docs) {
-
         String finalString = "[";
 
-        // TODO: Replace with StringBuilder later
         for (int i = 0; i < docs.length; i++) {
             finalString += docs[i].toJson();
 
@@ -138,74 +122,5 @@ public class PayloadParser {
         }
 
         return finalString;
-    }
-
-    public static String convertDocsToJSON(Document[] docs, String attributeName) {
-
-        /*
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty(attributeName, docs.toString());
-
-        String finalString = "";
-        System.out.println(docs[0].toJson());
-
-        FindIterable<Document> collectionInstances = docs;
-        Iterator<Document> it = collectionInstances.iterator();
-        docs.to
-
-        collectionInstances.toString()
-
-        while (it.hasNext()) {
-            Document currentInstance = it.next();
-            finalString += currentInstance.toJson();
-        }
-        return jsonObject.toString();
-        */
-
-        System.out.println(Arrays.toString(docs));
-        return Arrays.toString(docs);
-    }
-
-    public static String convertDocumentToJSON(Document doc) {
-        Set<String> keys = doc.keySet();
-        Iterator<String> keysIterator = keys.iterator();
-
-        HashMap<String, Object> map = new HashMap<>();
-        JsonObject jsonObject = new JsonObject();
-
-        while(keysIterator.hasNext()) {
-            String currentKey = keysIterator.next();
-            // map.put(currentKey, doc.get(currentKey));
-            jsonObject.addProperty(currentKey, doc.get(currentKey).toString());
-        }
-
-        /*
-        System.out.println(jsonObject);
-        System.out.println(jsonObject.toString());
-        */
-
-        return jsonObject.toString();
-    }
-
-    public static String convertDocumentsToJSON(Document[] docs) {
-        JsonObject jsonObject = new JsonObject();
-        System.out.println(docs.length);
-
-        for (int i = 0; i < docs.length; i++) {
-            Set<String> keys = docs[i].keySet();
-            Iterator<String> keysIterator = keys.iterator();
-            
-            while(keysIterator.hasNext()) {
-                String currentKey = keysIterator.next();
-                jsonObject.addProperty(currentKey, docs[i].get(currentKey).toString());
-            }
-        }
-
-        System.out.println(jsonObject);
-        System.out.println(jsonObject.toString());
-
-        return createJSONPayload( new HashMap<>() {{
-            put("gg", "g");
-        }});
     }
 }

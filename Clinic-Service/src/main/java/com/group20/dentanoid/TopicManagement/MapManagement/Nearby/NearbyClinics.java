@@ -113,7 +113,7 @@ public class NearbyClinics extends NearbyQuery {
 
         Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey); // Pass the key containing its own priority que
         String publishMessage = formatRetrievedClinics(clinicsToDisplay, publishSchema);
-        publishMessage = publishMessage.replaceAll("=", "");
+        publishMessage = publishMessage.replaceAll(" =", "");
 
         MqttMain.publish(MqttUtils.mapPublishFormat, publishMessage);
     }

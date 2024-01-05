@@ -59,4 +59,8 @@ public class Utils {
   public static String readFile(String path) throws IOException {
     return new String(Files.readAllBytes(Paths.get(path)));
   }
+
+  public static String quoteString(String s) {
+    return "\"" + s + "\"";
+  }
 }
