@@ -1,4 +1,4 @@
-# Clinic service
+# ![Title-Picture](https://i.ibb.co/CVrvbBk/Clincic-Service-Title.png)
 Welcome to the Clinic service! This service handles request for:
 
 * Registering clinics
@@ -98,50 +98,86 @@ Below, the microservice will be presented with respect to its three main folders
 
 First, a table that illustrates and discusses in-depth how changes are accommodated in `TopicManagement` folder is presented. This table also touches on imperative concepts that are similar in its peer folder `DataManagement`. Afterwards, a multitude of trees with nodes brings more light on the existing similarities to highlight a general pattern of sub-folders that is strictly followed as a result of obtaining maintainable code. Lastly, `BackendMapAPI’s` involvement in the microservice and and how its behaviour deviates from its two peer folders is briefly discussed.
 
-
-
-Table here
-
+### Clarification Table
 
 | DEFINITION | DESCRIPTION | CODE USAGE | FOLDER USAGE | POTENTIAL FUTURE EXTENSIONS |
 | ------ | ------ | ------ | ------ | ------ |
-|   Artifacts     |    A general type in which responses and requests in the code are handled    |    **Clinic:**<br>Register Clinic<br>Delete Clinic<br>Add Dentist<br>Delete Dentist    |        |        |
-|        |        |        |        |        |
-|        |        |        |        |        |
-|        |        |        |        |        |
+|   Topic Artifacts     |    A general type in which responses and requests in the code are handled    |    **Clinic:**<br>Register Clinic<br>Delete Clinic<br>Add Dentist<br>Delete Dentist <br><br> **Map:** Radius range (return clinics within range) <br> Fixed number (return N closest clinics)   |   ![folder pict1](https://i.ibb.co/g9RK18m/folder2.png) <br> ![folder pic2](https://i.ibb.co/ZKmZrbK/folder3.png)     |    **Appointments folder:** A relevant domain that could be added in the future: <br><br> Display appointment information inside infowindow when clicking a clinic marker on the map    |
+|    Artifact Subtypes    |    A specific type of an artifact    |    **Dental:** <br> A specific type of _Clinic_ artifact: Clinics with dentists as employees <br><br> **Nearby:** <br> A specific type of _Map_ artifact: Queries returning data-points nearest to a position   |   ![folder pic3](https://i.ibb.co/fY5YvTm/folder4.png)     |    **Clinic subtype:** <br> Adding more sub-types of Clinic artifact implies creating a folder containing the related classes. At the moment we have the folder `Dental`. An example of an extension that supports health clinics would imply creating a folder called `Health` <br><br> **Map subtype:** <br> Other operations that are directly related to returning nearby clinics to the user’s positions are: <br> - A* algorithm <br> - Breadth First Search <br> - Depth First Search <br><br> In the folder structure,we would have to create a new sub-folder `Multiplicity` (returns multiple graph paths) in `MapManagement`, since it's a map operation but distinguished from the functionality of solely returning clinics sorted by one dimension (range from reference position) in its peer folder `Nearby`
 
-Red-black tree of extensions here
+
+### Extending the code
+Adding new features would imply that the developer strictly follows the laid out folder structure to keep things organized.
+
+### Tree of extensions
+
+* Black nodes --> Already existing folders
+* Red nodes --> Example extensions of folders
+* Documents --> Example extensions of scripts
+
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
+
+### Class diagram extensions
+This diagram provides further details on what was adressed in the children nodes of `TopicManagement` in the tree above:
+
+* Green --> Already existing classes
+* Yellow --> Demonstrations of further extensions of abstract classes that weren't mentioned in the tree above
+* Red --> The red nodes in the tree above
+
+![Class extensions](https://i.ibb.co/n126s1v/Class-Extension.png)
 
 
 ### Code flow
 
 Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
 
-#### Code flow: Folders
+**NOTE:** Only the most significant classes and methods to the codeflow is included in the diagrams
 
-Folder code flow picture here
+The colors in the 2 diagrams below represent the following operational levels:
+* Red = Microservice
+* Orange = Segment of service
+* Yellow = Artifact
+* Green = Artifact subtypes → Where the requested operation occurs and generates a response
+
+
+#### Code flow: Folders
+Keywords of the mqtt topic defines the codeflow trajectory which has its end in the green area
 ![Folder Code flow tree](https://i.ibb.co/6n09TGn/Code-Flow-Folder-Tree.png)
 
 
 #### Code flow: Classes
-
-Classes code flow picture here
+The picture above expressed in `.java` classes rather than folders looks like this:
 ![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
 
 
-### Code relations - Generalities
-
-Inheritence diagram here
-
-Interface abstractions here
+### BackendMapAPI folder
 
 
-### BackendMapAPI folder: Self-contained nodejs runtime environment
+* A self-contained nodejs runtime environment
+![nodejs-logo](https://i.ibb.co/NVw6RZQ/Clinic-Service-Nodejs.png)
 
-Text here
+This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system.
+
+
+TODO - Write cohesive text:
+* Checks content of `clinic.json`
+* `clinic.json` is intended to forward payload data `dentist_name` and `position` to a nodejs runtime environment
+* Try to fetch data (ratings, photoURL, address)
+* Return via clinic.json
 
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
+
+
+BackendMapAPI found clinic and assigned fetched data:
+![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
+
+BackendMapAPI did not find clinic and could not assign additional data:
+![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
+
+
+#### Security
+TODO: Write section here
+* This adds an additional layer of security to the system --> Clinic must be an established well-known coorporation to be registered as an official establishment in the Google API --> These clinics gets additional UI when selecting them on the map (ratings, photo and address) which give them a competitive advantage because they are trust worthy
 
 
 ## Roadmap
