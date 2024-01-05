@@ -10,6 +10,7 @@ import com.group20.dentanoid.Utils.Entry;
 import com.group20.dentanoid.Utils.MqttUtils;
 import com.group20.dentanoid.Utils.Utils;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.PriorityQueue;
@@ -90,10 +91,17 @@ public class NearbyClinics extends NearbyQuery {
         String clinicsJson = "-1";
 
         try {
-            // clinicsJson = PayloadParser.convertDocumentsToJSON(clinics);
-            // clinicsJson = PayloadParser.convertDocumentToJSON(clinics[0]);
-            clinicsJson = PayloadParser.convertDocsToJSON(clinics, "clinics");
             // clinicsJson = gson.toJson(clinics); // gson.toJson() --> generates weird string
+            clinicsJson = Arrays.toString(clinics);
+            System.out.println(clinicsJson);
+            
+            System.out.println(" ");
+            System.out.println("-----------------------------------------------");
+            System.out.println(" ");
+
+            clinicsJson = PayloadParser.convertDocArrToJSON(clinics);
+            System.out.println(clinicsJson);
+
             statusCode = clinicsJson.length() > 0 ? "200" : "404";
         } catch (Exception e) {
             statusCode = "500";
@@ -117,9 +125,7 @@ public class NearbyClinics extends NearbyQuery {
 
         Document[] clinicsToDisplay = retrieveClosestClinics(queryKey.getN(), queryKey); // Pass the key containing its own priority que
         String publishMessage = formatRetrievedClinics(clinicsToDisplay, publishSchema);
-
-        System.out.println(clinicsToDisplay);
-        System.out.println(publishMessage);
+        publishMessage = publishMessage.replaceAll("=", "");
 
         MqttMain.publish(MqttUtils.mapPublishFormat, publishMessage);
     }

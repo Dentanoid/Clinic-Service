@@ -91,16 +91,62 @@ public class PayloadParser {
 
     // Change the structure of the JSON by adding parent attributes
     public static String restructurePublishMessage(String payloadData, String requestID, String status) {
+
+        System.out.println(payloadData);
+
+        // TODO: Refactor in Utils.js
+        String clinicsTest = "clinics";
+        String clinicsQuoted = "\"" + clinicsTest + "\"";
+
+        String requestIdTest = "requestID";
+        String reqQuoted = "\"" + requestIdTest + "\"";
+
+        String statusTest = "status";
+        String statusQuoted = "\"" + statusTest + "\"";
+
         Map<String, Object> map = new HashMap<>();
+        /*
         map.put("clinics", payloadData.toString());
         map.put("requestID", requestID.toString());
         map.put("status", Integer.parseInt(status));
+        */
 
+        map.put(clinicsQuoted + ": ", payloadData.toString());
+        map.put(reqQuoted + ": ", requestID.toString());
+        map.put(statusQuoted + ": ", Integer.parseInt(status));
+
+        return map.toString();
+
+        /*
         Gson gson = new Gson();
         return gson.toJson(map);
+        */
     }
 
     // ------------------------------------------------------------------------------------
+
+    public static String convertDocArrToJSON(Document[] docs) {
+
+        String finalString = "[";
+
+        // TODO: Replace with StringBuilder later
+        for (int i = 0; i < docs.length; i++) {
+            finalString += docs[i].toJson();
+
+            if (i != docs.length - 1) {
+                finalString += ", ";
+            } else {
+                finalString += "]";
+            }
+        }
+
+        // Catch edge case when no clinics are returned
+        if (docs.length == 0) {
+            finalString += "]";
+        }
+
+        return finalString;
+    }
 
     public static String convertDocsToJSON(Document[] docs, String attributeName) {
 

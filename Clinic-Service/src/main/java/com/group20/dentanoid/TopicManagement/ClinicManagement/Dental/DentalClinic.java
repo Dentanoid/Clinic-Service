@@ -117,15 +117,21 @@ public class DentalClinic implements Clinic {
 
         try {
             Iterator<Document> it = allRegisteredClinics.iterator();
-            ArrayList<Document> clinics = new ArrayList<>();
+            // ArrayList<Document> clinics = new ArrayList<>();
+            Integer numberOfClinics = DatabaseManager.getNumberOfClinics();
+            Document[] clinics = new Document[numberOfClinics];
 
+            Integer i = 0;
             while (it.hasNext()) {
                 Document currentClinic = it.next();
-                clinics.add(currentClinic);
+                // clinics.add(currentClinic);
+                clinics[i] = currentClinic;
+                i++;
             }
 
             Gson gson = new Gson();
-            clinicsData = gson.toJson(clinics);
+            // clinicsData = gson.toJson(clinics);
+            clinicsData = PayloadParser.convertDocArrToJSON(clinics);
         }
         catch (Exception e) {
             status = "500";
@@ -246,6 +252,10 @@ public class DentalClinic implements Clinic {
     private static void defineParsingOperation() {
         publishMessage = clinicsData.equals("-1") ?
             PayloadParser.parsePublishMessage(payloadDoc, requestID, status) : PayloadParser.restructurePublishMessage(clinicsData, requestID, status);
+        
+        System.out.println(publishMessage);
+        publishMessage = publishMessage.replaceAll("=", "");
+        publishMessage.replaceAll("=", "");
     }
 
     private Document getClinicById(String clinicId) {

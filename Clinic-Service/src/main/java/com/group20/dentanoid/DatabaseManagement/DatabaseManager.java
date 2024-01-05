@@ -91,4 +91,8 @@ public class DatabaseManager {
         docA.clear();
         docA.putAll(docB);
     }
+
+    public static Integer getNumberOfClinics() {
+        return (int)clinicsCollection.countDocuments();
+    }
 }
