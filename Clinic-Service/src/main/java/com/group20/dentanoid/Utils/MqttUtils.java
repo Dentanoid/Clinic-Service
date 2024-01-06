@@ -60,7 +60,8 @@ public class MqttUtils {
             clinicsSubscribeFormat + "remove",
             clinicsSubscribeFormat + "delete",
             clinicsSubscribeFormat + "add",
-            clinicsSubscribeFormat + "get"
+            clinicsSubscribeFormat + "get",
+            clinicsSubscribeFormat + "get/one"
         };
     }
 

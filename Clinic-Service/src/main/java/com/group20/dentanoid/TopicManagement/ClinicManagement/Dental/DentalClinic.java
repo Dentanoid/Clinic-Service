@@ -72,17 +72,6 @@ public class DentalClinic implements Clinic {
         }
     }
 
-    public void getClinics() {
-        Document doc = PayloadParser.convertJSONToDocument(payload);
-
-        // If 'clinic_id' is specified in the GET request, return one clinic
-        if (doc.get("clinic_id") != null) {
-            getOneClinic();
-        } else {
-            getAllClinics();
-        }
-    }
-
     // Get a clinic by 'clinic_id'
     public void getOneClinic() {
 
@@ -92,9 +81,15 @@ public class DentalClinic implements Clinic {
         String clinicId = payloadDoc.get(clinic_id).toString();
         Document clinic = getClinicById(clinicId);
 
+        System.out.println("----------------------------------------");
+        System.out.println(clinicId);
+        
+
         if (clinic != null) {
             try {
                 DatabaseManager.replaceDocument(payloadDoc, clinic);
+                System.out.println(payloadDoc);
+                System.out.println("----------------------------------------");
             }
             catch (Exception e) {
                 status = 500;
@@ -197,6 +192,7 @@ public class DentalClinic implements Clinic {
     public void executeRequestedOperation() {
         status = 200;
         String operation = "-1";
+        clinicsData = "-1";
 
         // Register clinic
         if (topic.contains(MqttUtils.clinicOperations[0])) {
@@ -220,7 +216,12 @@ public class DentalClinic implements Clinic {
             }
             // Get a clinic by its id or get all clinics
             else if (topic.contains("get")) {
-                getClinics();
+                if (topic.contains("one")) {
+                    getOneClinic();
+                } else {
+                    getAllClinics();
+                }
+
                 operation = "get";
             }
 

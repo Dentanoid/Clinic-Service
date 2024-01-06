@@ -1,6 +1,5 @@
 package com.group20.dentanoid;
 
-import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
