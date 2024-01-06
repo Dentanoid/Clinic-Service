@@ -244,11 +244,15 @@ Developer printing: A way of navigating in the registration of existing clinics
 ## Global constraints on clinics displayed on map
 
 The system is capable of retrieving clinics regardless of global coordinates and send them back as a reponse to `Patient Client` where they are displayed. Two modes support this feature:
-* **Radius:** Returns the clinics that are within a specified circular radius from a position. The position is usually set to the user's current global coordinates, but it can also represent the searched position if `Search mode` is activated in `Patient Client`. The upper limit of clinics that can be returned is **X**, where **X** is the number of existing clinics in the database. If no clinics are found within the radius an empty array is returned. Hence, the unpredictable number of clinics returned (_A_) is constrained accordingly
+* **Radius:** Returns the clinics that are within a specified circular radius from a position. The position is usually set to the user's current global coordinates, but it can also represent the searched position if `Search mode` is activated in `Patient Client`. The upper limit of clinics that can be returned is **X**, where **X** is the number of existing clinics in the database. If no clinics are found within the radius an empty array is returned. Hence, the unpredictable number of clinics returned (_**A**_) is constrained accordingly:
 ```
 0 <= A <= X
 ``````
-* **Fixed:** Text
+* **Fixed:** Returns the **N** closest clinics to a position. **N** is a positive integer defined by the user's request. The upper limit is unbounded, meaning that it depends on the datatype that is used in the code. As for now, `Integer` is used, but it can easily be changed to `long` or `double` that store a greater range numerical values. In cases where the number of existing clinics in the database (_**n**_) is less than **N**, a response containing **n** clinics is issued. Note that `n >= 0` always holds true. As a result, the return statement is numerically bounded as follows:
+
+```
+n <= A <= N
+``````
 
 Below, a surface-level overview of the solution for `Fixed` is provided.
 
