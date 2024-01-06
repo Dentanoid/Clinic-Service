@@ -241,12 +241,23 @@ Developer printing: A way of navigating in the registration of existing clinics
 ![Developer Printing](https://i.ibb.co/3NHy1S1/Developer-Printing.png)
 
 
-## Global constraints on clinics displayed
+## Global constraints on clinics displayed on map
 
-TODO:
-* Haversine formula
-* Priority queue
-* Max heap
+The system is capable of retrieving clinics regardless of global coordinates and send them back as a reponse to `Patient Client` where they are displayed. Two modes support this feature:
+* **Radius:** Returns the clinics that are within a specified circular radius from a position. The position is usually set to the user's current global coordinates, but it can also represent the searched position if `Search mode` is activated in `Patient Client`. The upper limit of clinics that can be returned is **X**, where **X** is the number of existing clinics in the database. If no clinics are found within the radius an empty array is returned. Hence, the unpredictable number of clinics returned (_A_) is constrained accordingly
+```
+0 <= A <= X
+``````
+* **Fixed:** Text
+
+Below, a surface-level overview of the solution for `Fixed` is provided.
+
+
+* Mathematical Formula: Haversine formula vs Euclidean Distance
+* Priority queue - Max heap
+
+Temporary gif:
+![test-gif](https://d28hy1hnh464wu.cloudfront.net/f8778x%2Fpreview%2F55297987%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1704580649&Signature=Hc79wMzufFmZpt9XpG9R4z7yOT5oEbroZMpiqa5vCgplnfPh2DUsC-FhFe8X2O-Y034X3eT60JsBIxm0qSBMJ9s8w5AB9Au-GTB4DfxUORYuYEPx9wvtTFzFxjoe3a5Jm6knuN5lH-dbCH0-ErbhmZPfvTKrflkgYQcYCy4pJNrSj7ogAEOdySlXP1jeABZir4Rt19rohymMmUf02v4Ed2AkkBhSJm9CR9t9BMQkccrJwj0oKdo2s7bz-6Z8mlSlMZzK38COZDJ0W8MqX0A2zY-02WjctLJkbQSWF2PRssV8HVn-BmQMLdkq9tGKY0RcWR3eeYew8hnVY-zlAwW4ew__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
 
 
 ## Roadmap
