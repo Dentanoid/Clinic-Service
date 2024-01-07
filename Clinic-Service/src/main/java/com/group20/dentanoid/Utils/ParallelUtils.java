@@ -1,6 +1,7 @@
 package com.group20.dentanoid.Utils;
 import org.bson.Document;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,11 +15,26 @@ import com.group20.dentanoid.TopicManagement.ClinicManagement.Dental.DentalClini
 public class ParallelUtils {
     private static String communicationData;
 
+    public static void startChildProcess() {
+        try {
+            String os = OSValidator.getOperatingSystem();
+            if (os.equals("Windows")) {
+                Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
+            } else {
+                Runtime.getRuntime().exec("/bin/bash /c childprocess-api.sh"); // If error, try "/bin/bash /c start bash childprocess-api.sh"
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void instantiateChildProcess(Document communicationDoc, String communicationFilePath) {
         try {
             Utils.writeToFile(communicationFilePath, communicationDoc.toJson());
-            // TODO: Account for bin and mac os - cmd.exe = windows
-            Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh"); // Start child process
+
+            startChildProcess();
+            // Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh"); // Start child process
             responseHandler(communicationDoc, communicationFilePath);
         }
         catch (Exception e){
