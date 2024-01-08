@@ -256,22 +256,25 @@ In order to implement this feature, two steps needs to be done:
 
 ### Step 1: Haversine Formula vs Euclidean Distance
 
-TODO: Write into cohesive text
+Calculating the distance between two global points can be done in countless different ways. The question is what approach is best suited for this project. The developers had two ideas in mind: **Euclidiean Distance** and **Haversine Formula**.
 
-- Euclidiean Distance - Straight line between two points:
-![Euclidean-Distance](https://i.ibb.co/tqwmyJz/Euc-Formula.png)
+#### Euclidiean Distance - Straight line between two points
+
+![Euclidean-Distance](https://i.ibb.co/bJHSyyX/Euc-Formula3.png)
 
 
-- Haverine formula - Spherical distance:
+#### Haversine Formula - Spherical distance:
+
+![earth-pic](https://i.ibb.co/nQw3yYs/Round-Earth-Haversine-Euc.png)
 
 ![haversine-formula](https://i.ibb.co/smpCgmL/Haversine-Formula.png)
 
-![earth-pic](https://i.ibb.co/nQw3yYs/Round-Earth-Haversine-Euc.png)
+In the end, the developers picked **Haversine Formula** by virtue of its inclusion of the radius of a sphere. Setting the radius variable to that of the Earth's, a comparison between distances worldwide is made possible.
 
 
 ### Step 2: Priority Queue & Max Heap
 
-TODO: Write into cohesive text
+In the process of calculating the distances, the clinics are stored in a map with their distances as the key, and the entire clinic-document as a value. A priority queue with a max heap is used with a max-length of **N**. Adding elements when the queue had N elements would induce a `poll()` that deletes the element with the biggest key-value. 
 
 
 Temporary gif:
