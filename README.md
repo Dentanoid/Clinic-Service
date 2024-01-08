@@ -175,6 +175,15 @@ In essence, its responsibilities are the following:
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
 
+TODO: Write into cohesive text
+
+A status code is used (between `TopicManagement` and `BackendMapAPI`)
+200 = Existing clinic found
+404 = Clinic not found → Fictitious clinic
+This status code is used in the conditions deciding the lifecycle of a thread that is listening for a response from the BackendMapAPI nodejs environment
+Lastly, whether or not the BackendMapAPI return 200 or 404, the operation was successful in registering a clinic. Hence, the status code returned in the payload to the Patient API is 200.
+
+
 #### Registering a clinic to the system
 
 As imagined, there are cases where a real-world clinic either isn't registered in Google API's database or when the inputted attributes don't link to any dental clinic. Ultimately, this creates two scenarios:
@@ -198,18 +207,13 @@ As imagined, there are cases where a real-world clinic either isn't registered i
 
 
 #### Security
-TODO: Write section here
-* This adds an additional layer of security to the system --> Clinic must be an established well-known coorporation to be registered as an official establishment in the Google API --> These clinics gets additional UI when selecting them on the map (ratings, photo and address) which give them a competitive advantage because they are trust worthy
 
-A status code is used (between `TopicManagement` and `BackendMapAPI`)
-200 = Existing clinic found
-404 = Clinic not found → Fictitious clinic
-This status code is used in the conditions deciding the lifecycle of a thread that is listening for a response from the BackendMapAPI nodejs environment
-Lastly, whether or not the BackendMapAPI return 200 or 404, the operation was successful in registering a clinic. Hence, the status code returned in the payload to the Patient API is 200.
+The feature of fetching data from real-world clinics can be extended as an additional layer of security to the system. By disallowing `Scenario 2 - Fictitious clinic` so that only established dental-clinic-coorporations stored in Google APIs database can be registered, scammers or clinics with bad user experience are rejected by the system. Clinics that aren't well-known (which tend to struggle with customer satisfaction) will most likely not be found by Google API. In this way, the system can leverage upon trustworthiness as a factor toward success. In addition, if the developers wish to make the system public and build a reputation of providing value beyond the users' expectations, they can define a star-rating threshold at which dental clinics are accepted to register themselves. Usally, high ratings indicate happy customers that boost the reputation and influence of the providing enterprise.
 
 
+#### Inconsistencies
 
-TODO: Write this into a cohesive text:
+TODO: Make this section clear and cohesive
 
 Due to naming inconsistencies between Google Maps and Google Maps API
 Not identical strings → clinic names,
@@ -223,11 +227,6 @@ Delete the space character
 
 Recommendation: Select clinics with more than 20 ratings/reviews to ensure that it’s an official establishment registered in Google API’s database
 If you did any mistake in these steps, the code will not find the existing clinic and return a ‘fictitious’ one without ratings and pictures
-
-
-#### Inconsistencies
-
-TODO: Make this section clear and cohesive
 
 Clinic naming inconsistencies between Backend Nodejs API and the public Google Maps API
 Places API vs Places API (New) → Free and unlimited usage but has its deficiencies in places available (100m places vs its newer but expensive option with 200m global places)
