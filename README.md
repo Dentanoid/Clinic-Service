@@ -119,6 +119,13 @@ Adding new features would imply that the developer strictly follows the laid out
 
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
 
+
+The takeaway from the tree above is that `TopicManagement` and `DatabaseManagement/Schemas` must adhere to the following mathematical cardinalities to preserve code maintainability:
+
+* Subfolder A: Contains **n**<sub><sup>**TopicArtifact**</sup></sub> folders (Clinic, Map and Appointment in the tree)
+* Subfolder B: Contains **n**<sub><sup>**ArtifactSubType**</sup></sub> folders (Dental, Health, Nearby and Multiplicity in the tree)
+
+
 ### Class diagram extensions
 This diagram provides further details on what was adressed in the children nodes of `TopicManagement` in the tree above:
 
@@ -133,7 +140,7 @@ This diagram provides further details on what was adressed in the children nodes
 
 Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
 
-**NOTE:** Only the most significant classes and methods to the codeflow is included in the diagrams
+**NOTE:** Only the most significant classes and methods to the codeflow are included in the diagrams
 
 The colors in the 2 diagrams below represent the following operational levels:
 * Red = Microservice
@@ -154,46 +161,21 @@ The picture above expressed in `.java` classes rather than folders looks like th
 
 ### BackendMapAPI folder
 
+This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system. This folder is a self-contained nodejs runtime environment that acts as a childprocess executed when registering a clinic.
 
-* A self-contained nodejs runtime environment
 ![nodejs-logo](https://i.ibb.co/NVw6RZQ/Clinic-Service-Nodejs.png)
 
-This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system.
+In essence, its responsibilities are the following:
+* Read `clinic.json` content (contains `clinic_name` and `position`)
+* Perform a query using the attributes to find the desired real-world clinic
+* Fetch the clinic's data (ratings, photoURL, address) and return to `TopicManagement` folder via `clinic.json`
 
-
-TODO - Write cohesive text:
-* Checks content of `clinic.json`
-* `clinic.json` is intended to forward payload data `dentist_name` and `position` to a nodejs runtime environment
-* Try to fetch data (ratings, photoURL, address)
-* Return via clinic.json
+**NOTE:** In the picture below the three folders are portrayed as independent services, which isn't the case. This is a high-level overview that conveys `TopicManagement`'s central role in the service as a whole and how it interacts with its peer folders. Nevertheless, it's important to distinguish between its issued requests. As stated above, `clinic.json` establishes a way of communicating to `BackendMapAPI`. However, `DatabaseManagement`'s involvement in the entirety of the service is observed in the form of an aggregation to `TopicManagement`, since its methods are called from its peer folder's classes.
 
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
 
-BackendMapAPI found clinic and assigned fetched data:
-![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
-
-
-![validated-clinic-2](https://i.ibb.co/Px5xYY1/Ratings-Clinic2.png)
-
-BackendMapAPI did not find clinic and could not assign additional data:
-![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
-
-
-#### Security
-TODO: Write section here
-* This adds an additional layer of security to the system --> Clinic must be an established well-known coorporation to be registered as an official establishment in the Google API --> These clinics gets additional UI when selecting them on the map (ratings, photo and address) which give them a competitive advantage because they are trust worthy
-
-
-#### Registering a clinic to the system
-TODO: Make this section cohesive
-
-1 out of 2 cases happen:
-
-1. Clinic was found and data fetched
-
-
-2. Clinic was not found and only employees are displayed on the infowindow
+TODO: Write into cohesive text
 
 A status code is used (between `TopicManagement` and `BackendMapAPI`)
 200 = Existing clinic found
@@ -202,8 +184,36 @@ This status code is used in the conditions deciding the lifecycle of a thread th
 Lastly, whether or not the BackendMapAPI return 200 or 404, the operation was successful in registering a clinic. Hence, the status code returned in the payload to the Patient API is 200.
 
 
+#### Registering a clinic to the system
 
-TODO: Write this into a cohesive text:
+As imagined, there are cases where a real-world clinic either isn't registered in Google API's database or when the inputted attributes don't link to any dental clinic. Ultimately, this creates two scenarios:
+
+* **Scenario 1 - Real clinic:** Clinic was found and fetched data is displayed on infowindow
+
+* **Scenario 2 - Fictitious clinic:** Clinic was not found and only employees are displayed on the infowindow
+
+
+**Scenario 1 - Real clinic:**
+
+![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
+
+
+![validated-clinic-2](https://i.ibb.co/Px5xYY1/Ratings-Clinic2.png)
+
+
+**Scenario 2 - Fictitious clinic:**
+
+![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
+
+
+#### Security
+
+The feature of fetching data from real-world clinics can be extended as an additional layer of security to the system. By disallowing `Scenario 2 - Fictitious clinic` so that only established dental-clinic-coorporations stored in Google APIs database can be registered, scammers or clinics with bad user experience are rejected by the system. Clinics that aren't well-known (which tend to struggle with customer satisfaction) will most likely not be found by Google API. In this way, the system can leverage upon trustworthiness as a factor toward success. In addition, if the developers wish to make the system public and build a reputation of providing value beyond the users' expectations, they can define a star-rating threshold at which dental clinics are accepted to register themselves. Usally, high ratings indicate happy customers that boost the reputation and influence of the providing enterprise.
+
+
+#### Inconsistencies
+
+TODO: Make this section clear and cohesive
 
 Due to naming inconsistencies between Google Maps and Google Maps API
 Not identical strings → clinic names,
@@ -217,11 +227,6 @@ Delete the space character
 
 Recommendation: Select clinics with more than 20 ratings/reviews to ensure that it’s an official establishment registered in Google API’s database
 If you did any mistake in these steps, the code will not find the existing clinic and return a ‘fictitious’ one without ratings and pictures
-
-
-#### Inconsistencies
-
-TODO: Make this section clear and cohesive
 
 Clinic naming inconsistencies between Backend Nodejs API and the public Google Maps API
 Places API vs Places API (New) → Free and unlimited usage but has its deficiencies in places available (100m places vs its newer but expensive option with 200m global places)
@@ -254,14 +259,36 @@ The system is capable of retrieving clinics regardless of global coordinates and
 n <= A <= N
 ``````
 
-Below, a surface-level overview of the solution for `Fixed` is provided.
+Below, a surface-level overview of the more interesting solution `Fixed` is provided:
+
+In order to implement this feature, two steps needs to be done:
+
+**1.** Calculate distance between user's position and a clinic
+
+**2.** Store clinics that satisfy the criteria in a datastructure
+
+### Step 1: Haversine Formula vs Euclidean Distance
+
+TODO: Write into cohesive text
+
+- Euclidiean Distance - Straight line between two points:
+![Euclidean-Distance](https://i.ibb.co/DMKPryF/Euc-Formula.png)
 
 
-* Mathematical Formula: Haversine formula vs Euclidean Distance
-* Priority queue - Max heap
+- Haverine formula - Spherical distance:
+
+![haversine-formula](https://i.ibb.co/smpCgmL/Haversine-Formula.png)
+
+![earth-pic](https://i.ibb.co/nQw3yYs/Round-Earth-Haversine-Euc.png)
+
+
+### Step 2: Priority Queue & Max Heap
+
+TODO: Write into cohesive text
+
 
 Temporary gif:
-![test-gif](https://d28hy1hnh464wu.cloudfront.net/f8778x%2Fpreview%2F55297987%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1704580649&Signature=Hc79wMzufFmZpt9XpG9R4z7yOT5oEbroZMpiqa5vCgplnfPh2DUsC-FhFe8X2O-Y034X3eT60JsBIxm0qSBMJ9s8w5AB9Au-GTB4DfxUORYuYEPx9wvtTFzFxjoe3a5Jm6knuN5lH-dbCH0-ErbhmZPfvTKrflkgYQcYCy4pJNrSj7ogAEOdySlXP1jeABZir4Rt19rohymMmUf02v4Ed2AkkBhSJm9CR9t9BMQkccrJwj0oKdo2s7bz-6Z8mlSlMZzK38COZDJ0W8MqX0A2zY-02WjctLJkbQSWF2PRssV8HVn-BmQMLdkq9tGKY0RcWR3eeYew8hnVY-zlAwW4ew__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
+![Max Heap Gif](https://d28hy1hnh464wu.cloudfront.net/f8778x%2Fpreview%2F55297987%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1704580649&Signature=Hc79wMzufFmZpt9XpG9R4z7yOT5oEbroZMpiqa5vCgplnfPh2DUsC-FhFe8X2O-Y034X3eT60JsBIxm0qSBMJ9s8w5AB9Au-GTB4DfxUORYuYEPx9wvtTFzFxjoe3a5Jm6knuN5lH-dbCH0-ErbhmZPfvTKrflkgYQcYCy4pJNrSj7ogAEOdySlXP1jeABZir4Rt19rohymMmUf02v4Ed2AkkBhSJm9CR9t9BMQkccrJwj0oKdo2s7bz-6Z8mlSlMZzK38COZDJ0W8MqX0A2zY-02WjctLJkbQSWF2PRssV8HVn-BmQMLdkq9tGKY0RcWR3eeYew8hnVY-zlAwW4ew__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
 
 
 ## Roadmap
