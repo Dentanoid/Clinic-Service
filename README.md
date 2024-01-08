@@ -278,7 +278,9 @@ In the process of calculating the distances, the clinics are stored in a map wit
 
 
 Temporary gif:
-![Max Heap Gif](https://d28hy1hnh464wu.cloudfront.net/f8778x%2Fpreview%2F55297987%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1704580649&Signature=Hc79wMzufFmZpt9XpG9R4z7yOT5oEbroZMpiqa5vCgplnfPh2DUsC-FhFe8X2O-Y034X3eT60JsBIxm0qSBMJ9s8w5AB9Au-GTB4DfxUORYuYEPx9wvtTFzFxjoe3a5Jm6knuN5lH-dbCH0-ErbhmZPfvTKrflkgYQcYCy4pJNrSj7ogAEOdySlXP1jeABZir4Rt19rohymMmUf02v4Ed2AkkBhSJm9CR9t9BMQkccrJwj0oKdo2s7bz-6Z8mlSlMZzK38COZDJ0W8MqX0A2zY-02WjctLJkbQSWF2PRssV8HVn-BmQMLdkq9tGKY0RcWR3eeYew8hnVY-zlAwW4ew__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
+![Max Heap Gif](https://www.veed.io/view/fc698193-d29c-4d5f-8b20-c7786af920d0?sharingWidget=true&panel=share)
+
+![mygif](https://gifyu.com/image/S0M9L)
 
 
 ## Roadmap
