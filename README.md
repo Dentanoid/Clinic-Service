@@ -277,10 +277,7 @@ In the end, the developers picked **Haversine Formula** by virtue of its inclusi
 In the process of calculating the distances, the clinics are stored in a map with their distances as the key, and the entire clinic-document as a value. A priority queue with a max heap is used with a max-length of **N**. Adding elements when the queue had N elements would induce a `poll()` that deletes the element with the biggest key-value. 
 
 
-Temporary gif:
-![Max Heap Gif](https://www.veed.io/view/fc698193-d29c-4d5f-8b20-c7786af920d0?sharingWidget=true&panel=share)
-
-![mygif](https://gifyu.com/image/S0M9L)
+![Binary-Heap](https://i.ibb.co/1vkCRD1/Binary-Heap.png)
 
 
 ## Roadmap
