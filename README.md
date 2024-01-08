@@ -133,7 +133,7 @@ This diagram provides further details on what was adressed in the children nodes
 
 Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
 
-**NOTE:** Only the most significant classes and methods to the codeflow is included in the diagrams
+**NOTE:** Only the most significant classes and methods to the codeflow are included in the diagrams
 
 The colors in the 2 diagrams below represent the following operational levels:
 * Red = Microservice
@@ -154,18 +154,16 @@ The picture above expressed in `.java` classes rather than folders looks like th
 
 ### BackendMapAPI folder
 
+This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system. This folder is a self-contained nodejs runtime environment that acts as a childprocess executed when registering a clinic.
 
-* A self-contained nodejs runtime environment
 ![nodejs-logo](https://i.ibb.co/NVw6RZQ/Clinic-Service-Nodejs.png)
 
-This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system.
+In essence, its responsibilities are the following:
+* Read `clinic.json` content (contains `clinic_name` and `position`)
+* Perform a query using the attributes to find the desired real-world clinic
+* Fetch the clinic's data (ratings, photoURL, address) and return to `TopicManagement` folder via `clinic.json`
 
-
-TODO - Write cohesive text:
-* Checks content of `clinic.json`
-* `clinic.json` is intended to forward payload data `dentist_name` and `position` to a nodejs runtime environment
-* Try to fetch data (ratings, photoURL, address)
-* Return via clinic.json
+**NOTE:** In the picture below the three folders are portrayed as independent services, which isn't the case. This is a high-level overview that conveys `TopicManagement`'s central role in the service as a whole and how it interacts with its peer folders. Nevertheless, it's important to distinguish between its issued requests. As stated above, `clinic.json` establishes a way of communicating to `BackendMapAPI`. However, `DatabaseManagement`'s involvement in the entirety of the service is observed in the form of an aggregation to `TopicManagement`, since its methods are called from its peer folder's classes.
 
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
