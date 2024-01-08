@@ -175,15 +175,6 @@ In essence, its responsibilities are the following:
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
 
-TODO: Write into cohesive text
-
-A status code is used (between `TopicManagement` and `BackendMapAPI`)
-200 = Existing clinic found
-404 = Clinic not found → Fictitious clinic
-This status code is used in the conditions deciding the lifecycle of a thread that is listening for a response from the BackendMapAPI nodejs environment
-Lastly, whether or not the BackendMapAPI return 200 or 404, the operation was successful in registering a clinic. Hence, the status code returned in the payload to the Patient API is 200.
-
-
 #### Registering a clinic to the system
 
 As imagined, there are cases where a real-world clinic either isn't registered in Google API's database or when the inputted attributes don't link to any dental clinic. Ultimately, this creates two scenarios:
@@ -206,27 +197,35 @@ As imagined, there are cases where a real-world clinic either isn't registered i
 ![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
 
 
-#### Security
+#### Finding a real clinic to register
 
-The feature of fetching data from real-world clinics can be extended as an additional layer of security to the system. By disallowing `Scenario 2 - Fictitious clinic` so that only established dental-clinic-coorporations stored in Google APIs database can be registered, scammers or clinics with bad user experience are rejected by the system. Clinics that aren't well-known (which tend to struggle with customer satisfaction) will most likely not be found by Google API. In this way, the system can leverage upon trustworthiness as a factor toward success. In addition, if the developers wish to make the system public and build a reputation of providing value beyond the users' expectations, they can define a star-rating threshold at which dental clinics are accepted to register themselves. Usally, high ratings indicate happy customers that boost the reputation and influence of the providing enterprise.
+When wanting to register a real-world clinic, two things must be inputted correctly:
+* **clinic_name:** The string must be identical to what Google Maps API is operating with
+* **position:** The global coordinates of the clinic must be inputted in a `,` separated string. Although the code accounts for margin of error and doesn't expect a pinpoint exact coordinate, it does require an approximate accuracy to find the desired clinic
 
 
-#### Inconsistencies
+Follow the procedure detailed below:
 
-TODO: Make this section clear and cohesive
+1. Open [Google Maps](https://www.google.com/maps/@59.804951,13.1472277,6z?entry=ttu)
 
-Due to naming inconsistencies between Google Maps and Google Maps API
-Not identical strings → clinic names,
-The following procedure must be followed:
-Find the identical string of clinic name that the API checks for:
-Use ‘SEARCH’ mode in Patient Client and check the box ‘establishment’ and search for the desired clinic (already existing corporation that wants to use this system)
-Find the global coordinates of the clinic as an identifier:
-Use Google Maps and search for the clinic
-Right click on the marker and copy the lat,lng values
-Delete the space character
+2. Search for desired clinic
 
-Recommendation: Select clinics with more than 20 ratings/reviews to ensure that it’s an official establishment registered in Google API’s database
+(picture here)
+
+3. Zoom in on the red marker and right click on it
+
+(picture here)
+
+
+4. Input the two attributes in `Dentist Client` component
+
+(picture here)
+
+
+**Recommendation:** Select clinics with more than 20 ratings/reviews to ensure that it’s an official establishment registered in Google API’s database
 If you did any mistake in these steps, the code will not find the existing clinic and return a ‘fictitious’ one without ratings and pictures
+
+**NOTE:** Text
 
 Clinic naming inconsistencies between Backend Nodejs API and the public Google Maps API
 Places API vs Places API (New) → Free and unlimited usage but has its deficiencies in places available (100m places vs its newer but expensive option with 200m global places)
@@ -245,6 +244,10 @@ Developer printing: A way of navigating in the registration of existing clinics
 
 ![Developer Printing](https://i.ibb.co/3NHy1S1/Developer-Printing.png)
 
+
+#### Security
+
+The feature of fetching data from real-world clinics can be extended as an additional layer of security to the system. By disallowing `Scenario 2 - Fictitious clinic` so that only established dental-clinic-coorporations stored in Google APIs database can be registered, scammers or clinics with bad user experience are rejected by the system. Clinics that aren't well-known (which tend to struggle with customer satisfaction) will most likely not be found by Google API. In this way, the system can leverage upon trustworthiness as a factor toward success. In addition, if the developers wish to make the system public and build a reputation of providing value beyond the users' expectations, they can define a star-rating threshold at which dental clinics are accepted to register themselves. Usally, high ratings indicate happy customers that boost the reputation and influence of the providing enterprise.
 
 ## Global constraints on clinics displayed on map
 
@@ -272,7 +275,7 @@ In order to implement this feature, two steps needs to be done:
 TODO: Write into cohesive text
 
 - Euclidiean Distance - Straight line between two points:
-![Euclidean-Distance](https://i.ibb.co/DMKPryF/Euc-Formula.png)
+![Euclidean-Distance](https://i.ibb.co/tqwmyJz/Euc-Formula.png)
 
 
 - Haverine formula - Spherical distance:
