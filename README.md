@@ -168,30 +168,29 @@ In essence, its responsibilities are the following:
 ![BackendMapAPI - Communication](https://i.ibb.co/25hf2f7/Backend-Map-API-Communication.png)
 
 
-BackendMapAPI found clinic and assigned fetched data:
+#### Registering a clinic to the system
+
+As imagined, there are cases where a real-world clinic either isn't registered in Google API's database or when the inputted attributes don't link to any dental clinic. Ultimately, this creates two scenarios:
+
+* **Scenario 1 - Real clinic:** Clinic was found and fetched data is displayed on infowindow
+
+* **Scenario 2 - Fictitious clinic:** Clinic was not found and only employees are displayed on the infowindow
+
+
+**Scenario 1 - Real clinic:**
 ![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
 
 
 ![validated-clinic-2](https://i.ibb.co/Px5xYY1/Ratings-Clinic2.png)
 
-BackendMapAPI did not find clinic and could not assign additional data:
+
+**Scenario 2 - Fictitious clinic:**
 ![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
 
 
 #### Security
 TODO: Write section here
 * This adds an additional layer of security to the system --> Clinic must be an established well-known coorporation to be registered as an official establishment in the Google API --> These clinics gets additional UI when selecting them on the map (ratings, photo and address) which give them a competitive advantage because they are trust worthy
-
-
-#### Registering a clinic to the system
-TODO: Make this section cohesive
-
-1 out of 2 cases happen:
-
-1. Clinic was found and data fetched
-
-
-2. Clinic was not found and only employees are displayed on the infowindow
 
 A status code is used (between `TopicManagement` and `BackendMapAPI`)
 200 = Existing clinic found
