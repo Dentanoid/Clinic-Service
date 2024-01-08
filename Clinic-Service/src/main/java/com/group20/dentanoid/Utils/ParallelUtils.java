@@ -21,7 +21,7 @@ public class ParallelUtils {
             if (os.equals("Windows")) {
                 Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
             } else {
-                Runtime.getRuntime().exec("/bin/bash /c childprocess-api.sh"); // If error, try "/bin/bash /c start bash childprocess-api.sh"
+                Runtime.getRuntime().exec("/bin/bash /c childprocess-api.sh");
             }
             
         } catch (IOException e) {
@@ -34,7 +34,6 @@ public class ParallelUtils {
             Utils.writeToFile(communicationFilePath, communicationDoc.toJson());
 
             startChildProcess();
-            // Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh"); // Start child process
             responseHandler(communicationDoc, communicationFilePath);
         }
         catch (Exception e){
