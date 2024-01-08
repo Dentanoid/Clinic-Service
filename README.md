@@ -254,14 +254,31 @@ The system is capable of retrieving clinics regardless of global coordinates and
 n <= A <= N
 ``````
 
-Below, a surface-level overview of the solution for `Fixed` is provided.
+Below, a surface-level overview of the more interesting solution `Fixed` is provided:
+
+In order to implement this feature, two steps needs to be done:
+
+**1.** Calculate distance between user's position and a clinic
+
+**2.** Store clinics that satisfy the criteria in a datastructure
+
+### Step 1: Haversine Formula vs Euclidean Distance
+
+TODO: Write into cohesive text
+
+- Haverine formula - Spherical distance
+- Euclidiean Distance - Straight line between two points
+
+![earth-pic](https://i.ibb.co/nQw3yYs/Round-Earth-Haversine-Euc.png)
 
 
-* Mathematical Formula: Haversine formula vs Euclidean Distance
-* Priority queue - Max heap
+### Step 2: Priority Queue & Max Heap
+
+TODO: Write into cohesive text
+
 
 Temporary gif:
-![test-gif](https://d28hy1hnh464wu.cloudfront.net/f8778x%2Fpreview%2F55297987%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1704580649&Signature=Hc79wMzufFmZpt9XpG9R4z7yOT5oEbroZMpiqa5vCgplnfPh2DUsC-FhFe8X2O-Y034X3eT60JsBIxm0qSBMJ9s8w5AB9Au-GTB4DfxUORYuYEPx9wvtTFzFxjoe3a5Jm6knuN5lH-dbCH0-ErbhmZPfvTKrflkgYQcYCy4pJNrSj7ogAEOdySlXP1jeABZir4Rt19rohymMmUf02v4Ed2AkkBhSJm9CR9t9BMQkccrJwj0oKdo2s7bz-6Z8mlSlMZzK38COZDJ0W8MqX0A2zY-02WjctLJkbQSWF2PRssV8HVn-BmQMLdkq9tGKY0RcWR3eeYew8hnVY-zlAwW4ew__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
+![Max Heap Gif](https://d28hy1hnh464wu.cloudfront.net/f8778x%2Fpreview%2F55297987%2Fmain_large.gif?response-content-disposition=inline%3Bfilename%3D%22main_large.gif%22%3B&response-content-type=image%2Fgif&Expires=1704580649&Signature=Hc79wMzufFmZpt9XpG9R4z7yOT5oEbroZMpiqa5vCgplnfPh2DUsC-FhFe8X2O-Y034X3eT60JsBIxm0qSBMJ9s8w5AB9Au-GTB4DfxUORYuYEPx9wvtTFzFxjoe3a5Jm6knuN5lH-dbCH0-ErbhmZPfvTKrflkgYQcYCy4pJNrSj7ogAEOdySlXP1jeABZir4Rt19rohymMmUf02v4Ed2AkkBhSJm9CR9t9BMQkccrJwj0oKdo2s7bz-6Z8mlSlMZzK38COZDJ0W8MqX0A2zY-02WjctLJkbQSWF2PRssV8HVn-BmQMLdkq9tGKY0RcWR3eeYew8hnVY-zlAwW4ew__&Key-Pair-Id=APKAJT5WQLLEOADKLHBQ)
 
 
 ## Roadmap
