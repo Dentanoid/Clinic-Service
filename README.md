@@ -266,8 +266,13 @@ In order to implement this feature, two steps needs to be done:
 
 TODO: Write into cohesive text
 
-- Haverine formula - Spherical distance
-- Euclidiean Distance - Straight line between two points
+- Euclidiean Distance - Straight line between two points:
+![Euclidean-Distance](https://i.ibb.co/DMKPryF/Euc-Formula.png)
+
+
+- Haverine formula - Spherical distance:
+
+![haversine-formula](https://i.ibb.co/smpCgmL/Haversine-Formula.png)
 
 ![earth-pic](https://i.ibb.co/nQw3yYs/Round-Earth-Haversine-Euc.png)
 
