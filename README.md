@@ -208,16 +208,13 @@ Follow the procedure detailed below:
 
 1. Open [Google Maps](https://www.google.com/maps/@59.804951,13.1472277,6z?entry=ttu)
 
-2. Search for desired clinic
+2. Search for desired clinic (**clinic_name**)
 
-(picture here)
+3. Zoom in on the red marker
 
-3. Zoom in on the red marker and right click on it
+4. Right click on it to retrieve its coordinates (**position**)
 
-(picture here)
-
-
-4. Input the two attributes in `Dentist Client` component
+5. Input the two attributes in `Dentist Client` component
 
 (picture here)
 
@@ -225,22 +222,9 @@ Follow the procedure detailed below:
 **Recommendation:** Select clinics with more than 20 ratings/reviews to ensure that it’s an official establishment registered in Google API’s database
 If you did any mistake in these steps, the code will not find the existing clinic and return a ‘fictitious’ one without ratings and pictures
 
-**NOTE:** Text
+**NOTE:** `Google Places API` does not support all clinics that [Google Maps](https://www.google.com/maps/@59.804951,13.1472277,6z?entry=ttu) does. The API has 100 million places in its database, which is a lot, but it doesn't cover all worldwide dental clinic establishments.
 
-Clinic naming inconsistencies between Backend Nodejs API and the public Google Maps API
-Places API vs Places API (New) → Free and unlimited usage but has its deficiencies in places available (100m places vs its newer but expensive option with 200m global places)
-
-**Find the identical string that the system checks for:**
-Go to ‘SEARCH’ mode and check the ‘establishment’ box
-Search for the clinic you want
-The autocomplete search-bar generates a string consisting of the establishment’s name and address. Copy paste the name and input it in dentist client
-Global coordinates → Google Maps → Right click → Past ein dentist client
-
-**What to do if a clinic owner's clinic isn't found:**
-In some cases - The string may be tricky → Contact the customer support (one of the developers) that can find the clinic for you → In the code → bash-api.sh, query.js, printOutputForDevelopers() → Prints the exact strings that the API is validating to fetch data from (in Google API DB)
-
-
-Developer printing: A way of navigating in the registration of existing clinics
+**If the clinic isn't found:** In some cases the string in which `Places API` expects is tricky. Even though the clinic is registered, this may be the cause you are experiencing issues. If that's the case, contact one of the developers. Each developer that has access to modify the code can uncomment the code-block in `childprocess-api.sh` so that its shell-window doesn't disappear after its execution is accomplished. In the window, the `clinic_name` strings of the clinics with similar coordinates are printed. These strings are the ones that the API checks for, and the output looks like this:
 
 ![Developer Printing](https://i.ibb.co/3NHy1S1/Developer-Printing.png)
 
