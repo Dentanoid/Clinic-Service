@@ -119,6 +119,13 @@ Adding new features would imply that the developer strictly follows the laid out
 
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
 
+
+The takeaway from the tree above is that `TopicManagement` and `DatabaseManagement/Schemas` must adhere to the following mathematical cardinalities to preserve code maintainability:
+
+* Subfolder A: Contains **n**<sub><sup>**TopicArtifact**</sup></sub> folders (Clinic, Map and Appointment in the tree)
+* Subfolder B: Contains **n**<sub><sup>**ArtifactSubType**</sup></sub> folders (Dental, Health, Nearby and Multiplicity in the tree)
+
+
 ### Class diagram extensions
 This diagram provides further details on what was adressed in the children nodes of `TopicManagement` in the tree above:
 
@@ -178,6 +185,7 @@ As imagined, there are cases where a real-world clinic either isn't registered i
 
 
 **Scenario 1 - Real clinic:**
+
 ![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
 
 
@@ -185,6 +193,7 @@ As imagined, there are cases where a real-world clinic either isn't registered i
 
 
 **Scenario 2 - Fictitious clinic:**
+
 ![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
 
 
