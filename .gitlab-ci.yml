@@ -8,6 +8,7 @@ stages:
     - test
     - package
     - deploy
+    - deploy-azure
 
 cache:
     - build
@@ -65,3 +66,49 @@ deploy_job:
         - echo "Maven deploy started"
         - cd "$SERVICE_PATH"
         - "mvn clean compile assembly:single"
+
+build-docker-image:
+  stage: build-docker-image
+  image: docker:latest
+  tags: 
+    - docker-build
+  only:
+    - main
+  services:
+    - docker:dind
+  variables:  # not strictly needed, depending on runner configuration
+    DOCKER_HOST: "tcp://docker:2375"
+    DOCKER_TLS_CERTDIR: ""
+
+    IMAGE_NAME: "clinic-service:x86"
+    AZURE_REGISTRY_USERNAME: $CI_REGISTRY_USER
+    AZURE_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    AZURE_REGISTRY: dentanoidregistry.azurecr.io
+
+  script:
+    - touch .env
+    - echo -e "GOOGLE_MAPS_API_KEY = $GOOGLE_MAPS_API_KEY \n" >> .env
+
+    - docker context ls
+    - docker info
+    - docker buildx create --use
+    - docker buildx build --platform linux/amd64 -t $IMAGE_NAME . --load
+    - docker tag $IMAGE_NAME $AZURE_REGISTRY/services/clinic
+    - docker login $AZURE_REGISTRY -u $AZURE_REGISTRY_USERNAME -p $AZURE_REGISTRY_PASSWORD
+    - docker push $AZURE_REGISTRY/services/clinic
+    - docker images
+
+deploy:
+  stage: deploy-azure
+  tags:
+    - docker
+  only:
+    - main
+  image:
+    name: mcr.microsoft.com/azure-cli
+    entrypoint: [""]
+  script:
+    - az login --service-principal -u "$AZURE_CLIENT_ID" -p "$AZURE_CLIENT_SECRET" --tenant "$AZURE_TENANT_ID"
+    - az container delete --name clinic-service --resource-group Dentanoid --yes
+    - az container create --resource-group Dentanoid --name clinic-service --image dentanoidRegistry.azurecr.io/services/clinic:latest --registry-username "$CI_REGISTRY_USER" --registry-password "$CI_REGISTRY_PASSWORD" --restart-policy Always
+    
