@@ -87,6 +87,7 @@ build-docker-image:
     AZURE_REGISTRY: dentanoidregistry.azurecr.io
 
   script:
+    - cd Clinic-Service
     - touch .env
     - echo -e "GOOGLE_MAPS_API_KEY = $GOOGLE_MAPS_API_KEY \n" >> .env
 
