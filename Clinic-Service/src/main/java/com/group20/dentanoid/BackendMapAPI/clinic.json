@@ -1,10 +1,9 @@
 {
-  "clinic_name": "Centre Dentaire Paris Dental Studios - MARAIS",
-  "clinic_id": "614777fd-2564-4941-94a1-91612aea5682",
-  "position": "48.8683867779841,2.359441279532265",
+  "clinic_name": "clinic-lol123",
+  "position": "57.12,12.16",
   "employees": [],
-  "ratings": "4.8",
-  "photoURL": "https://maps.googleapis.com/maps/api/place/photo?photoreference=AWU5eFhBUXP8T6oPR_bJO7Hia0Phh-ZRtxHdQANzioJgwDUKhsRNjlvD4fG_ClteY3B8ZyS1uQXzdNUh1y8xHL6ltXUHoSvBo-wkJGkR75T23JA5BSOhK0zhoewWKN1DN8gmcLZvSGhT0Uo2nJzFBtLhA1rxT4PpbmZahGbOXcvF6-SJdwHD&sensor=false&maxheight=80&maxwidth=120&key=AIzaSyAddMO3fsDTHWzDI0uEG-ZFobf8NY7teBA",
-  "address": "28 Rue Meslay, Paris",
-  "status": 200
+  "ratings": "-1",
+  "photoURL": "-1",
+  "address": "-1",
+  "status": 404
 }

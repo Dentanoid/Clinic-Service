@@ -3,6 +3,8 @@ package com.group20.dentanoid.TopicManagement.QueryManagement.NearbyMapQueries;
 import org.junit.jupiter.api.Test;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
+import com.group20.dentanoid.TopicManagement.MapManagement.Nearby.NearbyClinics;
+import com.group20.dentanoid.TopicManagement.MapManagement.Nearby.NearbyRadius;
 import com.group20.dentanoid.Utils.Utils;
 
 import static org.junit.jupiter.api.Assertions.*;

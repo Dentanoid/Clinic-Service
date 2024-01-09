@@ -24,11 +24,11 @@ public class MqttUtils {
         "delete"
     };
 
-    public static String[] queryTypes = {
+    public static String[] mapTypes = {
         "nearby"
     };
 
-    public static String[] queryOperations = {
+    public static String[] mapOperations = {
         "radius",
         "fixed"
     };
@@ -40,17 +40,17 @@ public class MqttUtils {
     */
 
     // Clinic topics
-    public static String clinicsPublishFormat = "grp20/res/%s/%s/".formatted(clinicTypes[0], topicArtifacts[0]); // Use in DentalClinic.java
+    public static String clinicsPublishFormat = "grp20/res/%s/%s/".formatted(clinicTypes[0], topicArtifacts[0]);
     public static String clinicsSubscribeFormat = "grp20/req/%s/%s/".formatted(clinicTypes[0], topicArtifacts[0]);
-    // grp20/res/map/query/nearby
-    // Query topics
-    public static String queryPublishFormat = "grp20/res/map/%s".formatted(queryTypes[0]);
-    public static String querySubscribeFormat = "grp20/req/map/%s/%s/".formatted(topicArtifacts[1], queryTypes[0]);
 
-    private static String[] getNearbyQuerySubscriptions() {
+    // Map topics
+    public static String mapPublishFormat = "grp20/res/map/%s".formatted(mapTypes[0]);
+    public static String mapSubscribeFormat = "grp20/req/map/%s/%s/".formatted(topicArtifacts[1], mapTypes[0]);
+
+    private static String[] getMapSubscriptions() {
         return new String[] {
-            querySubscribeFormat + "fixed/get",
-            querySubscribeFormat + "radius/get"
+            mapSubscribeFormat + "fixed/get",
+            mapSubscribeFormat + "radius/get"
         };
     }
 
@@ -60,11 +60,12 @@ public class MqttUtils {
             clinicsSubscribeFormat + "remove",
             clinicsSubscribeFormat + "delete",
             clinicsSubscribeFormat + "add",
-            clinicsSubscribeFormat + "get"
+            clinicsSubscribeFormat + "get",
+            clinicsSubscribeFormat + "get/one"
         };
     }
 
     public static String[] getAllSubscriptions() {
-        return Utils.concatTwoArrays(getClinicsSubscriptions(), getNearbyQuerySubscriptions());
+        return Utils.concatTwoArrays(getClinicsSubscriptions(), getMapSubscriptions());
     }
 }

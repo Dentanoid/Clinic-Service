@@ -10,9 +10,11 @@ import com.google.gson.Gson;
 public class ClinicSchema implements CollectionSchema {
     private String clinic_name;
     private String position;
-    private String clinic_id;
+    private String clinic_id; // ObjectId
     private ArrayList<String> employees;
     private String requestID;
+
+    private String operation;
 
     public ClinicSchema() {
         this.clinic_name = " ";
@@ -20,22 +22,29 @@ public class ClinicSchema implements CollectionSchema {
         this.position = " ";
         this.employees = new ArrayList<>(); 
         this.requestID = " ";
+        operation = " ";
     }
 
     @Override
     public Document getDocument() {
+        if (operation.equals("delete")) {
+            return new Document("clinic_id", this.clinic_id)
+            .append("requestID", this.requestID);
+
+        } else {
         return new Document("clinic_name", this.clinic_name)
-        .append("clinic_id", this.clinic_id)
-        .append("position", this.position)
-        .append("employees", this.employees)
-        .append("requestID", this.requestID);
+            // .append("clinic_id", this.clinic_id)
+            .append("position", this.position)
+            .append("employees", this.employees)
+            .append("requestID", this.requestID);
+        }
     }
 
     // POST: Assign values to attributes at creation
-    private void registerCreateClinicData(String clinic_name, String position, String clinic_id, ArrayList<String> employees, String requestID) {
+    private void registerCreateClinicData(String clinic_name, String position, ArrayList<String> employees, String requestID) { // String clinic_id
         this.clinic_name = clinic_name;
         this.position = position;
-        this.clinic_id = clinic_id;
+        // this.clinic_id = clinic_id;
         this.employees = employees;
         this.requestID = requestID;
     }
@@ -61,6 +70,7 @@ public class ClinicSchema implements CollectionSchema {
             - Potential values: ["create", "delete", "getOne", "getAll"]
     */
     public void assignAttributesFromPayload(String payload, String operation) {
+        this.operation = operation;
         Gson gson = new Gson();
         ClinicSchema payloadObject = gson.fromJson(payload, getClass());
 
@@ -71,7 +81,7 @@ public class ClinicSchema implements CollectionSchema {
                 payloadObject.position,
 
                 // Data automatically defined:
-                UUID.randomUUID().toString(),
+                // UUID.randomUUID().toString(),
                 new ArrayList<>(),
                 payloadObject.requestID
             );

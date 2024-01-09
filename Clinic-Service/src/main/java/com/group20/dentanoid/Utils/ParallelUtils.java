@@ -1,26 +1,39 @@
 package com.group20.dentanoid.Utils;
+import org.bson.Document;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import org.bson.Document;
 
 import com.google.gson.Gson;
 import com.group20.dentanoid.BackendMapAPI.ValidatedClinic;
 import com.group20.dentanoid.DatabaseManagement.DatabaseManager;
 import com.group20.dentanoid.DatabaseManagement.PayloadParser;
-import com.group20.dentanoid.TopicManagement.ClinicManagement.DentalClinic;
+import com.group20.dentanoid.TopicManagement.ClinicManagement.Dental.DentalClinic;
 
 public class ParallelUtils {
     private static String communicationData;
 
-    public static void instantiateChildProcess(Document communicationDoc, String communicationFilePath) {
-        Utils.writeToFile(communicationFilePath, communicationDoc.toJson());
-
+    public static void startChildProcess() {
         try {
-            // TODO: Account for bin and mac os - cmd.exe = windows
-            Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh"); // Start child process
+            String os = OSValidator.getOperatingSystem();
+            if (os.equals("Windows")) {
+                Runtime.getRuntime().exec("cmd.exe /c start bash childprocess-api.sh");
+            } else {
+                Runtime.getRuntime().exec("/bin/bash /c childprocess-api.sh");
+            }
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void instantiateChildProcess(Document communicationDoc, String communicationFilePath) {
+        try {
+            Utils.writeToFile(communicationFilePath, communicationDoc.toJson());
+
+            startChildProcess();
             responseHandler(communicationDoc, communicationFilePath);
         }
         catch (Exception e){
@@ -80,9 +93,14 @@ public class ParallelUtils {
         between the two entities.
      */
     private static Integer getChildProcessStatus(String communicationFilePath) throws Exception {
-        communicationData = Utils.readFile(communicationFilePath);
 
-        ValidatedClinic clinicQueryResult = (ValidatedClinic)PayloadParser.getObjectFromPayload(communicationData, ValidatedClinic.class);
-        return clinicQueryResult.getStatus();
+        try {
+            communicationData = Utils.readFile(communicationFilePath);
+            ValidatedClinic clinicQueryResult = (ValidatedClinic)PayloadParser.getObjectFromPayload(communicationData, ValidatedClinic.class);
+            return clinicQueryResult.getStatus();
+        } catch (Exception e) {
+            System.out.println("Could not read file");
+            return 404;
+        }
     }
 }

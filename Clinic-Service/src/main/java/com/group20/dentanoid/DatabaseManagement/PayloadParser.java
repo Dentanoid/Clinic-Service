@@ -1,5 +1,7 @@
 package com.group20.dentanoid.DatabaseManagement;
 import com.group20.dentanoid.DatabaseManagement.Schemas.CollectionSchema;
+import com.group20.dentanoid.Utils.Utils;
+
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import com.google.gson.Gson;
@@ -73,26 +75,48 @@ public class PayloadParser {
         }
 
         Gson gson = new Gson();
-        String payload = gson.toJson(jsonObject);
+        String payload = gson.toJson(jsonObject); 
 
         return payload;
     }
 
     // Append the attributes that are used in every MQTT request
-    public static String parsePublishMessage(Document payloadDoc, String requestID, String status) {
+    public static String parsePublishMessage(Document payloadDoc, String requestID, Integer status) {
         payloadDoc.append("requestID", requestID);
         payloadDoc.append("status", status);
         return payloadDoc.toJson();
     }
 
     // Change the structure of the JSON by adding parent attributes
-    public static String restructurePublishMessage(String payloadData, String requestID, String status) {
+    public static String restructurePublishMessage(String payloadData, String requestID, Integer status) {
         Map<String, Object> map = new HashMap<>();
-        map.put("clinics", payloadData.toString());
-        map.put("requestID", requestID.toString());
-        map.put("status", Integer.parseInt(status));
 
-        Gson gson = new Gson();
-        return gson.toJson(map);
+        map.put(Utils.quoteString("clinics") + ": ", payloadData);
+        map.put(Utils.quoteString("requestID") + ": ", Utils.quoteString(requestID));
+        map.put(Utils.quoteString("status") + ": ", status);
+
+        return map.toString();
+    }
+
+    // Parse an array of Documents to JSON
+    public static String convertDocArrToJSON(Document[] docs) {
+        String finalString = "[";
+
+        for (int i = 0; i < docs.length; i++) {
+            finalString += docs[i].toJson();
+
+            if (i != docs.length - 1) {
+                finalString += ", ";
+            } else {
+                finalString += "]";
+            }
+        }
+
+        // Catch edge case when no clinics are returned
+        if (docs.length == 0) {
+            finalString += "]";
+        }
+
+        return finalString;
     }
 }
