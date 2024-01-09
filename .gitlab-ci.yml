@@ -8,8 +8,8 @@ stages:
     - test
     - package
     - deploy
-    - deploy-azure
     - build-docker-image
+    - deploy-azure
 
 cache:
     - build
