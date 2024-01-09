@@ -191,6 +191,10 @@ As imagined, there are cases where a real-world clinic either isn't registered i
 
 ![validated-clinic-2](https://i.ibb.co/Px5xYY1/Ratings-Clinic2.png)
 
+![validated-clinic-3](https://i.ibb.co/R62TXXC/Australian-Clinic.png)
+
+![validated-clinic4](https://i.ibb.co/Y83PHBJ/Dubai-Clinic.png)
+
 
 **Scenario 2 - Fictitious clinic:**
 
