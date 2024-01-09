@@ -9,6 +9,7 @@ stages:
     - package
     - deploy
     - deploy-azure
+    - build-docker-image
 
 cache:
     - build
