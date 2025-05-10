@@ -1,4 +1,4 @@
-# ![Title-Picture](https://i.ibb.co/CVrvbBk/Clincic-Service-Title.png) 🏥
+# Clinic Service 🏥
 Welcome to the Clinic service! This service handles requests for:
 
 * Registering clinics
