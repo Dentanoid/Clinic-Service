@@ -1,5 +1,6 @@
-# Clinic Service 🏥
-Welcome to the Clinic service! This service handles requests for:
+# Clinic Service
+
+This service handles requests for:
 
 * Registering clinics
 * Deleting clinics
@@ -88,9 +89,9 @@ GOOGLE_MAPS_API_KEY={key here}
 
 Congratulations! You are now running the Clinic service.
 
-## Code documentation 📚
+## Code documentation
 
-### Scalability 📈
+### Scalability
 A comprehensive folder structure that accounts for generalizations and abstractions is necessary for scalability and maintainability. The relations of the folders were designed with the motive to facilitate extensions of the code in the future and to accommodate room for unpredictable changes whereas the self-contained environment adheres to the single responsibility principle.
 
 
@@ -100,7 +101,7 @@ Below, the microservice will be presented with respect to its three main folders
 
 First, a table that illustrates and discusses in-depth how changes are accommodated in `TopicManagement` folder is presented. This table also touches on imperative concepts that are similar in its peer folder `DataManagement`. Afterwards, a multitude of trees with nodes brings more light on the existing similarities to highlight a general pattern of sub-folders that is strictly followed as a result of obtaining maintainable code. Lastly, `BackendMapAPI’s` involvement in the microservice and and how its behaviour deviates from its two peer folders is briefly discussed.
 
-### Clarification Table 📝
+### Clarification Table
 
 | DEFINITION | DESCRIPTION | CODE USAGE | FOLDER USAGE | POTENTIAL FUTURE EXTENSIONS |
 | ------ | ------ | ------ | ------ | ------ |
@@ -111,7 +112,7 @@ First, a table that illustrates and discusses in-depth how changes are accommoda
 ### Extending the code
 Adding new features would imply that the developer strictly follows the laid out folder structure to keep things organized.
 
-### Tree of extensions 🌳
+### Tree of extensions
 
 * Black nodes --> Already existing folders
 * Red nodes --> Example extensions of folders
@@ -126,7 +127,7 @@ The takeaway from the tree above is that `TopicManagement` and `DatabaseManageme
 * Subfolder B: Contains **n**<sub><sup>**ArtifactSubType**</sup></sub> folders (Dental, Health, Nearby and Multiplicity in the tree)
 
 
-### Class diagram extensions 🧩
+### Class diagram extensions
 This diagram provides further details on what was adressed in the children nodes of `TopicManagement` in the tree above:
 
 * Green --> Already existing classes
@@ -136,7 +137,7 @@ This diagram provides further details on what was adressed in the children nodes
 ![Class extensions](https://i.ibb.co/n126s1v/Class-Extension.png)
 
 
-### Code flow 🔄
+### Code flow
 
 Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
 
@@ -149,17 +150,17 @@ The colors in the 2 diagrams below represent the following operational levels:
 * Green = Artifact subtypes → Where the requested operation occurs and generates a response
 
 
-#### Code flow: Folders 📂
+#### Code flow: Folders
 Keywords of the mqtt topic defines the codeflow trajectory which has its end in the green area
 ![Folder Code flow tree](https://i.ibb.co/6n09TGn/Code-Flow-Folder-Tree.png)
 
 
-#### Code flow: Classes 🏷️
+#### Code flow: Classes
 The picture above expressed in `.java` classes rather than folders looks like this:
 ![Class Code flow tree](https://i.ibb.co/gRQTddL/Code-Flow-Class-Tree.png)
 
 
-### BackendMapAPI folder 🗺️
+### BackendMapAPI folder
 
 This folder's structure and behaviour is vastly different from its two peer folders `TopicManagement` and `Datamanagement`, but plays a crucial role in the system. This folder is a self-contained nodejs runtime environment that acts as a childprocess executed when registering a clinic.
 
@@ -282,27 +283,3 @@ In the process of calculating the distances, the clinics are stored in a map wit
 
 
 ![Binary-Heap](https://i.ibb.co/1vkCRD1/Binary-Heap.png)
-
-
-## Roadmap
-This service will not get updated in the future, due to project being considered as closed when GU course DIT356 is finished.
-
-
-## Authors and acknowledgment
-This service is a part of DIT356 distributed systems course, and is created by Group 20. [Check here for more information about the entire project.](https://git.chalmers.se/courses/dit355/2023/student-teams/dit356-2023-20/group-20-distributed-systems/-/wikis/home)
-
-***WIP DUE TO SERVICE STILL BEING DEVELOPED***
-
-In this service the following people have contributed:
-
-- Mohamad Khalil
-- Lucas Holter
-- Cornelia Olofsson Larsson 
-- James Klouda 
-- Jonatan Boman 
-- Joel Mattson
-
-
-
-## Project status
-The service may recieve updates until 9th January 2024, and none after.
