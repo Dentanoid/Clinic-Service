@@ -22,7 +22,6 @@ To run this service you need to follow the steps described below:
 <details>
   <summary>1. Google API Key</summary>
 
-### Google API Key
 Due to the usage of Google Maps API, a key is needed to run the service:
 
 1. Open [Google Cloud Console](https://console.cloud.google.com/projectcreate?utm_source=Docs_NewProject&utm_content=Docs_places-backend&_gl=1*1f1gepp*_ga*MzMzOTMzNDk3LjE3MDIwNTU2ODQ.*_ga_NRWSTWS78N*MTcwNDMyMTU1Mi4zNC4xLjE3MDQzMjE1NjIuMC4wLjA.) website and create a project
@@ -30,24 +29,23 @@ Due to the usage of Google Maps API, a key is needed to run the service:
 2. Click on ‘Navigation menu’ on the top left corner
 ![Picture 1](https://i.ibb.co/GH7x5vw/apikey1.png)
 
-3. Click “APIs & Services” and “Credentials”
+1. Click “APIs & Services” and “Credentials”
 ![Picture 2](https://i.ibb.co/gS5hrtX/apikey2.png)
 
-4. Click “Create credentials” → API Key”
+1. Click “Create credentials” → API Key”
 
-5. Click “Show key” and "Copy"
+2. Click “Show key” and "Copy"
 
-6. Search for "Places API" and enable it
+3. Search for "Places API" and enable it
 ![Picture 3](https://i.ibb.co/4FdX0S1/apikey3.png)
 
 </details>
 
 
 
+<details>
+  <summary>2. Run Clinic Service</summary>
 
-
-
-### Run Clinic service
 In order to build and run the Clinic service you need to type these commands in your terminal:
 
 1. Navigate to the root project directory
@@ -79,6 +77,9 @@ mvn clean compile assembly:single
  ```
  java -jar target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar
  ``` 
+
+</details>
+
 
 
 ## Code documentation
