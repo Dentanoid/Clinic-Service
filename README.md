@@ -1,5 +1,32 @@
 # Clinic Service
 
+
+- [Clinic Service](#clinic-service)
+  - [Introduction](#introduction)
+  - [Getting Started](#getting-started)
+  - [Code documentation](#code-documentation)
+    - [Scalability](#scalability)
+    - [Clarification Table](#clarification-table)
+    - [Extending the code](#extending-the-code)
+    - [Tree of extensions](#tree-of-extensions)
+    - [Class diagram extensions](#class-diagram-extensions)
+    - [Code flow](#code-flow)
+      - [Code flow: Folders](#code-flow-folders)
+      - [Code flow: Classes](#code-flow-classes)
+    - [BackendMapAPI folder](#backendmapapi-folder)
+      - [Registering a clinic to the system](#registering-a-clinic-to-the-system)
+      - [Finding a real clinic to register](#finding-a-real-clinic-to-register)
+      - [Security](#security)
+  - [Global constraints on clinics displayed on map](#global-constraints-on-clinics-displayed-on-map)
+    - [Step 1: Haversine Formula vs Euclidean Distance](#step-1-haversine-formula-vs-euclidean-distance)
+      - [Euclidiean Distance - Straight line between two points](#euclidiean-distance---straight-line-between-two-points)
+      - [Haversine Formula - Spherical distance:](#haversine-formula---spherical-distance)
+    - [Step 2: Priority Queue \& Max Heap](#step-2-priority-queue--max-heap)
+
+
+
+## Introduction
+
 A Maven-based microservice handling requests for:
 
 **Registering**
@@ -20,7 +47,7 @@ A Maven-based microservice handling requests for:
 ![Clinic-Service-Connection](https://i.ibb.co/1RMrTbR/Clinic-Connection.png)
 
  
-## Getting started
+## Getting Started
 
 <details>
   <summary>1. Setup Google API Key</summary>
