@@ -169,8 +169,6 @@ This diagram provides further details on what was adressed in the children nodes
 
 ### Code flow
 
-Purpose: Provide high-level overview of the code flow - Not all details (classes / folders) are included
-
 **NOTE:** Only the most significant classes and methods to the codeflow are included in the diagrams
 
 The colors in the 2 diagrams below represent the following operational levels:
@@ -210,15 +208,15 @@ In essence, its responsibilities are the following:
 
 As imagined, there are cases where a real-world clinic either isn't registered in Google API's database or when the inputted attributes don't link to any dental clinic. Ultimately, this creates two scenarios:
 
-* **Scenario 1 - Real clinic:** Clinic was found and fetched data is displayed on infowindow
+* **Scenario 1 - Real clinic:** *Clinic was found and fetched data is displayed on info window*
 
-* **Scenario 2 - Fictitious clinic:** Clinic was not found and only employees are displayed on the infowindow
+* **Scenario 2 - Fictitious clinic:** *Clinic was not found and only employees are displayed on the info window*
 
 
-**Scenario 1 - Real clinic:**
+<details>
+  <summary>Scenario 1 - Real Clinic</summary>
 
 ![validated-clinic-pic](https://i.ibb.co/88TPzJm/Ratings-Clinic.png)
-
 
 ![validated-clinic-2](https://i.ibb.co/Px5xYY1/Ratings-Clinic2.png)
 
@@ -226,10 +224,17 @@ As imagined, there are cases where a real-world clinic either isn't registered i
 
 ![validated-clinic4](https://i.ibb.co/Y83PHBJ/Dubai-Clinic.png)
 
+</details>
 
-**Scenario 2 - Fictitious clinic:**
+
+
+<details>
+  <summary>Scenario 2 - Fictitious Clinic</summary>
 
 ![fictitious-clinic-pic](https://i.ibb.co/KqWdq3V/No-Ratings-Clinic.png)
+
+</details>
+
 
 
 #### Finding a real clinic to register
