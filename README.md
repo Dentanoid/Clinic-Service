@@ -18,23 +18,6 @@ This service handles requests for:
 
 To run this service you need to follow the steps described below:
 
-### Clone the repo
-First you need to Clone the repo in to a folder in your computer, if you dont know how to do it check this [guide](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository). 
-
-### Installing Java using BREW (if you dont have Java)
-
-If you do not have Java installed on your computer you can download both brew and Java with these commands:
-
-#### Install brew
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-``````
-
-#### Install Java and maven with brew
-```
-brew install Java
-brew install maven
-``````
 
 ### Google API Key
 Due to the usage of Google Maps API, a key is needed to run the service:
@@ -51,7 +34,7 @@ Due to the usage of Google Maps API, a key is needed to run the service:
 
 5. Click “Show key” and "Copy"
 
-6. Search for "Places API" and enable it 🌍
+6. Search for "Places API" and enable it
 ![Picture 3](https://i.ibb.co/4FdX0S1/apikey3.png)
 
 7. Done! You now have a valid API key that will be used in the section below
@@ -74,20 +57,22 @@ Create a `.env` file
 
 ```
 GOOGLE_MAPS_API_KEY={key here}
-``````
+```
 
 
 3. Navigate to `Clinic-Service` folder and compile the project into a binary (including deps)
 
 
-```mvn clean compile assembly:single```
+```
+mvn clean compile assembly:single
+```
 
 4. Run the compiled JAR file
 
- ```java -jar target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar``` 
+ ```
+ java -jar target/Clinic-Service-1.0-SNAPSHOT-jar-with-dependencies.jar
+ ``` 
 
-
-Congratulations! You are now running the Clinic service.
 
 ## Code documentation
 
