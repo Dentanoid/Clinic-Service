@@ -2,19 +2,19 @@
 
 A Maven-based microservice handling requests for:
 
-- **Registering..**
-  - Clinics
-  - Dentists to clinics
+**Registering**
+- Clinics
+- Dentists to clinics
 
-- **Removing..**
-  - Clinics
-  - Dentists from clinics
+**Removing**
+- Clinics
+- Dentists from clinics
 
-- **Retrieving..**
-  - A specific clinic
-  - All clinics
-  - Clinics within radius of geographical coordinates
-  - N closest clinics to geographical coordinates
+**Retrieving**
+- A specific clinic
+- All clinics
+- Clinics within radius of geographical coordinates
+- N closest clinics to geographical coordinates
 
 
 
