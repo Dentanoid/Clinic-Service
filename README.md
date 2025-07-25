@@ -19,6 +19,9 @@ This service handles requests for:
 To run this service you need to follow the steps described below:
 
 
+<details>
+  <summary>1. Google API Key</summary>
+
 ### Google API Key
 Due to the usage of Google Maps API, a key is needed to run the service:
 
@@ -37,7 +40,11 @@ Due to the usage of Google Maps API, a key is needed to run the service:
 6. Search for "Places API" and enable it
 ![Picture 3](https://i.ibb.co/4FdX0S1/apikey3.png)
 
-7. Done! You now have a valid API key that will be used in the section below
+</details>
+
+
+
+
 
 
 ### Run Clinic service
