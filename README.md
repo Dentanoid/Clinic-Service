@@ -6,39 +6,24 @@ A Maven-based microservice handling requests for:
 - Clinics
 - Dentists to clinics
 
-**Removing**
-- Clinics
-- Dentists from clinics
-
 **Retrieving**
 - A specific clinic
 - All clinics
 - Clinics within radius of geographical coordinates
 - N closest clinics to geographical coordinates
 
+**Removing**
+- Clinics
+- Dentists from clinics
 
-
-This service handles requests for:
-
-* Registering clinics
-* Deleting clinics
-* Adding dentist to clinic
-* Removing dentist from clinic
-* Retrieving a specific clinic
-* Retrieving all clinics
-* Retrieving clinics within radius
-* Retrieving N closest clinics
 
 ![Clinic-Service-Connection](https://i.ibb.co/1RMrTbR/Clinic-Connection.png)
 
  
 ## Getting started
 
-To run this service you need to follow the steps described below:
-
-
 <details>
-  <summary>1. Google API Key</summary>
+  <summary>1. Setup Google API Key</summary>
 
 Due to the usage of Google Maps API, a key is needed to run the service:
 
