@@ -1,7 +1,6 @@
 # Clinic Service
 
 ![GCP](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
 ![Azure](https://img.shields.io/badge/Microsoft_Azure-0089D6?style=for-the-badge&logo=microsoft-azure&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white)
 ![JUnit5](https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=junit5&logoColor=white)
@@ -12,10 +11,9 @@
   - [Introduction](#introduction)
   - [Getting Started](#getting-started)
   - [Code documentation](#code-documentation)
-    - [Scalability](#scalability)
-    - [Clarification Table](#clarification-table)
+    - [Folder Structure](#folder-structure)
+    - [Folder Semantics](#folder-semantics)
     - [Extending the code](#extending-the-code)
-    - [Tree of extensions](#tree-of-extensions)
     - [Class diagram extensions](#class-diagram-extensions)
     - [Code flow](#code-flow)
       - [Code flow: Folders](#code-flow-folders)
@@ -52,6 +50,8 @@ A Maven-based microservice handling requests for:
 
 
 ![Clinic-Service-Connection](https://i.ibb.co/1RMrTbR/Clinic-Connection.png)
+
+*Refer to [Dentanoid Architecture](https://github.com/Dentanoid/Architecture) for more information about how this microservice integrates into the whole multi-tiered system*
 
  
 ## Getting Started
@@ -121,7 +121,8 @@ mvn clean compile assembly:single
 
 ## Code documentation
 
-### Scalability
+### Folder Structure
+
 A comprehensive folder structure that accounts for generalizations and abstractions is necessary for scalability and maintainability. The relations of the folders were designed with the motive to facilitate extensions of the code in the future and to accommodate room for unpredictable changes whereas the self-contained environment adheres to the single responsibility principle.
 
 
@@ -131,7 +132,7 @@ Below, the microservice will be presented with respect to its three main folders
 
 First, a table that illustrates and discusses in-depth how changes are accommodated in `TopicManagement` folder is presented. This table also touches on imperative concepts that are similar in its peer folder `DataManagement`. Afterwards, a multitude of trees with nodes brings more light on the existing similarities to highlight a general pattern of sub-folders that is strictly followed as a result of obtaining maintainable code. Lastly, `BackendMapAPI’s` involvement in the microservice and and how its behaviour deviates from its two peer folders is briefly discussed.
 
-### Clarification Table
+### Folder Semantics
 
 | DEFINITION | DESCRIPTION | CODE USAGE | FOLDER USAGE | POTENTIAL FUTURE EXTENSIONS |
 | ------ | ------ | ------ | ------ | ------ |
@@ -140,13 +141,12 @@ First, a table that illustrates and discusses in-depth how changes are accommoda
 
 
 ### Extending the code
-Adding new features would imply that the developer strictly follows the laid out folder structure to keep things organized.
 
-### Tree of extensions
+Adding new features would imply that the developer strictly follows the laid out folder structure to keep things organized. As such, in cases where one aims to extend the codebase, you can refer to example extensions below.
 
-* Black nodes --> Already existing folders
-* Red nodes --> Example extensions of folders
-* Documents --> Example extensions of scripts
+* *Black nodes* --> Already existing folders
+* *Red nodes* --> Example extensions of folders
+* *Documents* --> Example extensions of scripts
 
 ![Extension tree](https://i.ibb.co/mJ0gBLQ/Extension-Tree.png)
 
@@ -160,9 +160,9 @@ The takeaway from the tree above is that `TopicManagement` and `DatabaseManageme
 ### Class diagram extensions
 This diagram provides further details on what was adressed in the children nodes of `TopicManagement` in the tree above:
 
-* Green --> Already existing classes
-* Yellow --> Demonstrations of further extensions of abstract classes that weren't mentioned in the tree above
-* Red --> The red nodes in the tree above
+* *Green classes* --> Already existing classes
+* *Yellow classes* --> Demonstrations of further extensions of abstract classes that weren't mentioned in the tree above
+* *Red classes* --> The red nodes in the tree above
 
 ![Class extensions](https://i.ibb.co/n126s1v/Class-Extension.png)
 
