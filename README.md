@@ -1,25 +1,22 @@
 # Clinic Service
 
-> A Maven-based microservice handling requests for
-    > Registering..
-        > Clinics
-        - Dentists to clinics
+A Maven-based microservice handling requests for:
 
-
-
-- Registering
+- **Registering..**
   - Clinics
   - Dentists to clinics
 
-- Removing
+- **Removing..**
   - Clinics
   - Dentists from clinics
 
-- Retrieving
+- **Retrieving..**
   - A specific clinic
   - All clinics
   - Clinics within radius of geographical coordinates
   - N closest clinics to geographical coordinates
+
+
 
 This service handles requests for:
 
